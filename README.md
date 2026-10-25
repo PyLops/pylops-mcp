@@ -51,7 +51,54 @@ claude mcp add --scope user pylops -- uvx pylops-mcp
 }
 ```
 
+**Codex:**
+
+```
+codex mcp add pylops -- uvx pylops-mcp
+```
+
+or add to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.pylops]
+command = "uvx"
+args = ["pylops-mcp"]
+```
+
+**OpenCode:** add to `opencode.json` (project) or
+`~/.config/opencode/opencode.json` (global):
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "pylops": { "type": "local", "command": ["uvx", "pylops-mcp"], "enabled": true }
+  }
+}
+```
+
+**PI:** PI has no built-in MCP support, so first install the
+[`pi-mcp-adapter`](https://pi.dev/packages/pi-mcp-adapter) extension:
+
+```
+pi install npm:pi-mcp-adapter
+```
+
+then add to `~/.pi/agent/mcp.json` (global) or `.pi/mcp.json` (project):
+
+```json
+{
+  "mcpServers": {
+    "pylops": { "command": "uvx", "args": ["pylops-mcp"] }
+  }
+}
+```
+
 ### For Developers
+
+This project is developed with Claude Code, so all the commands below are for
+Claude Code only. For other clients, translate the `uv run ...` command into
+that client's MCP configuration (see [For Users](#for-users)).
 
 Clone the repository first; the commands below assume it lives at `/path/to/pylops-mcp`.
 
