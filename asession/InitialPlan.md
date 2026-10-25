@@ -7,10 +7,6 @@ structured tools. It ships two ways from one codebase: a free local package (`uv
 optional hosted Streamable-HTTP endpoint (no OAuth, read-only, rate-limited). Hosting cost is near zero (free tier
 or ~$5/mo VPS); users' own Claude plans cover token usage.
 
-Starting point: the uv/hatch scaffold already in `/Users/mrava87/Desktop/OpenSource/pylops-mcp`
-(`pylops_mcp/`, `tests/`, `Makefile`, ruff + mypy strict-ish, `make all` green). `pylops_mcp/basic.py` is a
-placeholder to be replaced.
-
 ## Phase 1 — Core server (MVP, local stdio)
 1. `pyproject.toml`: add deps `mcp[cli]`, `pylops`, `numpydoc`; add `[project.scripts] pylops-mcp = "pylops_mcp.server:main"`; add `description` and README.
 2. `pylops_mcp/introspect.py`: `build_catalog()` walks `pylops.*`, collects `LinearOperator` subclasses (excluding the base) and functions in `pylops.optimization.*`; `describe(obj)` uses `numpydoc` `ClassDoc`/`FunctionDoc` to return name, module, signature, summary, parameters, notes, examples. Skip modules that fail to import (optional deps). Include `pylops_version`.
@@ -48,4 +44,4 @@ placeholder to be replaced.
 
 ## Decisions
 - First delivery scope: **Phase 1 only**. Phases 2–4 are roadmap, not implemented now.
-- Step 0 of implementation: copy this plan to `/Users/mrava87/Desktop/OpenSource/pylops-mcp/asession/InitialPlan.md` (create the `asession/` directory), then implement Phase 1.
+- Step 0 of implementation: copy this plan to `pylops-mcp/asession/InitialPlan.md` (create the `asession/` directory), then implement Phase 1.
