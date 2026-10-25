@@ -40,8 +40,8 @@ def test_list_operators_module_filter() -> None:
     assert "Convolve1D" not in res["operators"]
 
 
-def test_list_solver_module_filter() -> None:
-    res = server.list_solver("sparsity")
+def test_list_solvers_module_filter() -> None:
+    res = server.list_solvers("sparsity")
     assert "fista" in res["solvers"]
     assert "cgls" not in res["solvers"]
-    assert "cgls" in server.list_solver()["solvers"]
+    assert "cgls" in server.list_solvers()["solvers"]

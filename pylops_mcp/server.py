@@ -65,7 +65,7 @@ def list_operators(module: str | None = None) -> dict[str, Any]:
 
 
 @mcp.tool()
-def list_solver(module: str | None = None) -> dict[str, Any]:
+def list_solvers(module: str | None = None) -> dict[str, Any]:
     """List solver names, optionally filtered by module (e.g. "sparsity")."""
     names = sorted(
         name
