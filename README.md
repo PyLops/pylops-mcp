@@ -33,11 +33,13 @@ Operator descriptions are also exposed as the MCP resource
 No clone or index build is needed: the PyPI release ships a prebuilt `index.json`
 (rebuilt by CI against the latest PyLops at release time).
 
+**Claude Code:**
+
 ```
 claude mcp add --scope user pylops -- uvx pylops-mcp
 ```
 
-For Claude Desktop, add to `claude_desktop_config.json`:
+**Claude Desktop:** add to `claude_desktop_config.json`:
 
 ```json
 {
