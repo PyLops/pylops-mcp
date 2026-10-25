@@ -15,7 +15,7 @@ or ~$5/mo VPS); users' own Claude plans cover token usage.
 5. Remove `basic.py` and `tests/test_basic.py`.
 
 ## Phase 2 — Quality improvements
-- Migrate to `mcp` 2.x: drop the `mcp<2` pin, switch `FastMCP` (`mcp.server.fastmcp`) to `MCPServer` (`mcp.server.mcpserver`), and adapt other changed APIs (see https://py.sdk.modelcontextprotocol.io/v2/migration/).
+- Migrate to `mcp` 2.x (done: `mcp[cli]>=2,<3`, `MCPServer`; no other API changes were needed): drop the `mcp<2` pin, switch `FastMCP` (`mcp.server.fastmcp`) to `MCPServer` (`mcp.server.mcpserver`), and adapt other changed APIs (see https://py.sdk.modelcontextprotocol.io/v2/migration/).
 - Index operators built through factory functions (e.g. `FFT`, `Radon2D`): they are functions returning `LinearOperator` objects, not `LinearOperator` subclasses, so Phase 1 introspection misses them.
 - Index the PyLops `examples/` gallery by imported operators and return them from `get_operator`.
 - Structured fields: `explicit`, dtype, shape semantics, CuPy/JAX backend support, for filtering.
@@ -24,7 +24,7 @@ or ~$5/mo VPS); users' own Claude plans cover token usage.
 - Optional `run_snippet` sandbox (dottest) — deferred; needs a security review first.
 
 ## Phase 3 — Remote hosting
-- `FastMCP("pylops", stateless_http=True, json_response=True)`; `mcp.run(transport="streamable-http")` via a `--http` CLI flag.
+- `MCPServer("pylops")`; `mcp.run(transport="streamable-http", json_response=True, stateless_http=True, host=..., port=...)` (in `mcp` 2.x these options moved from the constructor to `run()`) via a `--http` CLI flag.
 - Dockerfile with the prebuilt index (no heavy PyLops import per request); deploy to Cloud Run/Fly.io/Cloudflare behind HTTPS with rate limiting. No OAuth (public read-only data).
 
 ## Phase 4 — Release and discovery

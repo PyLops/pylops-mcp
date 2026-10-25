@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Mathematics",
 ]
 dependencies = [
-    "mcp[cli]<2",
+    "mcp[cli]>=2,<3",
     "numpydoc>=1.11.0",
     "pylops>=2.8.0",
 ]

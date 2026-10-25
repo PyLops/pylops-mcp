@@ -1,11 +1,11 @@
 import difflib
 from typing import Any
 
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer
 
 from pylops_mcp.index import load_index
 
-mcp = FastMCP("pylops")
+mcp = MCPServer("pylops")
 CATALOG = load_index()
 POOLS: dict[str, dict[str, Any]] = {
     "operator": CATALOG["operators"],
