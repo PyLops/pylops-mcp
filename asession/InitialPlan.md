@@ -16,12 +16,13 @@ or ~$5/mo VPS); users' own Claude plans cover token usage.
 
 ## Phase 2 — Quality improvements
 - Migrate to `mcp` 2.x (done: `mcp[cli]>=2,<3`, `MCPServer`; no other API changes were needed): drop the `mcp<2` pin, switch `FastMCP` (`mcp.server.fastmcp`) to `MCPServer` (`mcp.server.mcpserver`), and adapt other changed APIs (see https://py.sdk.modelcontextprotocol.io/v2/migration/).
-- Index operators built through factory functions (e.g. `FFT`, `Radon2D`): they are functions returning `LinearOperator` objects, not `LinearOperator` subclasses, so Phase 1 introspection misses them.
+- Index operators built through factory functions (done: factories in the public `__all__` are indexed as operators; inversion/decomposition helpers go to a new `workflow` kind with `list_workflows`/`get_workflow`): they are functions returning `LinearOperator` objects, not `LinearOperator` subclasses, so Phase 1 introspection misses them.
 - Index the PyLops `examples/` gallery by imported operators and return them from `get_operator`.
 - Structured fields: `explicit`, dtype, shape semantics, CuPy/JAX backend support, for filtering.
 - Better search: token/fuzzy scoring over name, summary, tags; embeddings only if substring search proves insufficient.
 - `recommend_solver(problem)` (rule-based problem → solver map) — dropped for now, revisit later.
 - Optional `run_snippet` sandbox (dottest) — deferred; needs a security review first.
+- Add one `index.json` per PyLops version and return always the latest as default but allow passing pylops version to all tools as optional input param.
 
 ## Phase 3 — Remote hosting
 - `MCPServer("pylops")`; `mcp.run(transport="streamable-http", json_response=True, stateless_http=True, host=..., port=...)` (in `mcp` 2.x these options moved from the constructor to `run()`) via a `--http` CLI flag.

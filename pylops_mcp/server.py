@@ -10,6 +10,7 @@ CATALOG = load_index()
 POOLS: dict[str, dict[str, Any]] = {
     "operator": CATALOG["operators"],
     "solver": CATALOG["solvers"],
+    "workflow": CATALOG["workflows"],
 }
 
 
@@ -31,9 +32,9 @@ def _lookup(kind: str, name: str) -> dict[str, Any]:
 
 @mcp.tool()
 def search(query: str, kind: str = "all") -> dict[str, Any]:
-    """Search PyLops operators and solvers by name or docstring summary.
+    """Search PyLops operators, solvers and workflows by name or docstring summary.
 
-    kind is one of "all", "operator" or "solver".
+    kind is one of "all", "operator", "solver" or "workflow".
     """
     q = query.lower()
     kinds = list(POOLS) if kind == "all" else [kind]
@@ -76,6 +77,17 @@ def list_solvers(module: str | None = None) -> dict[str, Any]:
 
 
 @mcp.tool()
+def list_workflows(module: str | None = None) -> dict[str, Any]:
+    """List workflow names (inversion/decomposition helpers), optionally by module."""
+    names = sorted(
+        name
+        for name, entry in CATALOG["workflows"].items()
+        if module is None or module in entry["module"]
+    )
+    return {"pylops_version": CATALOG["pylops_version"], "workflows": names}
+
+
+@mcp.tool()
 def get_operator(name: str) -> dict[str, Any]:
     """Get signature, parameters, notes and examples of a PyLops operator."""
     return _lookup("operator", name)
@@ -85,6 +97,12 @@ def get_operator(name: str) -> dict[str, Any]:
 def get_solver(name: str) -> dict[str, Any]:
     """Get signature, parameters, notes and examples of a PyLops solver."""
     return _lookup("solver", name)
+
+
+@mcp.tool()
+def get_workflow(name: str) -> dict[str, Any]:
+    """Get signature, parameters, notes and examples of a PyLops workflow."""
+    return _lookup("workflow", name)
 
 
 @mcp.resource("pylops://operators/{name}")

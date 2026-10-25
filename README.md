@@ -13,11 +13,13 @@ The catalog is built by introspecting the installed PyLops
 
 | Tool | Arguments | Description |
 | --- | --- | --- |
-| `search` | `query` (str), `kind` (`"all"` \| `"operator"` \| `"solver"`, default `"all"`) | Case-insensitive substring search over names and docstring summaries. Returns up to 20 hits (`name`, `kind`, `module`, `summary`), name matches first. |
+| `search` | `query` (str), `kind` (`"all"` \| `"operator"` \| `"solver"` \| `"workflow"`, default `"all"`) | Case-insensitive substring search over names and docstring summaries. Returns up to 20 hits (`name`, `kind`, `module`, `summary`), name matches first. |
 | `list_operators` | `module` (str, optional, e.g. `"basicoperators"`) | Sorted list of operator names, optionally filtered by module. |
 | `list_solvers` | `module` (str, optional, e.g. `"sparsity"`) | Sorted list of solver names, optionally filtered by module. |
+| `list_workflows` | `module` (str, optional) | Sorted list of workflow names (inversion/decomposition helpers such as `MDD`, `PrestackInversion`), optionally filtered by module. |
 | `get_operator` | `name` (str) | Signature, parameters, notes and examples of an operator. Lookup is case-insensitive. |
 | `get_solver` | `name` (str) | Signature, parameters, notes and examples of a solver. Lookup is case-insensitive. |
+| `get_workflow` | `name` (str) | Signature, parameters, notes and examples of a workflow. Lookup is case-insensitive. |
 
 All responses include `pylops_version`. An unknown name returns an `error`
 together with up to 5 close-match `suggestions`.

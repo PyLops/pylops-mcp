@@ -26,5 +26,6 @@ if __name__ == "__main__":
     cat = write_index()
     print(
         f"PyLops {cat['pylops_version']}: {len(cat['operators'])} operators, "
-        f"{len(cat['solvers'])} solvers -> {INDEX_PATH}"
+        f"{len(cat['solvers'])} solvers, {len(cat['workflows'])} workflows "
+        f"-> {INDEX_PATH}"
     )

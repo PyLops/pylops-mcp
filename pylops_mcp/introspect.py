@@ -10,6 +10,23 @@ from pylops import LinearOperator
 Entry = dict[str, Any]
 Catalog = dict[str, Any]
 
+# Packages whose ``__all__`` is scanned for factory functions returning operators
+PUBLIC_PACKAGES = (
+    "pylops.basicoperators",
+    "pylops.signalprocessing",
+    "pylops.waveeqprocessing",
+    "pylops.avo",
+)
+# Public functions that run an inversion or decomposition rather than return an operator
+WORKFLOWS = {
+    "MDD",
+    "SeismicInterpolation",
+    "WavefieldDecomposition",
+    "Deghosting",
+    "PoststackInversion",
+    "PrestackInversion",
+}
+
 
 def describe(obj: Any, kind: str) -> Entry:
     """Return a structured description of an operator class or solver function."""
@@ -61,8 +78,20 @@ def build_catalog() -> Catalog:
                 and name not in solvers
             ):
                 solvers[name] = describe(obj, "solver")
+    workflows: dict[str, Entry] = {}
+    for pkg_name in PUBLIC_PACKAGES:
+        pkg = importlib.import_module(pkg_name)
+        for name in getattr(pkg, "__all__", []):
+            obj = getattr(pkg, name, None)
+            if not inspect.isfunction(obj):
+                continue
+            if name in WORKFLOWS:
+                workflows.setdefault(name, describe(obj, "workflow"))
+            else:
+                operators.setdefault(name, describe(obj, "operator"))
     return {
         "pylops_version": pylops.__version__,
         "operators": operators,
         "solvers": solvers,
+        "workflows": workflows,
     }

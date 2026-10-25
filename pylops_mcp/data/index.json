@@ -3131,6 +3131,1108 @@
    ],
    "notes": "",
    "examples": ""
+  },
+  "FFT": {
+   "name": "FFT",
+   "kind": "operator",
+   "module": "pylops.signalprocessing.fft",
+   "signature": "(dims: int | collections.abc.Sequence[int] | NDArray[numpy.integer], axis: int = -1, nfft: int | None = None, sampling: float = 1.0, norm: Literal['ortho', 'none', '1/n'] = 'ortho', real: bool = False, ifftshift_before: bool = False, fftshift_after: bool = False, engine: Literal['numpy', 'fftw', 'scipy', 'mkl_fft'] = 'numpy', dtype: DTypeLike = 'complex128', name: str = 'F', **kwargs_fft) -> pylops.linearoperator.LinearOperator",
+   "summary": "One dimensional Fast-Fourier Transform.",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`",
+     "desc": "Number of samples for each dimension"
+    },
+    {
+     "name": "axis",
+     "type": ":obj:`int`, optional",
+     "desc": ".. versionadded:: 2.0.0  Axis along which FFT is applied"
+    },
+    {
+     "name": "nfft",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of samples in Fourier Transform (same as input if ``nfft=None``)"
+    },
+    {
+     "name": "sampling",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling step ``dt``."
+    },
+    {
+     "name": "norm",
+     "type": "`{\"ortho\", \"none\", \"1/n\"}`, optional",
+     "desc": ".. versionadded:: 1.17.0  - \"ortho\": Scales forward and adjoint FFT transforms with :math:`1/\\sqrt{N_F}`,   where :math:`N_F` is the number of samples in the Fourier domain given by ``nfft``.  - \"none\": Does not scale the forward or the adjoint FFT transforms.  - \"1/n\": Scales both the forward and adjoint FFT transforms by   :math:`1/N_F`.  .. note:: For \"none\" and \"1/n\", the operator is not unitary, that is, the   adjoint is not the inverse. To invert the operator, simply use ``Op \\ y``."
+    },
+    {
+     "name": "real",
+     "type": ":obj:`bool`, optional",
+     "desc": "Model to which fft is applied has real numbers (``True``) or not (``False``). Used to enforce that the output of adjoint of a real model is real."
+    },
+    {
+     "name": "ifftshift_before",
+     "type": ":obj:`bool`, optional",
+     "desc": ".. versionadded:: 1.17.0  Apply ifftshift (``True``) or not (``False``) to model vector (before FFT). Consider using this option when the model vector's respective axis is symmetric with respect to the zero value sample. This will shift the zero value sample to coincide with the zero index sample. With such an arrangement, FFT will not introduce a sample-dependent phase-shift when compared to the continuous Fourier Transform. Defaults to not applying ifftshift."
+    },
+    {
+     "name": "fftshift_after",
+     "type": ":obj:`bool`, optional",
+     "desc": ".. versionadded:: 1.17.0  Apply fftshift (``True``) or not (``False``) to data vector (after FFT). Consider using this option when you require frequencies to be arranged naturally, from negative to positive. When not applying fftshift after FFT, frequencies are arranged from zero to largest positive, and then from negative Nyquist to the frequency bin before zero."
+    },
+    {
+     "name": "engine",
+     "type": ":obj:`str`, optional",
+     "desc": "Engine used for fft computation (``numpy``, ``fftw``, ``scipy`` or ``mkl_fft``). Choose ``numpy`` when working with cupy and jax arrays.  .. note:: Since version 1.17.0, accepts \"scipy\"."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array. Note that the ``dtype`` of the operator is the corresponding complex type even when a real type is provided. In addition, note that neither the NumPy nor the FFTW backends supports returning ``dtype`` different than ``complex128``. As such, when using either backend, arrays will be force-casted to types corresponding to the supplied ``dtype``. The SciPy backend supports all precisions natively. Under all backends, when a real ``dtype`` is supplied, a real result will be enforced on the result of the ``rmatvec`` and the input of the ``matvec``."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    },
+    {
+     "name": "**kwargs_fft",
+     "type": "",
+     "desc": "Arbitrary keyword arguments to be passed to the selected fft method"
+    }
+   ],
+   "notes": "The FFT operator (using ``norm=\"ortho\"``) applies the forward Fourier transform to\na signal\n:math:`d(t)` in forward mode:\n\n.. math::\n    D(f) = \\mathscr{F} (d) = \\frac{1}{\\sqrt{N_F}} \\int\\limits_{-\\infty}^\\infty d(t) e^{-j2\\pi ft} \\,\\mathrm{d}t\n\nSimilarly, the inverse Fourier transform is applied to the Fourier spectrum\n:math:`D(f)` in adjoint mode:\n\n.. math::\n    d(t) = \\mathscr{F}^{-1} (D) = \\frac{1}{\\sqrt{N_F}} \\int\\limits_{-\\infty}^\\infty D(f) e^{j2\\pi ft} \\,\\mathrm{d}f\n\nwhere :math:`N_F` is the number of samples in the Fourier domain ``nfft``.\nBoth operators are effectively discretized and solved by a fast iterative\nalgorithm known as Fast Fourier Transform. Note that the FFT operator\n(using ``norm=\"ortho\"``) is a special operator in that the adjoint is also\nthe inverse of the forward mode. For other norms, this does not hold (see ``norm``\nhelp). However, for any norm, the Fourier transform is Hermitian for real input\nsignals.",
+   "examples": ""
+  },
+  "FFT2D": {
+   "name": "FFT2D",
+   "kind": "operator",
+   "module": "pylops.signalprocessing.fft2d",
+   "signature": "(dims: collections.abc.Sequence[int] | NDArray[numpy.integer], axes: collections.abc.Sequence[int] | NDArray[numpy.integer] = (-2, -1), nffts: int | collections.abc.Sequence[int] | NDArray[numpy.integer] | None = None, sampling: float | collections.abc.Sequence[float] = 1.0, norm: Literal['ortho', 'none', '1/n'] = 'ortho', real: bool = False, ifftshift_before: bool = False, fftshift_after: bool = False, engine: Literal['numpy', 'scipy', 'mkl_fft'] = 'numpy', dtype: DTypeLike = 'complex128', name: str = 'F', **kwargs_fft) -> pylops.linearoperator.LinearOperator",
+   "summary": "Two dimensional Fast-Fourier Transform.",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`",
+     "desc": "Number of samples for each dimension"
+    },
+    {
+     "name": "axes",
+     "type": ":obj:`tuple`, optional",
+     "desc": ".. versionadded:: 2.0.0  Pair of axes along which FFT2D is applied"
+    },
+    {
+     "name": "nffts",
+     "type": ":obj:`tuple` or :obj:`int`, optional",
+     "desc": "Number of samples in Fourier Transform for each axis in ``axes``. In case only one dimension needs to be specified, use ``None`` for the other dimension in the tuple. An axis with ``None`` will use ``dims[axis]`` as ``nfft``. When supplying a tuple, the length must be 2. When a single value is passed, it will be used for both axes. As such the default is equivalent to ``nffts=(None, None)``."
+    },
+    {
+     "name": "sampling",
+     "type": ":obj:`tuple` or :obj:`float`, optional",
+     "desc": "Sampling steps for each axis in ``axes``. When supplied a single value, it is used for both axes. Unlike ``nffts``, any ``None`` will not be converted to the default value."
+    },
+    {
+     "name": "norm",
+     "type": "`{\"ortho\", \"none\", \"1/n\"}`, optional",
+     "desc": ".. versionadded:: 1.17.0  - \"ortho\": Scales forward and adjoint FFT transforms with :math:`1/\\sqrt{N_F}`,   where :math:`N_F` is the number of samples in the Fourier domain given by   product of all elements of ``nffts``.  - \"none\": Does not scale the forward or the adjoint FFT transforms.  - \"1/n\": Scales both the forward and adjoint FFT transforms by   :math:`1/N_F`.  .. note:: For \"none\" and \"1/n\", the operator is not unitary, that is, the   adjoint is not the inverse. To invert the operator, simply use ``Op \\ y``."
+    },
+    {
+     "name": "real",
+     "type": ":obj:`bool`, optional",
+     "desc": "Model to which fft is applied has real numbers (``True``) or not (``False``). Used to enforce that the output of adjoint of a real model is real. Note that the real FFT is applied only to the first dimension to which the FFT2D operator is applied (last element of ``axes``)"
+    },
+    {
+     "name": "ifftshift_before",
+     "type": ":obj:`tuple` or :obj:`bool`, optional",
+     "desc": "Apply ifftshift (``True``) or not (``False``) to model vector (before FFT). Consider using this option when the model vector's respective axis is symmetric with respect to the zero value sample. This will shift the zero value sample to coincide with the zero index sample. With such an arrangement, FFT will not introduce a sample-dependent phase-shift when compared to the continuous Fourier Transform. When passing a single value, the shift will the same for every axis in ``axes``. Pass a tuple to specify which dimensions are shifted."
+    },
+    {
+     "name": "fftshift_after",
+     "type": ":obj:`tuple` or :obj:`bool`, optional",
+     "desc": "Apply fftshift (``True``) or not (``False``) to data vector (after FFT). Consider using this option when you require frequencies to be arranged naturally, from negative to positive. When not applying fftshift after FFT, frequencies are arranged from zero to largest positive, and then from negative Nyquist to the frequency bin before zero. When passing a single value, the shift will the same for every axis in ``axes``. Pass a tuple to specify which dimensions are shifted."
+    },
+    {
+     "name": "engine",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 1.17.0  Engine used for fft computation (``numpy`` or ``scipy`` or ``mkl_fft``). Choose ``numpy`` when working with cupy and jax arrays."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array. Note that the ``dtype`` of the operator is the corresponding complex type even when a real type is provided. In addition, note that the NumPy backend does not support returning ``dtype`` different than ``complex128``. As such, when using the NumPy backend, arrays will be force-casted to types corresponding to the supplied ``dtype``. The SciPy backend supports all precisions natively. Under both backends, when a real ``dtype`` is supplied, a real result will be enforced on the result of the ``rmatvec`` and the input of the ``matvec``."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    },
+    {
+     "name": "**kwargs_fft",
+     "type": "",
+     "desc": ".. versionadded:: 2.5.0  Arbitrary keyword arguments to be passed to the selected fft method"
+    }
+   ],
+   "notes": "The FFT2D operator (using ``norm=\"ortho\"``) applies the two-dimensional forward\nFourier transform to a signal :math:`d(y, x)` in forward mode:\n\n.. math::\n    D(k_y, k_x) = \\mathscr{F} (d) = \\frac{1}{\\sqrt{N_F}} \\iint\\limits_{-\\infty}^\\infty d(y, x) e^{-j2\\pi k_yy}\n    e^{-j2\\pi k_xx} \\,\\mathrm{d}y \\,\\mathrm{d}x\n\nSimilarly, the  two-dimensional inverse Fourier transform is applied to\nthe Fourier spectrum :math:`D(k_y, k_x)` in adjoint mode:\n\n.. math::\n    d(y,x) = \\mathscr{F}^{-1} (D) = \\frac{1}{\\sqrt{N_F}} \\iint\\limits_{-\\infty}^\\infty D(k_y, k_x) e^{j2\\pi k_yy}\n    e^{j2\\pi k_xx} \\,\\mathrm{d}k_y  \\,\\mathrm{d}k_x\n\nwhere :math:`N_F` is the number of samples in the Fourier domain given by the\nproduct of the element of ``nffts``.\nBoth operators are effectively discretized and solved by a fast iterative\nalgorithm known as Fast Fourier Transform. Note that the FFT2D operator\n(using ``norm=\"ortho\"``) is a special operator in that the adjoint is also\nthe inverse of the forward mode. For other norms, this does not hold (see ``norm``\nhelp). However, for any norm, the 2D Fourier transform is Hermitian for real input\nsignals.",
+   "examples": ""
+  },
+  "FFTND": {
+   "name": "FFTND",
+   "kind": "operator",
+   "module": "pylops.signalprocessing.fftnd",
+   "signature": "(dims: int | collections.abc.Sequence[int] | NDArray[numpy.integer], axes: int | collections.abc.Sequence[int] | NDArray[numpy.integer] = (-3, -2, -1), nffts: int | collections.abc.Sequence[int] | NDArray[numpy.integer] | None = None, sampling: float | collections.abc.Sequence[float] = 1.0, norm: Literal['ortho', 'none', '1/n'] = 'ortho', real: bool = False, ifftshift_before: bool = False, fftshift_after: bool = False, engine: Literal['numpy', 'scipy', 'mkl_fft'] = 'scipy', dtype: DTypeLike = 'complex128', name: str = 'F', **kwargs_fft) -> pylops.linearoperator.LinearOperator",
+   "summary": "N-dimensional Fast-Fourier Transform.",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`",
+     "desc": "Number of samples for each dimension"
+    },
+    {
+     "name": "axes",
+     "type": ":obj:`int`, optional",
+     "desc": ".. versionadded:: 2.0.0  Axes (or axis) along which FFTND is applied"
+    },
+    {
+     "name": "nffts",
+     "type": ":obj:`tuple` or :obj:`int`, optional",
+     "desc": "Number of samples in Fourier Transform for each axis in ``axes``. In case only one dimension needs to be specified, use ``None`` for the other dimension in the tuple. An axis with ``None`` will use ``dims[axis]`` as ``nfft``. When supplying a tuple, the length must agree with that of ``axes``. When a single value is passed, it will be used for all ``axes`. As such the default is equivalent to ``nffts=(None, ..., None)``."
+    },
+    {
+     "name": "sampling",
+     "type": ":obj:`tuple` or :obj:`float`, optional",
+     "desc": "Sampling steps for each direction. When supplied a single value, it is used for all directions. Unlike ``nffts``, any ``None`` will not be converted to the default value."
+    },
+    {
+     "name": "norm",
+     "type": "`{\"ortho\", \"none\", \"1/n\"}`, optional",
+     "desc": ".. versionadded:: 1.17.0  - \"ortho\": Scales forward and adjoint FFT transforms with :math:`1/\\sqrt{N_F}`,   where :math:`N_F` is the number of samples in the Fourier domain given by   product of all elements of ``nffts``.  - \"none\": Does not scale the forward or the adjoint FFT transforms.  - \"1/n\": Scales both the forward and adjoint FFT transforms by   :math:`1/N_F`.  .. note:: For \"none\" and \"1/n\", the operator is not unitary, that is, the   adjoint is not the inverse. To invert the operator, simply use ``Op \\ y``."
+    },
+    {
+     "name": "real",
+     "type": ":obj:`bool`, optional",
+     "desc": "Model to which fft is applied has real numbers (``True``) or not (``False``). Used to enforce that the output of adjoint of a real model is real. Note that the real FFT is applied only to the first dimension to which the FFTND operator is applied (last element of ``axes``)"
+    },
+    {
+     "name": "ifftshift_before",
+     "type": ":obj:`tuple` or :obj:`bool`, optional",
+     "desc": ".. versionadded:: 1.17.0  Apply ifftshift (``True``) or not (``False``) to model vector (before FFT). Consider using this option when the model vector's respective axis is symmetric with respect to the zero value sample. This will shift the zero value sample to coincide with the zero index sample. With such an arrangement, FFT will not introduce a sample-dependent phase-shift when compared to the continuous Fourier Transform. When passing a single value, the shift will the same for every direction. Pass a tuple to specify which dimensions are shifted."
+    },
+    {
+     "name": "fftshift_after",
+     "type": ":obj:`tuple` or :obj:`bool`, optional",
+     "desc": ".. versionadded:: 1.17.0  Apply fftshift (``True``) or not (``False``) to data vector (after FFT). Consider using this option when you require frequencies to be arranged naturally, from negative to positive. When not applying fftshift after FFT, frequencies are arranged from zero to largest positive, and then from negative Nyquist to the frequency bin before zero. When passing a single value, the shift will the same for every direction. Pass a tuple to specify which dimensions are shifted."
+    },
+    {
+     "name": "engine",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 1.17.0  Engine used for fft computation (``numpy`` or ``scipy`` or ``mkl_fft``). Choose ``numpy`` when working with cupy and jax arrays."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array. Note that the ``dtype`` of the operator is the corresponding complex type even when a real type is provided. In addition, note that the NumPy backend does not support returning ``dtype`` different than ``complex128``. As such, when using the NumPy backend, arrays will be force-cast to types corresponding to the supplied ``dtype``. The SciPy backend supports all precisions natively. Under both backends, when a real ``dtype`` is supplied, a real result will be enforced on the result of the ``rmatvec`` and the input of the ``matvec``."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    },
+    {
+     "name": "**kwargs_fft",
+     "type": "",
+     "desc": ".. versionadded:: 2.3.0  Arbitrary keyword arguments to be passed to the selected fft method"
+    }
+   ],
+   "notes": "The FFTND operator (using ``norm=\"ortho\"``) applies the N-dimensional forward\nFourier transform to a multi-dimensional array. Considering an N-dimensional\nsignal :math:`d(x_1, \\ldots, x_N)`. The FFTND in forward mode is:\n\n.. math::\n    D(k_1, \\ldots, k_N) = \\mathscr{F} (d) = \\frac{1}{\\sqrt{N_F}}\n    \\int\\limits_{-\\infty}^\\infty \\cdots \\int\\limits_{-\\infty}^\\infty\n    d(x_1, \\ldots, x_N)\n    e^{-j2\\pi k_1 x_1} \\cdots\n    e^{-j 2 \\pi k_N x_N}  \\,\\mathrm{d}x_1 \\cdots \\mathrm{d}x_N\n\nSimilarly, the  three-dimensional inverse Fourier transform is applied to\nthe Fourier spectrum :math:`D(k_z, k_y, k_x)` in adjoint mode:\n\n.. math::\n    d(x_1, \\ldots, x_N) = \\mathscr{F}^{-1} (D) = \\frac{1}{\\sqrt{N_F}}\n    \\int\\limits_{-\\infty}^\\infty \\cdots \\int\\limits_{-\\infty}^\\infty\n    D(k_1, \\ldots, k_N)\n    e^{-j2\\pi k_1 x_1} \\cdots\n    e^{-j 2 \\pi k_N x_N} \\,\\mathrm{d}k_1 \\cdots  \\mathrm{d}k_N\n\nwhere :math:`N_F` is the number of samples in the Fourier domain given by the\nproduct of the element of ``nffts``.\nBoth operators are effectively discretized and solved by a fast iterative\nalgorithm known as Fast Fourier Transform. Note that the FFTND operator\n(using ``norm=\"ortho\"``) is a special operator in that the adjoint is also\nthe inverse of the forward mode. For other norms, this does not hold (see ``norm``\nhelp). However, for any norm, the N-dimensional Fourier transform is Hermitian\nfor real input signals.",
+   "examples": ""
+  },
+  "Shift": {
+   "name": "Shift",
+   "kind": "operator",
+   "module": "pylops.signalprocessing.shift",
+   "signature": "(dims: tuple, shift: float | NDArray[numpy.number], axis: int = -1, nfft: int = None, sampling: float = 1.0, real: bool = False, engine: Literal['numpy', 'fftw', 'scipy', 'mkl_fft'] = 'numpy', dtype: DTypeLike = 'complex128', name: str = 'S', **kwargs_fft) -> 'LinearOperator'",
+   "summary": "Shift operator",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`",
+     "desc": "Number of samples for each dimension"
+    },
+    {
+     "name": "shift",
+     "type": ":obj:`float` or :obj:`numpy.ndarray`",
+     "desc": "Fractional shift to apply in the same unit as ``sampling``. For multi-dimensional inputs, this can be a scalar to apply to every trace along the chosen axis or an array of shifts to be applied to each trace."
+    },
+    {
+     "name": "axis",
+     "type": ":obj:`int`, optional",
+     "desc": ".. versionadded:: 2.0.0  Axis along which shift is applied"
+    },
+    {
+     "name": "nfft",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of samples in Fourier Transform (same as input if ``nfft=None``)"
+    },
+    {
+     "name": "sampling",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling step :math:`\\Delta t`."
+    },
+    {
+     "name": "real",
+     "type": ":obj:`bool`, optional",
+     "desc": "Model to which fft is applied has real numbers (``True``) or not (``False``). Used to enforce that the output of adjoint of a real model is real."
+    },
+    {
+     "name": "engine",
+     "type": ":obj:`str`, optional",
+     "desc": "Engine used for fft computation (``numpy``, ``scipy``, or ``fftw``). Choose ``numpy`` when working with CuPy arrays."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    },
+    {
+     "name": "**kwargs_fft",
+     "type": "",
+     "desc": "Arbitrary keyword arguments to be passed to the selected fft method"
+    }
+   ],
+   "notes": "The Shift operator applies the forward Fourier transform, an element-wise\ncomplex scaling, and inverse fourier transform\n\n.. math::\n     \\mathbf{y}= \\mathbf{F}^{-1} \\mathbf{S} \\mathbf{F} \\mathbf{x}\n\nHere :math:`\\mathbf{S}` is a diagonal operator that scales the Fourier\ntransformed input by :math:`e^{-j2\\pi f t_S}`, where :math:`t_S` is the\nchosen ``shift``.",
+   "examples": ""
+  },
+  "Interp": {
+   "name": "Interp",
+   "kind": "operator",
+   "module": "pylops.signalprocessing.interp",
+   "signature": "(dims: int | collections.abc.Sequence[int] | NDArray[numpy.integer], iava: collections.abc.Sequence[float] | NDArray[numpy.floating], axis: int = -1, kind: Literal['linear', 'nearest', 'sinc', 'cubic_spline'] = 'linear', tol: float | None = None, dtype: DTypeLike = 'float64', name: str = 'I') -> tuple[pylops.linearoperator.LinearOperator, NDArray[numpy.integer]]",
+   "summary": "Interpolation operator.",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`list` or :obj:`int`",
+     "desc": "Number of samples for each dimension"
+    },
+    {
+     "name": "iava",
+     "type": ":obj:`list` or :obj:`numpy.ndarray`",
+     "desc": "Floating indices of locations of available samples for interpolation."
+    },
+    {
+     "name": "axis",
+     "type": ":obj:`int`, optional",
+     "desc": ".. versionadded:: 2.0.0  Axis along which interpolation is applied."
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Kind of interpolation. Currently, ``\"nearest\"``, ``\"linear\"``, ``\"sinc\"``, and ``\"cubic_spline\"`` are available.  .. versionadded:: 2.7.0  The ``\"cubic_spline\"``-interpolation was added."
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": ".. versionadded:: 2.8.0  Tolerance for sinc interpolation values to be retained (values below ``tol`` are set to zero and a sparse matrix is created). If ``None``, all values are retained and a dense matrix is created."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    }
+   ],
+   "notes": "*Linear interpolation* of a subset of :math:`N` values at locations\n``iava`` from an input (or model) vector :math:`\\mathbf{x}` of size\n:math:`M` can be expressed as:\n\n.. math::\n\n    y_i = (1-w_i) x_{l^{l}_i} + w_i x_{l^{r}_i}\n    \\quad \\forall i=1,2,\\ldots,N\n\nwhere :math:`\\mathbf{l^l}=[\\lfloor l_1 \\rfloor, \\lfloor l_2 \\rfloor,\\ldots,\n\\lfloor l_N \\rfloor]` and :math:`\\mathbf{l^r}=[\\lfloor l_1 \\rfloor +1,\n\\lfloor l_2 \\rfloor +1,\\ldots,\n\\lfloor l_N \\rfloor +1]` are vectors containing the indeces\nof the original array at which samples are taken, and\n:math:`\\mathbf{w}=[l_1 - \\lfloor l_1 \\rfloor, l_2 - \\lfloor l_2 \\rfloor,\n..., l_N - \\lfloor l_N \\rfloor]` are the linear interpolation weights.\nThis operator can be implemented by simply summing two\n:class:`pylops.Restriction` operators which are weighted\nusing :class:`pylops.basicoperators.Diagonal` operators.\n\n*Sinc interpolation* of a subset of :math:`N` values at locations\n``iava`` from an input (or model) vector :math:`\\mathbf{x}` of size\n:math:`M` can be expressed as:\n\n.. math::\n    \\DeclareMathOperator{\\sinc}{sinc}\n    y_i = \\sum_{j=0}^{M} x_j \\sinc(i-j) \\quad \\forall i=1,2,\\ldots,N\n\nThis operator can be implemented using the :class:`pylops.MatrixMult`\noperator with a matrix containing the values of the sinc function at all\n:math:`i,j` possible combinations.",
+   "examples": ""
+  },
+  "Radon2D": {
+   "name": "Radon2D",
+   "kind": "operator",
+   "module": "pylops.signalprocessing.radon2d",
+   "signature": "(taxis: NDArray[numpy.number], haxis: NDArray[numpy.number], pxaxis: NDArray[numpy.number], kind: Literal['linear', 'parabolic', 'hyperbolic'] = 'linear', centeredh: bool = True, interp: bool = True, onthefly: bool = False, engine: Literal['numpy', 'numba'] = 'numpy', dtype: DTypeLike = 'float64', name: str = 'R')",
+   "summary": "Two dimensional Radon transform.",
+   "parameters": [
+    {
+     "name": "taxis",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Time axis"
+    },
+    {
+     "name": "haxis",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Spatial axis"
+    },
+    {
+     "name": "pxaxis",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Axis of scanning variable :math:`p_x` of parametric curve"
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Curve to be used for stacking/spreading (``linear``, ``parabolic``, and ``hyperbolic`` are currently supported) or a function that takes :math:`(x, t_0, p_x)` as input and returns :math:`t` as output"
+    },
+    {
+     "name": "centeredh",
+     "type": ":obj:`bool`, optional",
+     "desc": "Assume centered spatial axis (``True``) or not (``False``). If ``True`` the original ``haxis`` is ignored and a new axis is created."
+    },
+    {
+     "name": "interp",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply linear interpolation (``True``) or nearest interpolation (``False``) during stacking/spreading along parametric curve"
+    },
+    {
+     "name": "onthefly",
+     "type": ":obj:`bool`, optional",
+     "desc": "Compute stacking parametric curves on-the-fly as part of forward and adjoint modelling (``True``) or at initialization and store them in look-up table (``False``). Using a look-up table is computationally more efficient but increases the memory burden"
+    },
+    {
+     "name": "engine",
+     "type": ":obj:`str`, optional",
+     "desc": "Engine used for computation (``numpy`` or ``numba``)"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    }
+   ],
+   "notes": "The Radon2D operator applies the following linear transform in adjoint mode\nto the data after reshaping it into a 2-dimensional array of\nsize :math:`[n_x \\times n_t]`:\n\n.. math::\n    m(p_x, t_0) = \\int{d(x, t = f(p_x, x, t))} \\,\\mathrm{d}x\n\nwhere :math:`f(p_x, x, t) = t_0 + p_x x` where\n:math:`p_x = \\sin(\\theta)/v` in linear mode,\n:math:`f(p_x, x, t) = t_0 + p_x x^2` in parabolic mode, and\n:math:`f(p_x, x, t) = \\sqrt{t_0^2 + x^2 / p_x^2}` in hyperbolic mode. Note\nthat internally the :math:`p_x` axis will be normalized by the ratio of the\nspatial and time axes and used alongside unitless axes. Whilst this makes\nthe linear mode fully unitless, users are required to apply additional\nscalings to the :math:`p_x` axis for other relationships:\n\n- :math:`p_x` should be pre-multipled by :math:`d_x` for the parabolic\n  relationship;\n- :math:`p_x` should be pre-multipled by :math:`(d_t/d_x)^2` for the\n  hyperbolic relationship.\n\nAs the adjoint operator can be interpreted as a repeated summation of sets\nof elements of the model vector along chosen parametric curves, the\nforward is implemented as spreading of values in the data vector along the\nsame parametric curves. This operator is actually a thin wrapper around\nthe :class:`pylops.Spread` operator.",
+   "examples": ""
+  },
+  "Radon3D": {
+   "name": "Radon3D",
+   "kind": "operator",
+   "module": "pylops.signalprocessing.radon3d",
+   "signature": "(taxis: NDArray[numpy.number], hyaxis: NDArray[numpy.number], hxaxis: NDArray[numpy.number], pyaxis: NDArray[numpy.number], pxaxis: NDArray[numpy.number], kind: Literal['linear', 'parabolic', 'hyperbolic'] = 'linear', centeredh: bool = True, interp: bool = True, onthefly: bool = False, engine: Literal['numpy', 'numba'] = 'numpy', dtype: DTypeLike = 'float64', name: str = 'R')",
+   "summary": "Three dimensional Radon transform.",
+   "parameters": [
+    {
+     "name": "taxis",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Time axis"
+    },
+    {
+     "name": "hyaxis",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Slow spatial axis"
+    },
+    {
+     "name": "hxaxis",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "False spatial axis"
+    },
+    {
+     "name": "pyaxis",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Axis of scanning variable :math:`p_y` of parametric curve"
+    },
+    {
+     "name": "pxaxis",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Axis of scanning variable :math:`p_x` of parametric curve"
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Curve to be used for stacking/spreading (``linear``, ``parabolic``, and ``hyperbolic`` are currently supported)"
+    },
+    {
+     "name": "centeredh",
+     "type": ":obj:`bool`, optional",
+     "desc": "Assume centered spatial axis (``True``) or not (``False``). If ``True`` the original ``haxis`` is ignored and a new axis is created."
+    },
+    {
+     "name": "interp",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply linear interpolation (``True``) or nearest interpolation (``False``) during stacking/spreading along parametric curve"
+    },
+    {
+     "name": "onthefly",
+     "type": ":obj:`bool`, optional",
+     "desc": "Compute stacking parametric curves on-the-fly as part of forward and adjoint modelling (``True``) or at initialization and store them in look-up table (``False``). Using a look-up table is computationally more efficient but increases the memory burden"
+    },
+    {
+     "name": "engine",
+     "type": ":obj:`str`, optional",
+     "desc": "Engine used for computation (``numpy`` or ``numba``)"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    }
+   ],
+   "notes": "The Radon3D operator applies the following linear transform in adjoint mode\nto the data after reshaping it into a 3-dimensional array of\nsize :math:`[n_y \\times n_x \\times n_t]` in adjoint mode:\n\n.. math::\n    m(p_y, p_x, t_0) = \\int{d(y, x, t = f(p_y, p_x, y, x, t))} \\,\\mathrm{d}x \\,\\mathrm{d}y\n\nwhere :math:`f(p_y, p_x, y, x, t) = t_0 + p_y y + p_x x` in linear\nmode, :math:`f(p_y, p_x, y, x, t) = t_0 + p_y y^2 + p_x x^2` in\nparabolic mode, and\n:math:`f(p_y, p_x, y, x, t) = \\sqrt{t_0^2 + y^2 / p_y^2 + x^2 / p_x^2}`\nin hyperbolic mode. Note that internally the :math:`p_x` and :math:`p_y`\naxes will be normalized by the ratio of the spatial and time axes and\nused alongside unitless axes. Whilst this makes the linear mode fully\nunitless, users are required to apply additional scalings to the :math:`p_x`\naxis for other relationships\n\n- :math:`p_x` should be pre-multipled by :math:`d_x / d_y` for the parabolic\n  relationship;\n- :math:`p_x` should be pre-multipled by :math:`(d_t/d_x)^2 / (d_t/d_y)^2`\n  for the hyperbolic relationship.\n\nAs the adjoint operator can be interpreted as a repeated summation of sets\nof elements of the model vector along chosen parametric curves, the\nforward is implemented as spreading of values in the data vector along the\nsame parametric curves. This operator is actually a thin wrapper around\nthe :class:`pylops.Spread` operator.",
+   "examples": ""
+  },
+  "MDC": {
+   "name": "MDC",
+   "kind": "operator",
+   "module": "pylops.waveeqprocessing.mdd",
+   "signature": "(G: NDArray[numpy.number], nt: int, nv: int, dt: float = 1.0, dr: float = 1.0, twosided: bool = True, fftengine: Literal['numpy', 'scipy', 'fftw'] = 'numpy', saveGt: bool = True, conj: bool = False, usematmul: bool = False, prescaled: bool = False, name: str = 'M', **kwargs_fft) -> pylops.linearoperator.LinearOperator",
+   "summary": "Multi-dimensional convolution.",
+   "parameters": [
+    {
+     "name": "G",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Multi-dimensional convolution kernel in frequency domain of size :math:`[n_{f_\\text{max}} \\times n_s \\times n_r]`"
+    },
+    {
+     "name": "nt",
+     "type": ":obj:`int`",
+     "desc": "Number of samples along time axis for model and data (note that this must be equal to :math:`2n_t-1` when working with ``twosided=True``."
+    },
+    {
+     "name": "nv",
+     "type": ":obj:`int`",
+     "desc": "Number of samples along virtual source axis"
+    },
+    {
+     "name": "dt",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling of time integration axis :math:`\\Delta t`"
+    },
+    {
+     "name": "dr",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling of receiver integration axis :math:`\\Delta r`"
+    },
+    {
+     "name": "twosided",
+     "type": ":obj:`bool`, optional",
+     "desc": "MDC operator has both negative and positive time (``True``) or only positive (``False``)"
+    },
+    {
+     "name": "fftengine",
+     "type": ":obj:`str`, optional",
+     "desc": "Engine used for fft computation (``numpy``, ``scipy`` or ``fftw``)"
+    },
+    {
+     "name": "saveGt",
+     "type": ":obj:`bool`, optional",
+     "desc": "Save ``G`` and ``G.H`` to speed up the computation of adjoint of :class:`pylops.signalprocessing.Fredholm1` (``True``) or create ``G.H`` on-the-fly (``False``) Note that ``saveGt=True`` will be faster but double the amount of required memory"
+    },
+    {
+     "name": "conj",
+     "type": ":obj:`str`, optional",
+     "desc": "Perform Fredholm integral computation with complex conjugate of ``G``"
+    },
+    {
+     "name": "usematmul",
+     "type": ":obj:`bool`, optional",
+     "desc": "Use :func:`numpy.matmul` (``True``) or for-loop with :func:`numpy.dot` (``False``) in :py:class:`pylops.signalprocessing.Fredholm1` operator. Refer to Fredholm1 documentation for details."
+    },
+    {
+     "name": "prescaled",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply scaling to kernel (``False``) or not (``False``) when performing spatial and temporal summations. In case ``prescaled=True``, the kernel is assumed to have been pre-scaled when passed to the MDC routine."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    },
+    {
+     "name": "**kwargs_fft",
+     "type": "",
+     "desc": ".. versionadded:: 2.6.0  Arbitrary keyword arguments to be passed to the selected fft method"
+    }
+   ],
+   "notes": "The so-called multi-dimensional convolution (MDC) is a chained\noperator [1]_. It is composed of a forward Fourier transform,\na multi-dimensional integration, and an inverse Fourier transform:\n\n.. math::\n    y(t, s, v) = \\mathscr{F}^{-1} \\Big( \\int_S G(f, s, r)\n    \\mathscr{F}(x(t, r, v))\\,\\mathrm{d}r \\Big)\n\nwhich is discretized as follows:\n\n.. math::\n    y(t, s, v) = \\sqrt{n_t} \\Delta t \\Delta r\\mathscr{F}^{-1} \\Big( \\sum_{i_r=0}^{n_r}\n    G(f, s, i_r) \\mathscr{F}(x(t, i_r, v)) \\Big)\n\nwhere :math:`\\sqrt{n_t} \\Delta t \\Delta r` is not applied if ``prescaled=True``.\n\nThis operation can be discretized and performed by means of a\nlinear operator\n\n.. math::\n    \\mathbf{D}= \\mathbf{F}^H  \\mathbf{G} \\mathbf{F}\n\nwhere :math:`\\mathbf{F}` is the Fourier transform applied along\nthe time axis and :math:`\\mathbf{G}` is the multi-dimensional\nconvolution kernel.\n\n.. [1] Wapenaar, K., van der Neut, J., Ruigrok, E., Draganov, D., Hunziker,\n   J., Slob, E., Thorbecke, J., and Snieder, R., \"Seismic interferometry\n   by crosscorrelation and by multi-dimensional deconvolution: a\n   systematic comparison\", Geophysical Journal International, vol. 185,\n   pp. 1335-1364. 2011.",
+   "examples": ""
+  },
+  "PressureToVelocity": {
+   "name": "PressureToVelocity",
+   "kind": "operator",
+   "module": "pylops.waveeqprocessing.wavedecomposition",
+   "signature": "(nt: int, nr: int, dt: float, dr: float, rho: float, vel: float, nffts: collections.abc.Sequence[int] | NDArray[numpy.integer] | tuple[None, None, None] = (None, None, None), critical: float = 100.0, ntaper: int = 10, topressure: bool = False, backend: Literal['numpy', 'cupy', 'jax'] = 'numpy', dtype: DTypeLike = 'complex128', name: str = 'P') -> pylops.linearoperator.LinearOperator",
+   "summary": "Pressure to Vertical velocity conversion.",
+   "parameters": [
+    {
+     "name": "nt",
+     "type": ":obj:`int`",
+     "desc": "Number of samples along the time axis"
+    },
+    {
+     "name": "nr",
+     "type": ":obj:`int` or :obj:`tuple`",
+     "desc": "Number of samples along the receiver axis (or axes)"
+    },
+    {
+     "name": "dt",
+     "type": ":obj:`float`",
+     "desc": "Sampling along the time axis"
+    },
+    {
+     "name": "dr",
+     "type": ":obj:`float` or :obj:`tuple`",
+     "desc": "Sampling(s) along the receiver array"
+    },
+    {
+     "name": "rho",
+     "type": ":obj:`float`",
+     "desc": "Density :math:`\\rho` along the receiver array (must be constant)"
+    },
+    {
+     "name": "vel",
+     "type": ":obj:`float`",
+     "desc": "Velocity :math:`c` along the receiver array (must be constant)"
+    },
+    {
+     "name": "nffts",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Number of samples along the wavenumber and frequency axes"
+    },
+    {
+     "name": "critical",
+     "type": ":obj:`float`, optional",
+     "desc": "Percentage of angles to retain in obliquity factor. For example, if ``critical=100`` only angles below the critical angle :math:`\\sqrt{k_y^2 + k_x^2} < \\frac{\\omega}{c}` will be retained"
+    },
+    {
+     "name": "ntaper",
+     "type": ":obj:`float`, optional",
+     "desc": "Number of samples of taper applied to obliquity factor around critical angle"
+    },
+    {
+     "name": "topressure",
+     "type": ":obj:`bool`, optional",
+     "desc": "Perform conversion from particle velocity to pressure (``True``) or from pressure to particle velocity (``False``)"
+    },
+    {
+     "name": "backend",
+     "type": ":obj:`str`, optional",
+     "desc": "Backend used for creation of obliquity factor operator (``numpy`` or ``cupy``)"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    }
+   ],
+   "notes": "A pressure wavefield :math:`p(x, t)` can be converted into an equivalent\nvertical particle velocity wavefield :math:`v_z(x, t)` by applying\nthe following frequency-wavenumber dependant scaling [1]_:\n\n.. math::\n    \\hat{v}_z(k_x, \\omega) = \\frac{k_z}{\\omega \\rho} \\hat{p}(k_x, \\omega)\n\nwhere the vertical wavenumber :math:`k_z` is defined as\n:math:`k_z=\\sqrt{\\frac{\\omega^2}{c^2} - k_x^2}`.\n\nSimilarly a vertical particle velocity can be converted into an equivalent\npressure wavefield by applying the following frequency-wavenumber\ndependant scaling [1]_:\n\n.. math::\n    \\hat{p}(k_x, \\omega) = \\frac{\\omega \\rho}{k_z} \\hat{v}_z(k_x, \\omega)\n\nFor 3-dimensional applications the only difference is represented\nby the vertical wavenumber :math:`k_z`, which is defined as\n:math:`k_z=\\sqrt{\\frac{\\omega^2}{c^2} - k_x^2 - k_y^2}`.\n\nIn both cases, this operator is implemented as a concatanation of\na 2 or 3-dimensional forward FFT (:class:`pylops.signalprocessing.FFT2` or\n:class:`pylops.signalprocessing.FFTN`), a weighting matrix implemented via\n:class:`pylops.basicprocessing.Diagonal`, and  2 or 3-dimensional inverse\nFFT.\n\n.. [1] Wapenaar, K. \"Reciprocity properties of one-way propagators\",\n   Geophysics, vol. 63, pp. 1795-1798. 1998.",
+   "examples": ""
+  },
+  "UpDownComposition2D": {
+   "name": "UpDownComposition2D",
+   "kind": "operator",
+   "module": "pylops.waveeqprocessing.wavedecomposition",
+   "signature": "(nt: int, nr: int, dt: float, dr: float, rho: float, vel: float, nffts: collections.abc.Sequence[int] | NDArray[numpy.integer] | tuple[None, None] = (None, None), critical: float = 100.0, ntaper: int = 10, scaling: float = 1.0, backend: Literal['numpy', 'cupy', 'jax'] = 'numpy', dtype: DTypeLike = 'complex128', name: str = 'U') -> pylops.linearoperator.LinearOperator",
+   "summary": "2D Up-down wavefield composition.",
+   "parameters": [
+    {
+     "name": "nt",
+     "type": ":obj:`int`",
+     "desc": "Number of samples along the time axis"
+    },
+    {
+     "name": "nr",
+     "type": ":obj:`int`",
+     "desc": "Number of samples along the receiver axis"
+    },
+    {
+     "name": "dt",
+     "type": ":obj:`float`",
+     "desc": "Sampling along the time axis"
+    },
+    {
+     "name": "dr",
+     "type": ":obj:`float`",
+     "desc": "Sampling along the receiver array"
+    },
+    {
+     "name": "rho",
+     "type": ":obj:`float`",
+     "desc": "Density :math:`\\rho` along the receiver array (must be constant)"
+    },
+    {
+     "name": "vel",
+     "type": ":obj:`float`",
+     "desc": "Velocity :math:`c` along the receiver array (must be constant)"
+    },
+    {
+     "name": "nffts",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Number of samples along the wavenumber and frequency axes"
+    },
+    {
+     "name": "critical",
+     "type": ":obj:`float`, optional",
+     "desc": "Percentage of angles to retain in obliquity factor. For example, if ``critical=100`` only angles below the critical angle :math:`|k_x| < \\frac{f(k_x)}{c}` will be retained will be retained"
+    },
+    {
+     "name": "ntaper",
+     "type": ":obj:`float`, optional",
+     "desc": "Number of samples of taper applied to obliquity factor around critical angle"
+    },
+    {
+     "name": "scaling",
+     "type": ":obj:`float`, optional",
+     "desc": "Scaling to apply to the operator (see Notes for more details)"
+    },
+    {
+     "name": "backend",
+     "type": ":obj:`str`, optional",
+     "desc": "Backend used for creation of obliquity factor operator (``numpy`` or ``cupy``)"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    }
+   ],
+   "notes": "Multi-component seismic data :math:`p(x, t)` and :math:`v_z(x, t)` can be\nsynthesized in the frequency-wavenumber domain\nas the superposition of the up- and downgoing constituents of\nthe pressure wavefield (:math:`p^-(x, t)` and :math:`p^+(x, t)`)\nas follows [1]_:\n\n.. math::\n    \\begin{bmatrix}\n        \\hat{p}  \\\\\n        \\hat{v_z}\n    \\end{bmatrix}(k_x, \\omega) =\n    \\begin{bmatrix}\n        1  & 1 \\\\\n        \\frac{k_z}{\\omega \\rho}  & - \\frac{k_z}{\\omega \\rho}  \\\\\n    \\end{bmatrix}\n    \\begin{bmatrix}\n        \\hat{p^+}  \\\\\n        \\hat{p^-}\n    \\end{bmatrix}(k_x, \\omega)\n\nwhere the vertical wavenumber :math:`k_z` is defined as\n:math:`k_z=\\sqrt{\\frac{\\omega^2}{c^2} - k_x^2}`.\n\nWe can write the entire composition process in a compact\nmatrix-vector notation as follows:\n\n.. math::\n    \\begin{bmatrix}\n        \\mathbf{p}  \\\\\n        s\\mathbf{v_z}\n    \\end{bmatrix} =\n    \\begin{bmatrix}\n        \\mathbf{F} & 0 \\\\\n        0 & s\\mathbf{F}\n    \\end{bmatrix} \\begin{bmatrix}\n        \\mathbf{I} & \\mathbf{I} \\\\\n        \\mathbf{W}^+ & \\mathbf{W}^-\n    \\end{bmatrix} \\begin{bmatrix}\n        \\mathbf{F}^H & 0 \\\\\n        0 & \\mathbf{F}^H\n    \\end{bmatrix}  \\mathbf{p^{\\pm}}\n\nwhere :math:`\\mathbf{F}` is the 2-dimensional FFT\n(:class:`pylops.signalprocessing.FFT2`),\n:math:`\\mathbf{W}^\\pm` are weighting matrices which contain the scalings\n:math:`\\pm \\frac{k_z}{\\omega \\rho}` implemented via\n:class:`pylops.basicprocessing.Diagonal`, and :math:`s` is a scaling\nfactor that is applied to both the particle velocity data and to the\noperator has shown above. Such a scaling is required to balance out the\ndifferent dynamic range of pressure and particle velocity when solving the\nwavefield separation problem as an inverse problem.\n\nAs the operator is effectively obtained by chaining basic PyLops operators\nthe adjoint is automatically implemented for this operator.\n\n.. [1] Wapenaar, K. \"Reciprocity properties of one-way propagators\",\n   Geophysics, vol. 63, pp. 1795-1798. 1998.",
+   "examples": ""
+  },
+  "UpDownComposition3D": {
+   "name": "UpDownComposition3D",
+   "kind": "operator",
+   "module": "pylops.waveeqprocessing.wavedecomposition",
+   "signature": "(nt: int, nr: int, dt: float, dr: float, rho: float, vel: float, nffts: collections.abc.Sequence[int] | NDArray[numpy.integer] | tuple[None, None, None] = (None, None, None), critical: float = 100.0, ntaper: int = 10, scaling: float = 1.0, fftengine: Literal['numpy', 'scipy'] = 'scipy', backend: Literal['numpy', 'cupy', 'jax'] = 'numpy', dtype: DTypeLike = 'complex128', name: str = 'U') -> pylops.linearoperator.LinearOperator",
+   "summary": "3D Up-down wavefield composition.",
+   "parameters": [
+    {
+     "name": "nt",
+     "type": ":obj:`int`",
+     "desc": "Number of samples along the time axis"
+    },
+    {
+     "name": "nr",
+     "type": ":obj:`tuple`",
+     "desc": "Number of samples along the receiver axes"
+    },
+    {
+     "name": "dt",
+     "type": ":obj:`float`",
+     "desc": "Sampling along the time axis"
+    },
+    {
+     "name": "dr",
+     "type": ":obj:`tuple`",
+     "desc": "Samplings along the receiver array"
+    },
+    {
+     "name": "rho",
+     "type": ":obj:`float`",
+     "desc": "Density :math:`\\rho` along the receiver array (must be constant)"
+    },
+    {
+     "name": "vel",
+     "type": ":obj:`float`",
+     "desc": "Velocity :math:`c` along the receiver array (must be constant)"
+    },
+    {
+     "name": "nffts",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Number of samples along the wavenumbers and frequency axes (for the wavenumbers axes the same order as ``nr`` and ``dr`` must be followed)"
+    },
+    {
+     "name": "critical",
+     "type": ":obj:`float`, optional",
+     "desc": "Percentage of angles to retain in obliquity factor. For example, if ``critical=100`` only angles below the critical angle :math:`\\sqrt{k_y^2 + k_x^2} < \\frac{\\omega}{c}` will be retained"
+    },
+    {
+     "name": "ntaper",
+     "type": ":obj:`float`, optional",
+     "desc": "Number of samples of taper applied to obliquity factor around critical angle"
+    },
+    {
+     "name": "scaling",
+     "type": ":obj:`float`, optional",
+     "desc": "Scaling to apply to the operator (see Notes for more details)"
+    },
+    {
+     "name": "fftengine",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.3.0  Engine used for fft computation (``numpy`` or ``scipy``). Choose ``numpy`` when working with cupy and jax arrays."
+    },
+    {
+     "name": "backend",
+     "type": ":obj:`str`, optional",
+     "desc": "Backend used for creation of obliquity factor operator (``numpy`` or ``cupy``)"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    }
+   ],
+   "notes": "Multi-component seismic data :math:`p(y, x, t)` and :math:`v_z(y, x, t)`\ncan be synthesized in the frequency-wavenumber domain\nas the superposition of the up- and downgoing constituents of\nthe pressure wavefield (:math:`p^-(y, x, t)` and :math:`p^+(y, x, t)`)\nas described :class:`pylops.waveeqprocessing.UpDownComposition2D`.\n\nHere the vertical wavenumber :math:`k_z` is defined as\n:math:`k_z=\\sqrt{\\frac{\\omega^2}{c^2} - k_y^2 - k_x^2}`.",
+   "examples": ""
+  },
+  "PhaseShift": {
+   "name": "PhaseShift",
+   "kind": "operator",
+   "module": "pylops.waveeqprocessing.oneway",
+   "signature": "(vel: float, dz: float, nt: int, freq: NDArray[numpy.number], kx: NDArray[numpy.number], ky: NDArray[numpy.number] | None = None, dtype: DTypeLike = 'float64', name: str = 'P', fftengine: Literal['numpy', 'scipy', 'fftw'] = 'numpy', **kwargs_fft) -> pylops.linearoperator.LinearOperator",
+   "summary": "Phase shift operator",
+   "parameters": [
+    {
+     "name": "vel",
+     "type": ":obj:`float`, optional",
+     "desc": "Constant propagation velocity"
+    },
+    {
+     "name": "dz",
+     "type": ":obj:`float`, optional",
+     "desc": "Depth step"
+    },
+    {
+     "name": "nt",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of time samples of model and data"
+    },
+    {
+     "name": "freq",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Positive frequency axis"
+    },
+    {
+     "name": "kx",
+     "type": ":obj:`int`, optional",
+     "desc": "Horizontal spectroscopic wavenumber axis (centered around 0) of size :math:`[n_x \\times 1]`."
+    },
+    {
+     "name": "ky",
+     "type": ":obj:`int`, optional",
+     "desc": "Second horizontal spectroscopic wavenumber axis for 3d phase shift (centered around 0) of size :math:`[n_y \\times 1]`."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array"
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    },
+    {
+     "name": "fftengine",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.6.0  Engine used for fft computation (``numpy``, ``scipy``, or ``fftw``). Choose ``numpy`` when working with CuPy arrays."
+    },
+    {
+     "name": "**kwargs_fft",
+     "type": "",
+     "desc": ".. versionadded:: 2.6.0  Arbitrary keyword arguments to be passed to the selected fft method"
+    }
+   ],
+   "notes": "The phase shift operator implements a one-way wave equation forward\npropagation in frequency-wavenumber domain by applying the following\ntransformation to the input model:\n\n.. math::\n    d(f, k_x, k_y) = m(f, k_x, k_y)\n    e^{-j \\Delta z \\sqrt{\\omega^2/v^2 - k_x^2 - k_y^2}}\n\nwhere :math:`v` is the constant propagation velocity,\n:math:`\\Delta z` is the propagation depth, :math:`\\omega=2\\pi f` is the\nangular frequency axis (where :math:`f` is represented by ``freq``),\n:math:`k_x=2\\pi \\tilde{k}_x` is the horizontal wavenumber (where\n:math:`\\tilde{k}_x` is represented by ``kx``), and :math:`k_y=2\\pi \\tilde{k}_y`\nis the second horizontal wavenumber (where :math:`\\tilde{k}_y`\nis represented by ``ky``). In adjoint mode, the data is propagated backward\nusing the following transformation:\n\n.. math::\n    m(f, k_x, k_y) = d(f, k_x, k_y)\n    e^{j \\Delta z \\sqrt{\\omega^2/v^2 - k_x^2 - k_y^2}}\n\nEffectively, the input model and data are assumed to be in time-space\ndomain and forward Fourier transform is applied to both dimensions, leading\nto the following operator:\n\n.. math::\n    \\mathbf{d} = \\mathbf{F}^H_t \\mathbf{F}^H_x  \\mathbf{P}\n        \\mathbf{F}_x \\mathbf{F}_t \\mathbf{m}\n\nwhere :math:`\\mathbf{P}` perfoms the phase-shift as discussed above.",
+   "examples": ""
+  },
+  "BlendingGroup": {
+   "name": "BlendingGroup",
+   "kind": "operator",
+   "module": "pylops.waveeqprocessing.blending",
+   "signature": "(nt: int, nr: int, ns: int, dt: float, times: NDArray[numpy.number], group_size: int, n_groups: int, nproc: int = 1, dtype: DTypeLike = 'float64', name: str = 'B', **kwargs_fft) -> pylops.linearoperator.LinearOperator",
+   "summary": "Group blending operator",
+   "parameters": [
+    {
+     "name": "nt",
+     "type": ":obj:`int`",
+     "desc": "Number of time samples"
+    },
+    {
+     "name": "nr",
+     "type": ":obj:`int`",
+     "desc": "Number of receivers"
+    },
+    {
+     "name": "ns",
+     "type": ":obj:`int`",
+     "desc": "Number of sources. Equal to :math:`group_{size} \\cdot n_{groups}`"
+    },
+    {
+     "name": "dt",
+     "type": ":obj:`float`",
+     "desc": "Time sampling in seconds"
+    },
+    {
+     "name": "times",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Absolute ignition times for each source. This should have dimensions :math:`group_{size} \\times n_{groups}`, where each column contains the firing times for every group."
+    },
+    {
+     "name": "group_size",
+     "type": ":obj:`int`",
+     "desc": "The number of sources per group"
+    },
+    {
+     "name": "n_groups",
+     "type": ":obj:`int`",
+     "desc": "The number of groups"
+    },
+    {
+     "name": "nproc",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of processors used when applying operator"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Operator dtype"
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": "Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    },
+    {
+     "name": "**kwargs_fft",
+     "type": "",
+     "desc": ".. versionadded:: 2.6.0  Arbitrary keyword arguments to be passed to the Shift operator"
+    }
+   ],
+   "notes": "Simultaneous shooting or blending is the process of acquiring seismic data firing consecutive sources\nat short time intervals (shorter than the time requires for all significant waves to come back from the Earth\ninterior).\n\nGroup blending refers to an acquisition scenario where two or more sources are towed behind a single vessel\nand fired at short time differences. The same experiment is repeated :math:`n_{groups}` times to create\n:math:`n_{groups}` blended recordings. For the case of 2 sources and an overall number of\n:math:`N=2*n_{groups}` shots, the modelling operator is\n\n.. math::\n    \\Phi = \\begin{bmatrix}\n    \\Phi_1     & \\Phi_2      & \\mathbf{0} & \\mathbf{0} & ... & \\mathbf{0} & \\mathbf{0}  \\\\\n    \\mathbf{0} & \\mathbf{0}  & \\Phi_3     & \\Phi_4     & ... & \\mathbf{0} & \\mathbf{0}  \\\\\n    ...        & ...         & ...        & ...        & ... & ...        & ...  \\\\\n    \\mathbf{0} & \\mathbf{0}  & \\mathbf{0} & \\mathbf{0} & ... & \\Phi_{N-1} & \\Phi_{N}\n    \\end{bmatrix}\n\nwhere each :math:`\\Phi_i` operator applies a time-shift equal to the absolute ignition time provided in the\nvariable ``times``.",
+   "examples": ""
+  },
+  "BlendingHalf": {
+   "name": "BlendingHalf",
+   "kind": "operator",
+   "module": "pylops.waveeqprocessing.blending",
+   "signature": "(nt: int, nr: int, ns: int, dt: float, times: NDArray[numpy.number], group_size: int, n_groups: int, nproc: int = 1, dtype: DTypeLike = 'float64', name: str = 'B', **kwargs_fft) -> pylops.linearoperator.LinearOperator",
+   "summary": "Half blending operator",
+   "parameters": [
+    {
+     "name": "nt",
+     "type": ":obj:`int`",
+     "desc": "Number of time samples"
+    },
+    {
+     "name": "nr",
+     "type": ":obj:`int`",
+     "desc": "Number of receivers"
+    },
+    {
+     "name": "ns",
+     "type": ":obj:`int`",
+     "desc": "Number of sources. Equal to :math:`group_{size} \\cdot n_{groups}`"
+    },
+    {
+     "name": "dt",
+     "type": ":obj:`float`",
+     "desc": "Time sampling in seconds"
+    },
+    {
+     "name": "times",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Absolute ignition times for each source. This should have dimensions :math:`group_{size} \\times n_{groups}`, where each column contains the firing times for every group."
+    },
+    {
+     "name": "group_size",
+     "type": ":obj:`int`",
+     "desc": "The number of sources per group"
+    },
+    {
+     "name": "n_groups",
+     "type": ":obj:`int`",
+     "desc": "The number of groups"
+    },
+    {
+     "name": "nproc",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of processors used when applying operator"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Operator dtype"
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": "Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    },
+    {
+     "name": "**kwargs_fft",
+     "type": "",
+     "desc": ".. versionadded:: 2.6.0  Arbitrary keyword arguments to be passed to the Shift operator"
+    }
+   ],
+   "notes": "Simultaneous shooting or blending is the process of acquiring seismic data firing consecutive sources\nat short time intervals (shorter than the time requires for all significant waves to come back from the Earth\ninterior).\n\nHalf blending refers to an acquisition scenario where two or more vessels, each with a source are fired at\nshort time differences. The same experiment is repeated :math:`n_{groups}` times to create :math:`n_{groups}`\nblended recordings. For the case of 2 sources and an overall number of :math:`N=2*n_{groups}` shots\n\n.. math::\n    \\Phi = \\begin{bmatrix}\n    \\Phi_1     & \\mathbf{0}   & \\mathbf{0}    & ...          & \\Phi_{N/2}  & \\mathbf{0}   & \\mathbf{0}    &  \\\\\n    \\mathbf{0} & \\Phi_2       & \\mathbf{0}    &              & \\mathbf{0}  & \\Phi_{N/2+1} & \\mathbf{0}  \\\\\n    ...        & ...          & ...           & ...          & ...         & ...          & ...  \\\\\n    \\mathbf{0} & \\mathbf{0}   & \\mathbf{0}    & \\Phi_{N/2-1} & \\mathbf{0}  & \\mathbf{0}   & \\Phi_{N} \\\\\n    \\end{bmatrix}\n\nwhere each :math:`\\Phi_i` operator applies a time-shift equal to the absolute ignition time provided in the\nvariable ``times``.",
+   "examples": ""
+  },
+  "PoststackLinearModelling": {
+   "name": "PoststackLinearModelling",
+   "kind": "operator",
+   "module": "pylops.avo.poststack",
+   "signature": "(wav: NDArray[numpy.number], nt0: int, spatdims: int | tuple[int, ...] | None = None, explicit: bool = False, sparse: bool = False, kind: Literal['centered', 'forward'] = 'centered', name: str | None = None) -> pylops.linearoperator.LinearOperator",
+   "summary": "Post-stack linearized seismic modelling operator.",
+   "parameters": [
+    {
+     "name": "wav",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Wavelet in time domain (must have odd number of elements and centered to zero). If 1d, assume stationary wavelet for the entire time axis. If 2d, use as non-stationary wavelet (user must provide one wavelet per time sample in an array of size :math:`[n_{t_0} \\times n_\\text{wav}]` where :math:`n_\\text{wav}` is the length of each wavelet). Note that the ``dtype`` of this variable will define that of the operator"
+    },
+    {
+     "name": "nt0",
+     "type": ":obj:`int`",
+     "desc": "Number of samples along time axis"
+    },
+    {
+     "name": "spatdims",
+     "type": ":obj:`int` or :obj:`tuple`, optional",
+     "desc": "Number of samples along spatial axis (or axes) (``None`` if only one dimension is available)"
+    },
+    {
+     "name": "explicit",
+     "type": ":obj:`bool`, optional",
+     "desc": "Create a chained linear operator (``False``, preferred for large data) or a ``MatrixMult`` linear operator with dense matrix (``True``, preferred for small data)"
+    },
+    {
+     "name": "sparse",
+     "type": ":obj:`bool`, optional",
+     "desc": "Create a sparse matrix (``True``) or dense  (``False``) when ``explicit=True``"
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Derivative kind (``centered`` or ``forward``)."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    }
+   ],
+   "notes": "Post-stack seismic modelling is the process of constructing seismic\npost-stack data from a profile of an elastic parameter of choice in time\n(or depth) domain. This can be easily achieved using the following\nforward model:\n\n.. math::\n    d(t, \\theta=0) =  w(t) * \\frac{\\mathrm{d}\\ln m(t)}{\\mathrm{d}t}\n\nwhere :math:`m(t)` is the elastic parameter profile and\n:math:`w(t)` is the time domain seismic wavelet. In compact form:\n\n.. math::\n    \\mathbf{d}= \\mathbf{W} \\mathbf{D} \\mathbf{m}\n\nIn the special case of acoustic impedance (:math:`m(t)=AI(t)`), the\nmodelling operator can be used to create zero-offset data:\n\n.. math::\n    d(t, \\theta=0) = \\frac{1}{2} w(t) * \\frac{\\mathrm{d}\\ln m(t)}{\\mathrm{d}t}\n\nwhere the scaling factor :math:`\\frac{1}{2}` can be easily included in\nthe wavelet.",
+   "examples": ""
+  },
+  "PrestackWaveletModelling": {
+   "name": "PrestackWaveletModelling",
+   "kind": "operator",
+   "module": "pylops.avo.prestack",
+   "signature": "(m: NDArray[numpy.number], theta: NDArray[numpy.number], nwav: int, wavc: int | None = None, vsvp: float | NDArray[numpy.number] = 0.5, linearization: Union[Literal['akirich', 'fatti', 'PS'], collections.abc.Callable] = 'akirich', name: str | None = None) -> pylops.linearoperator.LinearOperator",
+   "summary": "Pre-stack linearized seismic modelling operator for wavelet.",
+   "parameters": [
+    {
+     "name": "m",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "elastic parameter profles of size :math:`[n_{t_0} \\times N]` where :math:`N=3,\\,2`. Note that the ``dtype`` of this variable will define that of the operator"
+    },
+    {
+     "name": "theta",
+     "type": ":obj:`int`",
+     "desc": "Incident angles in degrees. Must have same ``dtype`` of ``m`` (or it will be automatically cast to it)"
+    },
+    {
+     "name": "nwav",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Number of samples of wavelet to be applied/estimated"
+    },
+    {
+     "name": "wavc",
+     "type": ":obj:`int`, optional",
+     "desc": "Index of the center of the wavelet"
+    },
+    {
+     "name": "vsvp",
+     "type": ":obj:`numpy.ndarray` or :obj:`float`, optional",
+     "desc": ":math:`V_S/V_P` ratio"
+    },
+    {
+     "name": "linearization",
+     "type": "`{\"akirich\", \"fatti\", \"PS\"}` or :obj:`callable`, optional",
+     "desc": "* \"akirich\": Aki-Richards. See :py:func:`pylops.avo.avo.akirichards`.  * \"fatti\": Fatti. See :py:func:`pylops.avo.avo.fatti`.  * \"PS\": PS. See :py:func:`pylops.avo.avo.ps`.  * Function with the same signature as :py:func:`pylops.avo.avo.akirichards`"
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    }
+   ],
+   "notes": "Pre-stack seismic modelling for wavelet estimate is the process\nof constructing seismic reflectivities using three (or two)\nprofiles of elastic parameters in time (or depth)\ndomain arranged in an input vector :math:`\\mathbf{m}`\nof size :math:`n_{t_0} \\times N`:\n\n.. math::\n    d(t, \\theta) =  \\sum_{i=1}^N G_i(t, \\theta) m_i(t) * w(t)\n\nwhere :math:`w(t)` is the time domain seismic wavelet. In compact form:\n\n.. math::\n    \\mathbf{d}= \\mathbf{G} \\mathbf{w}\n\nOn the other hand, pre-stack wavelet estimation aims at\nrecovering the wavelet given knowledge of the band-limited\nseismic pre-stack data and the elastic parameter profiles.",
+   "examples": ""
+  },
+  "PrestackLinearModelling": {
+   "name": "PrestackLinearModelling",
+   "kind": "operator",
+   "module": "pylops.avo.prestack",
+   "signature": "(wav: NDArray[numpy.number], theta: NDArray[numpy.number], vsvp: float | NDArray[numpy.number] = 0.5, nt0: int = 1, spatdims: int | tuple[int, ...] | None = None, linearization: Literal['akirich', 'fatti', 'PS'] = 'akirich', explicit: bool = False, kind: Literal['centered', 'forward'] = 'centered', name: str | None = None) -> pylops.linearoperator.LinearOperator",
+   "summary": "Pre-stack linearized seismic modelling operator.",
+   "parameters": [
+    {
+     "name": "wav",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Wavelet in time domain (must had odd number of elements and centered to zero). Note that the ``dtype`` of this variable will define that of the operator"
+    },
+    {
+     "name": "theta",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Incident angles in degrees. Must have same ``dtype`` of ``wav`` (or it will be automatically casted to it)"
+    },
+    {
+     "name": "vsvp",
+     "type": ":obj:`float` or :obj:`numpy.ndarray`",
+     "desc": ":math:`V_S/V_P` ratio (constant or time/depth variant)"
+    },
+    {
+     "name": "nt0",
+     "type": ":obj:`int`, optional",
+     "desc": "number of samples (if ``vsvp`` is a scalar)"
+    },
+    {
+     "name": "spatdims",
+     "type": ":obj:`int` or :obj:`tuple`, optional",
+     "desc": "Number of samples along spatial axis (or axes) (``None`` if only one dimension is available)"
+    },
+    {
+     "name": "linearization",
+     "type": "`{\"akirich\", \"fatti\", \"PS\"}` or :obj:`callable`, optional",
+     "desc": "* \"akirich\": Aki-Richards. See :py:func:`pylops.avo.avo.akirichards`.  * \"fatti\": Fatti. See :py:func:`pylops.avo.avo.fatti`.  * \"PS\": PS. See :py:func:`pylops.avo.avo.ps`.  * Function with the same signature as :py:func:`pylops.avo.avo.akirichards`"
+    },
+    {
+     "name": "explicit",
+     "type": ":obj:`bool`, optional",
+     "desc": "Create a chained linear operator (``False``, preferred for large data) or a ``MatrixMult`` linear operator with dense matrix (``True``, preferred for small data)"
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Derivative kind (``centered`` or ``forward``)."
+    },
+    {
+     "name": "name",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.0.0  Name of operator (to be used by :func:`pylops.utils.describe.describe`)"
+    }
+   ],
+   "notes": "Pre-stack seismic modelling is the process of constructing seismic\npre-stack data from three (or two) profiles of elastic parameters in time\n(or depth) domain. This can be easily achieved using the following\nforward model:\n\n.. math::\n    d(t, \\theta) = w(t) * \\sum_{i=1}^{n_m} G_i(t, \\theta) m_i(t)\n\nwhere :math:`w(t)` is the time domain seismic wavelet. In compact form:\n\n.. math::\n    \\mathbf{d}= \\mathbf{G} \\mathbf{m}\n\nOn the other hand, pre-stack inversion aims at recovering the different\nprofiles of elastic properties from the band-limited seismic\npre-stack data.",
+   "examples": ""
   }
  },
  "solvers": {
@@ -4130,6 +5232,559 @@
     }
    ],
    "notes": "See :class:`pylops.optimization.cls_sparsity.SPGL1`",
+   "examples": ""
+  }
+ },
+ "workflows": {
+  "MDD": {
+   "name": "MDD",
+   "kind": "workflow",
+   "module": "pylops.waveeqprocessing.mdd",
+   "signature": "(G: NDArray[numpy.number], d: NDArray[numpy.number], dt: float = 0.004, dr: float = 1.0, nfmax: int | None = None, wav: NDArray[numpy.number] | None = None, twosided: bool = True, causality_precond: bool = False, adjoint: bool = False, psf: bool = False, dottest: bool = False, saveGt: bool = True, add_negative: bool = True, smooth_precond: int = 0, fftengine: Literal['numpy', 'scipy', 'fftw'] = 'numpy', **kwargs_solver) -> tuple[NDArray[numpy.number], NDArray[numpy.number]] | tuple[NDArray[numpy.number], NDArray[numpy.number], NDArray[numpy.number]] | tuple[NDArray[numpy.number], NDArray[numpy.number], NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Multi-dimensional deconvolution.",
+   "parameters": [
+    {
+     "name": "G",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Multi-dimensional convolution kernel in time domain of size :math:`[n_s \\times n_r \\times n_t]` for ``twosided=False`` or ``twosided=True`` and ``add_negative=True`` (with only positive times) or size :math:`[n_s \\times n_r \\times 2n_t-1]` for ``twosided=True`` and ``add_negative=False`` (with both positive and negative times)"
+    },
+    {
+     "name": "d",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Data in time domain :math:`[n_s \\,(\\times n_{vs}) \\times n_t]` if ``twosided=False`` or ``twosided=True`` and ``add_negative=True`` (with only positive times) or size :math:`[n_s \\,(\\times n_{vs}) \\times 2n_t-1]` if ``twosided=True``"
+    },
+    {
+     "name": "dt",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling of time integration axis"
+    },
+    {
+     "name": "dr",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling of receiver integration axis"
+    },
+    {
+     "name": "nfmax",
+     "type": ":obj:`int`, optional",
+     "desc": "Index of max frequency to include in deconvolution process"
+    },
+    {
+     "name": "wav",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Wavelet to convolve to the inverted model and psf (must be centered around its index in the middle of the array). If ``None``, the outputs of the inversion are returned directly."
+    },
+    {
+     "name": "twosided",
+     "type": ":obj:`bool`, optional",
+     "desc": "MDC operator and data both negative and positive time (``True``) or only positive (``False``)"
+    },
+    {
+     "name": "add_negative",
+     "type": ":obj:`bool`, optional",
+     "desc": "Add negative side to MDC operator and data (``True``) or not (``False``)- operator and data are already provided with both positive and negative sides. To be used only with ``twosided=True``."
+    },
+    {
+     "name": "causality_precond",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply causality mask (``True``) or not (``False``)"
+    },
+    {
+     "name": "smooth_precond",
+     "type": ":obj:`int`, optional",
+     "desc": "Lenght of smoothing to apply to causality preconditioner"
+    },
+    {
+     "name": "adjoint",
+     "type": ":obj:`bool`, optional",
+     "desc": "Compute and return adjoint(s)"
+    },
+    {
+     "name": "psf",
+     "type": ":obj:`bool`, optional",
+     "desc": "Compute and return Point Spread Function (PSF) and its inverse"
+    },
+    {
+     "name": "dottest",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply dot-test"
+    },
+    {
+     "name": "saveGt",
+     "type": ":obj:`bool`, optional",
+     "desc": "Save ``G`` and ``G.H`` to speed up the computation of adjoint of :class:`pylops.signalprocessing.Fredholm1` (``True``) or create ``G.H`` on-the-fly (``False``) Note that ``saveGt=True`` will be faster but double the amount of required memory"
+    },
+    {
+     "name": "fftengine",
+     "type": ":obj:`str`, optional",
+     "desc": "Engine used for fft computation (``numpy``, ``scipy`` or ``fftw``)"
+    },
+    {
+     "name": "**kwargs_solver",
+     "type": "",
+     "desc": "Arbitrary keyword arguments for chosen solver (:py:func:`scipy.sparse.linalg.cg` and :py:func:`pylops.optimization.solver.cg` are used as default for numpy and cupy `data`, respectively)"
+    }
+   ],
+   "notes": "Multi-dimensional deconvolution (MDD) is a mathematical ill-solved problem,\nwell-known in the image processing and geophysical community [1]_.\n\nMDD aims at removing the effects of a Multi-dimensional Convolution\n(MDC) kernel or the so-called blurring operator or point-spread\nfunction (PSF) from a given data. It can be written as\n\n.. math::\n    \\mathbf{d}= \\mathbf{D} \\mathbf{m}\n\nor, equivalently, by means of its normal equation\n\n.. math::\n    \\mathbf{m}= (\\mathbf{D}^H\\mathbf{D})^{-1} \\mathbf{D}^H\\mathbf{d}\n\nwhere :math:`\\mathbf{D}^H\\mathbf{D}` is the PSF.\n\n.. [1] Wapenaar, K., van der Neut, J., Ruigrok, E., Draganov, D., Hunziker,\n   J., Slob, E., Thorbecke, J., and Snieder, R., \"Seismic interferometry\n   by crosscorrelation and by multi-dimensional deconvolution: a\n   systematic comparison\", Geophyscial Journal International, vol. 185,\n   pp. 1335-1364. 2011.",
+   "examples": ""
+  },
+  "SeismicInterpolation": {
+   "name": "SeismicInterpolation",
+   "kind": "workflow",
+   "module": "pylops.waveeqprocessing.seismicinterpolation",
+   "signature": "(data: NDArray[numpy.number], nrec: int | tuple[int, int], iava: list[int | float] | NDArray[numpy.number], iava1: list[int | float] | NDArray[numpy.number] | None = None, kind: Literal['fk', 'spatial', 'radon-linear', 'radon-parabolic', 'radon-hyperbolic', 'chirpradon-linear', 'sliding', 'chirp-sliding'] = 'fk', nffts: int | collections.abc.Sequence[int] | NDArray[numpy.integer] | None = None, sampling: collections.abc.Sequence[float] | None = None, spataxis: NDArray[numpy.number] | None = None, spat1axis: NDArray[numpy.number] | None = None, taxis: NDArray[numpy.number] | None = None, paxis: NDArray[numpy.number] | None = None, p1axis: NDArray[numpy.number] | None = None, centeredh: bool = True, nwins: collections.abc.Sequence[int] | NDArray[numpy.integer] = None, nwin: collections.abc.Sequence[int] | NDArray[numpy.integer] = None, nover: collections.abc.Sequence[int] | NDArray[numpy.integer] = None, engine: Union[Literal['numpy', 'numba'], Literal['fftw']] = 'numba', dottest: bool = False, **kwargs_solver) -> tuple[NDArray[numpy.number], NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Seismic interpolation (or regularization).",
+   "parameters": [
+    {
+     "name": "data",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Irregularly sampled seismic data of size :math:`[n_{r_y} \\,(\\times n_{r_x} \\times n_t)]`"
+    },
+    {
+     "name": "nrec",
+     "type": ":obj:`int` or :obj:`tuple`",
+     "desc": "Number of elements in the regularly sampled (reconstructed) spatial array, :math:`n_{R_y}` for 2-dimensional data and :math:`(n_{R_y}, n_{R_x})` for 3-dimensional data"
+    },
+    {
+     "name": "iava",
+     "type": ":obj:`list` or :obj:`numpy.ndarray`",
+     "desc": "Integer (or floating) indices of locations of available samples in first dimension of regularly sampled spatial grid of interpolated signal. The :class:`pylops.basicoperators.Restriction` operator is used in case of integer indices, while the :class:`pylops.signalprocessing.Iterp` operator is used in case of floating indices."
+    },
+    {
+     "name": "iava1",
+     "type": ":obj:`list` or :obj:`numpy.ndarray`, optional",
+     "desc": "Integer (or floating) indices of locations of available samples in second dimension of regularly sampled spatial grid of interpolated signal. Can be used only in case of 3-dimensional data."
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of inversion: ``fk`` (default), ``spatial``, ``radon-linear``, ``chirpradon-linear``, ``radon-parabolic`` , ``radon-hyperbolic``, ``sliding``, or ``chirp-sliding``"
+    },
+    {
+     "name": "nffts",
+     "type": ":obj:`int` or :obj:`tuple`, optional",
+     "desc": "nffts : :obj:`tuple`, optional Number of samples in Fourier Transform for each direction. Required if ``kind='fk'``"
+    },
+    {
+     "name": "sampling",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Sampling steps ``dy`` (, ``dx``) and ``dt``. Required if ``kind='fk'`` or ``kind='radon-linear'``"
+    },
+    {
+     "name": "spataxis",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "First spatial axis. Required for ``kind='radon-linear'``, ``kind='chirpradon-linear'``, ``kind='radon-parabolic'``, ``kind='radon-hyperbolic'``, can also be provided instead of ``sampling`` for ``kind='fk'``"
+    },
+    {
+     "name": "spat1axis",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Second spatial axis. Required for ``kind='radon-linear'``, ``kind='chirpradon-linear'``, ``kind='radon-parabolic'``, ``kind='radon-hyperbolic'``, can also be provided instead of ``sampling`` for ``kind='fk'``"
+    },
+    {
+     "name": "taxis",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Time axis. Required for ``kind='radon-linear'``, ``kind='chirpradon-linear'``, ``kind='radon-parabolic'``, ``kind='radon-hyperbolic'``, can also be provided instead of ``sampling`` for ``kind='fk'``"
+    },
+    {
+     "name": "paxis",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "First Radon axis. Required for ``kind='radon-linear'``, ``kind='chirpradon-linear'``, ``kind='radon-parabolic'``, ``kind='radon-hyperbolic'``, ``kind='sliding'``, and ``kind='chirp-sliding'``"
+    },
+    {
+     "name": "p1axis",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Second Radon axis. Required for ``kind='radon-linear'``, ``kind='chirpradon-linear'``, ``kind='radon-parabolic'``, ``kind='radon-hyperbolic'``, ``kind='sliding'``, and ``kind='chirp-sliding'``"
+    },
+    {
+     "name": "centeredh",
+     "type": ":obj:`bool`, optional",
+     "desc": "Assume centered spatial axis (``True``) or not (``False``). Required for ``kind='radon-linear'``, ``kind='radon-parabolic'`` and ``kind='radon-hyperbolic'``"
+    },
+    {
+     "name": "nwins",
+     "type": ":obj:`int` or :obj:`tuple`, optional",
+     "desc": "Number of windows. Required for ``kind='sliding'`` and ``kind='chirp-sliding'``"
+    },
+    {
+     "name": "nwin",
+     "type": ":obj:`int` or :obj:`tuple`, optional",
+     "desc": "Number of samples of window. Required for ``kind='sliding'`` and ``kind='chirp-sliding'``"
+    },
+    {
+     "name": "nover",
+     "type": ":obj:`int` or :obj:`tuple`, optional",
+     "desc": "Number of samples of overlapping part of window. Required for ``kind='sliding'`` and ``kind='chirp-sliding'``"
+    },
+    {
+     "name": "engine",
+     "type": ":obj:`str`, optional",
+     "desc": "Engine used for Radon computations (``numpy/numba`` for ``Radon2D`` and ``Radon3D`` or ``numpy/fftw`` for ``ChirpRadon2D`` and ``ChirpRadon3D``)"
+    },
+    {
+     "name": "dottest",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply dot-test"
+    },
+    {
+     "name": "**kwargs_solver",
+     "type": "",
+     "desc": "Arbitrary keyword arguments for :py:func:`pylops.optimization.leastsquares.regularized_inversion` solver if ``kind='spatial'`` or :py:func:`pylops.optimization.sparsity.FISTA` solver otherwise"
+    }
+   ],
+   "notes": "The problem of seismic data interpolation (or regularization) can be\nformally written as\n\n.. math::\n    \\mathbf{y} = \\mathbf{R} \\mathbf{x}\n\nwhere a restriction or interpolation operator is applied along the spatial\ndirection(s). Here :math:`\\mathbf{y} = [\\mathbf{y}_{R1}^T, \\mathbf{y}_{R2}^T,\\ldots,\n\\mathbf{y}_{RN^T}]^T` where each vector :math:`\\mathbf{y}_{Ri}`\ncontains all time samples recorded in the seismic data at the specific\nreceiver :math:`R_i`. Similarly, :math:`\\mathbf{x} = [\\mathbf{x}_{r1}^T,\n\\mathbf{x}_{r2}^T,\\ldots, \\mathbf{x}_{rM}^T]`, contains all traces at the\nregularly and finely sampled receiver locations :math:`r_i`.\n\nSeveral alternative approaches can be taken to solve such a problem. They\nmostly differ in the choice of the regularization (or preconditining) used\nto mitigate the ill-posedness of the problem:\n\n    * ``spatial``: least-squares inversion in the original time-space domain\n      with an additional spatial smoothing regularization term,\n      corresponding to the cost function\n      :math:`J = ||\\mathbf{y} - \\mathbf{R} \\mathbf{x}||_2 +\n      \\epsilon_\\nabla \\nabla ||\\mathbf{x}||_2` where :math:`\\nabla` is\n      a second order space derivative implemented via\n      :class:`pylops.basicoperators.SecondDerivative` in 2-dimensional case\n      and :class:`pylops.basicoperators.Laplacian` in 3-dimensional case\n    * ``fk``: L1 inversion in frequency-wavenumber preconditioned domain\n      corresponding to the cost function\n      :math:`J = ||\\mathbf{y} - \\mathbf{R} \\mathbf{F} \\mathbf{x}||_2` where\n      :math:`\\mathbf{F}` is frequency-wavenumber transform implemented via\n      :class:`pylops.signalprocessing.FFT2D` in 2-dimensional case\n      and :class:`pylops.signalprocessing.FFTND` in 3-dimensional case\n    * ``radon-linear``: L1 inversion in linear Radon preconditioned domain\n      using the same cost function as ``fk`` but with :math:`\\mathbf{F}`\n      being a Radon transform implemented via\n      :class:`pylops.signalprocessing.Radon2D` in 2-dimensional case\n      and :class:`pylops.signalprocessing.Radon3D` in 3-dimensional case\n    * ``radon-parabolic``: L1 inversion in parabolic Radon\n      preconditioned domain\n    * ``radon-hyperbolic``: L1 inversion in hyperbolic Radon\n      preconditioned domain\n    * ``sliding``: L1 inversion in sliding-linear Radon\n      preconditioned domain using the same cost function as ``fk``\n      but with :math:`\\mathbf{F}` being a sliding Radon transform\n      implemented via :class:`pylops.signalprocessing.Sliding2D` in\n      2-dimensional case and :class:`pylops.signalprocessing.Sliding3D`\n      in 3-dimensional case",
+   "examples": ""
+  },
+  "WavefieldDecomposition": {
+   "name": "WavefieldDecomposition",
+   "kind": "workflow",
+   "module": "pylops.waveeqprocessing.wavedecomposition",
+   "signature": "(p: NDArray[numpy.number], vz: NDArray[numpy.number], nt: int, nr: int | collections.abc.Sequence[int] | NDArray[numpy.integer], dt: float, dr: float, rho: float, vel: float, nffts: collections.abc.Sequence[int] | NDArray[numpy.integer] | tuple[None, None, None] = (None, None, None), critical: float = 100.0, ntaper: int = 10, scaling: float = 1.0, kind: Literal['inverse', 'analytical'] = 'inverse', restriction: pylops.linearoperator.LinearOperator | None = None, sptransf: pylops.linearoperator.LinearOperator | None = None, solver: collections.abc.Callable = <function lsqr at 0x107b57920>, dottest: bool = False, dtype: DTypeLike = 'complex128', **kwargs_solver) -> tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Up-down wavefield decomposition.",
+   "parameters": [
+    {
+     "name": "p",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Pressure data of size :math:`\\lbrack n_{r_x} \\,(\\times n_{r_y}) \\times n_t \\rbrack` (or :math:`\\lbrack n_{r_{x,\\text{sub}}} \\,(\\times n_{r_{y,\\text{sub}}}) \\times n_t \\rbrack` in case a ``restriction`` operator is provided. Note that :math:`n_{r_{x,\\text{sub}}}` (and :math:`n_{r_{y,\\text{sub}}}`) must agree with the size of the output of this operator.)"
+    },
+    {
+     "name": "vz",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Vertical particle velocity data of same size as pressure data"
+    },
+    {
+     "name": "nt",
+     "type": ":obj:`int`",
+     "desc": "Number of samples along the time axis"
+    },
+    {
+     "name": "nr",
+     "type": ":obj:`int` or :obj:`tuple`",
+     "desc": "Number of samples along the receiver axis (or axes)"
+    },
+    {
+     "name": "dt",
+     "type": ":obj:`float`",
+     "desc": "Sampling along the time axis"
+    },
+    {
+     "name": "dr",
+     "type": ":obj:`float` or :obj:`tuple`",
+     "desc": "Sampling along the receiver array (or axes)"
+    },
+    {
+     "name": "rho",
+     "type": ":obj:`float`",
+     "desc": "Density :math:`\\rho` along the receiver array (must be constant)"
+    },
+    {
+     "name": "vel",
+     "type": ":obj:`float`",
+     "desc": "Velocity :math:`c` along the receiver array (must be constant)"
+    },
+    {
+     "name": "nffts",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Number of samples along the wavenumber and frequency axes"
+    },
+    {
+     "name": "critical",
+     "type": ":obj:`float`, optional",
+     "desc": "Percentage of angles to retain in obliquity factor. For example, if ``critical=100`` only angles below the critical angle :math:`\\frac{f(k_x)}{c}` will be retained"
+    },
+    {
+     "name": "ntaper",
+     "type": ":obj:`float`, optional",
+     "desc": "Number of samples of taper applied to obliquity factor around critical angle"
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of separation: ``inverse`` (default) or ``analytical``"
+    },
+    {
+     "name": "scaling",
+     "type": ":obj:`float`, optional",
+     "desc": "Scaling to apply to the operator (see Notes of :func:`pylops.waveeqprocessing.wavedecomposition.UpDownComposition2D` for more details)"
+    },
+    {
+     "name": "restriction",
+     "type": ":obj:`pylops.LinearOperator`, optional",
+     "desc": "Restriction operator"
+    },
+    {
+     "name": "sptransf",
+     "type": ":obj:`pylops.LinearOperator`, optional",
+     "desc": "Sparsifying operator"
+    },
+    {
+     "name": "solver",
+     "type": ":obj:`float`, optional",
+     "desc": "Function handle of solver to be used if ``kind='inverse'``"
+    },
+    {
+     "name": "dottest",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply dot-test"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    },
+    {
+     "name": "**kwargs_solver",
+     "type": "",
+     "desc": "Arbitrary keyword arguments for chosen ``solver``"
+    }
+   ],
+   "notes": "Up- and down-going components of seismic data :math:`p^-(x, t)`\nand :math:`p^+(x, t)` can be estimated from multi-component data\n:math:`p(x, t)` and :math:`v_z(x, t)` by computing the following\nexpression [1]_:\n\n.. math::\n    \\begin{bmatrix}\n        \\hat{p}^+  \\\\\n        \\hat{p}^-\n    \\end{bmatrix}(k_x, \\omega) = \\frac{1}{2}\n    \\begin{bmatrix}\n        1  & \\frac{\\omega \\rho}{k_z} \\\\\n        1  & - \\frac{\\omega \\rho}{k_z}  \\\\\n    \\end{bmatrix}\n    \\begin{bmatrix}\n        \\hat{p}  \\\\\n        \\hat{v}_z\n    \\end{bmatrix}(k_x, \\omega)\n\nif ``kind='analytical'`` or alternatively by solving the equation in\n:func:`pylops.waveeqprocessing.UpDownComposition2D` as an inverse problem,\nif ``kind='inverse'``.\n\nThe latter approach has several advantages as data regularization\ncan be included as part of the separation process allowing the input data\nto be aliased. This is obtained by solving the following problem:\n\n.. math::\n    \\begin{bmatrix}\n        \\mathbf{p}  \\\\\n        s\\mathbf{v_z}\n    \\end{bmatrix} =\n    \\begin{bmatrix}\n        \\mathbf{R}\\mathbf{F} & 0 \\\\\n        0 & s\\mathbf{R}\\mathbf{F}\n    \\end{bmatrix} \\mathbf{W} \\begin{bmatrix}\n        \\mathbf{F}^H \\mathbf{S} & 0 \\\\\n        0 & \\mathbf{F}^H \\mathbf{S}\n    \\end{bmatrix}  \\mathbf{p^{\\pm}}\n\nwhere :math:`\\mathbf{R}` is a :class:`pylops.basicoperators.Restriction`\noperator and :math:`\\mathbf{S}` is sparsyfing transform operator (e.g.,\n:class:`pylops.signalprocessing.Radon2D`).\n\n.. [1] Wapenaar, K. \"Reciprocity properties of one-way propagators\",\n   Geophysics, vol. 63, pp. 1795-1798. 1998.",
+   "examples": ""
+  },
+  "Deghosting": {
+   "name": "Deghosting",
+   "kind": "workflow",
+   "module": "pylops.waveeqprocessing.oneway",
+   "signature": "(p: NDArray[numpy.number], nt: int, nr: int | tuple[int, int], dt: float, dr: collections.abc.Sequence[float], vel: float, zrec: float, kind: str | None = 'p', pd: NDArray[numpy.number] | None = None, win: NDArray[numpy.number] | None = None, npad: tuple[int] | tuple[int, int] = (11, 11), ntaper: tuple[int, int] = (11, 11), restriction: pylops.linearoperator.LinearOperator | None = None, sptransf: pylops.linearoperator.LinearOperator | None = None, solver: collections.abc.Callable = <function lsqr at 0x107b57920>, dottest: bool = False, dtype: DTypeLike = 'complex128', **kwargs_solver) -> tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Wavefield deghosting.",
+   "parameters": [
+    {
+     "name": "p",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Pressure (or vertical velocity) data of of size :math:`\\lbrack n_{r_x}\\,(\\times n_{r_y}) \\times n_t \\rbrack` (or :math:`\\lbrack n_{r_{x,\\text{sub}}}\\, (\\times n_{r_{y,\\text{sub}}}) \\times n_t \\rbrack` in case a ``restriction`` operator is provided. Note that :math:`n_{r_{x,\\text{sub}}}` (and :math:`n_{r_{y,\\text{sub}}}`) must agree with the size of the output of this operator)"
+    },
+    {
+     "name": "nt",
+     "type": ":obj:`int`",
+     "desc": "Number of samples along the time axis"
+    },
+    {
+     "name": "nr",
+     "type": ":obj:`int` or :obj:`tuple`",
+     "desc": "Number of samples along the receiver axis (or axes)"
+    },
+    {
+     "name": "dt",
+     "type": ":obj:`float`",
+     "desc": "Sampling along the time axis"
+    },
+    {
+     "name": "dr",
+     "type": ":obj:`float` or :obj:`tuple`",
+     "desc": "Sampling along the receiver array of the separated pressure consituents"
+    },
+    {
+     "name": "vel",
+     "type": ":obj:`float`",
+     "desc": "Velocity along the receiver array (must be constant)"
+    },
+    {
+     "name": "zrec",
+     "type": ":obj:`float`",
+     "desc": "Depth of receiver array"
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 2.3.0  Type of data (``p`` or ``vz``)"
+    },
+    {
+     "name": "pd",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Direct arrival to be subtracted from ``p``"
+    },
+    {
+     "name": "win",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Time window to be applied to ``p`` to remove the direct arrival (if ``pd=None``)"
+    },
+    {
+     "name": "ntaper",
+     "type": ":obj:`float` or :obj:`tuple`, optional",
+     "desc": "Number of samples of taper applied to propagator to avoid edge effects"
+    },
+    {
+     "name": "npad",
+     "type": ":obj:`float` or :obj:`tuple`, optional",
+     "desc": "Number of samples of padding applied to propagator to avoid edge effects angle"
+    },
+    {
+     "name": "restriction",
+     "type": ":obj:`pylops.LinearOperator`, optional",
+     "desc": "Restriction operator"
+    },
+    {
+     "name": "sptransf",
+     "type": ":obj:`pylops.LinearOperator`, optional",
+     "desc": "Sparsifying operator"
+    },
+    {
+     "name": "solver",
+     "type": ":obj:`float`, optional",
+     "desc": "Function handle of solver to be used if ``kind='inverse'``"
+    },
+    {
+     "name": "dottest",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply dot-test"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array. If ``None``, directly inferred from ``p``"
+    },
+    {
+     "name": "**kwargs_solver",
+     "type": "",
+     "desc": "Arbitrary keyword arguments for chosen ``solver``"
+    }
+   ],
+   "notes": "The up- and down-going components of a seismic data (:math:`p^-(x, t)`\nand :math:`p^+(x, t)`) can be estimated from single-component data\n:math:`p(x, t)` using a ghost model.\n\nThe basic idea [1]_ is that of using a one-way propagator in the f-k domain\n(also referred to as ghost model) to predict the down-going field\nfrom the up-going one (excluded the direct arrival and its source\nghost referred here to as :math:`p_d(x, t)`):\n\n.. math::\n    p^+ - p_d = e^{-j k_z 2 z_\\text{rec}} p^-\n\nwhere :math:`k_z` is the vertical wavenumber and :math:`z_\\text{rec}` is the\ndepth of the array of receivers\n\nIn a matrix form we can thus write the total wavefield as:\n\n.. math::\n    \\mathbf{p} - \\mathbf{p_d} = (\\mathbf{I} \\pm \\Phi) \\mathbf{p}^-\n\nwhere :math:`\\Phi` is one-way propagator implemented via the\n:class:`pylops.waveeqprocessing.PhaseShift` operator. Note that :math:`+` is\nused for the pressure data, whilst :math:`-` is used for the vertical velocity\ndata.\n\n.. [1] Amundsen, L., 1993, Wavenumber-based filtering of marine point-source\n   data: GEOPHYSICS, 58, 1335\u20131348.",
+   "examples": ""
+  },
+  "PoststackInversion": {
+   "name": "PoststackInversion",
+   "kind": "workflow",
+   "module": "pylops.avo.poststack",
+   "signature": "(data: NDArray[numpy.number], wav: NDArray[numpy.number], m0: NDArray[numpy.number] | None = None, explicit: bool = False, simultaneous: bool = False, epsI: float | None = None, epsR: float | None = None, dottest: bool = False, epsRL1: float | None = None, **kwargs_solver) -> tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Post-stack linearized seismic inversion.",
+   "parameters": [
+    {
+     "name": "data",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Band-limited seismic post-stack data of size :math:`[n_{t_0}\\,(\\times n_x \\times n_y)]`"
+    },
+    {
+     "name": "wav",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Wavelet in time domain (must have odd number of elements and centered to zero). If 1d, assume stationary wavelet for the entire time axis. If 2d of size :math:`[n_{t_0} \\times n_h]` use as non-stationary wavelet"
+    },
+    {
+     "name": "m0",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Background model of size :math:`[n_{t_0}\\,(\\times n_x \\times n_y)]`"
+    },
+    {
+     "name": "explicit",
+     "type": ":obj:`bool`, optional",
+     "desc": "Create a chained linear operator (``False``, preferred for large data) or a ``MatrixMult`` linear operator with dense matrix (``True``, preferred for small data)"
+    },
+    {
+     "name": "simultaneous",
+     "type": ":obj:`bool`, optional",
+     "desc": "Simultaneously invert entire data (``True``) or invert trace-by-trace (``False``) when using ``explicit`` operator (note that the entire data is always inverted when working with linear operator)"
+    },
+    {
+     "name": "epsI",
+     "type": ":obj:`float`, optional",
+     "desc": "Damping factor for Tikhonov regularization term"
+    },
+    {
+     "name": "epsR",
+     "type": ":obj:`float`, optional",
+     "desc": "Damping factor for additional Laplacian regularization term"
+    },
+    {
+     "name": "dottest",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply dot-test"
+    },
+    {
+     "name": "epsRL1",
+     "type": ":obj:`float`, optional",
+     "desc": "Damping factor for additional blockiness regularization term"
+    },
+    {
+     "name": "**kwargs_solver",
+     "type": "",
+     "desc": "Arbitrary keyword arguments for :py:func:`scipy.linalg.lstsq` solver (if ``explicit=True`` and  ``epsR=None``) or :py:func:`scipy.sparse.linalg.lsqr` solver (if ``explicit=False`` and/or ``epsR`` is not ``None``)"
+    }
+   ],
+   "notes": "The cost function and solver used in the seismic post-stack inversion\nmodule depends on the choice of ``explicit``, ``simultaneous``, ``epsI``,\nand ``epsR`` parameters:\n\n* ``explicit=True``, ``epsI=None`` and ``epsR=None``: the explicit\n  solver :py:func:`scipy.linalg.lstsq` is used if ``simultaneous=False``\n  (or the iterative solver :py:func:`scipy.sparse.linalg.lsqr` is used\n  if ``simultaneous=True``)\n* ``explicit=True`` with ``epsI`` and ``epsR=None``: the regularized\n  normal equations :math:`\\mathbf{W}^T\\mathbf{d} = (\\mathbf{W}^T\n  \\mathbf{W} + \\epsilon_\\mathbf{I}^2 \\mathbf{I}) \\mathbf{AI}` are instead fed\n  into the :py:func:`scipy.linalg.lstsq` solver if ``simultaneous=False``\n  (or the iterative solver :py:func:`scipy.sparse.linalg.lsqr`\n  if ``simultaneous=True``)\n* ``explicit=False`` and ``epsR=None``: the iterative solver\n  :py:func:`scipy.sparse.linalg.lsqr` is used\n* ``explicit=False`` with ``epsR`` and ``epsRL1=None``: the iterative\n  solver :py:func:`pylops.optimization.leastsquares.regularized_inversion`\n  is used to solve the spatially regularized problem.\n* ``explicit=False`` with ``epsR`` and ``epsRL1``: the iterative\n  solver :py:func:`pylops.optimization.sparsity.SplitBregman`\n  is used to solve the blockiness-promoting (in vertical direction)\n  and spatially regularized (in additional horizontal directions) problem.\n\nNote that the convergence of iterative solvers such as\n:py:func:`scipy.sparse.linalg.lsqr` can be very slow for this type of\noperator. It is suggested to take a two steps approach with first a\ntrace-by-trace inversion using the explicit operator, followed by a\nregularized global inversion using the outcome of the previous\ninversion as initial guess.",
+   "examples": ""
+  },
+  "PrestackInversion": {
+   "name": "PrestackInversion",
+   "kind": "workflow",
+   "module": "pylops.avo.prestack",
+   "signature": "(data: NDArray[numpy.number], theta: NDArray[numpy.number], wav: NDArray[numpy.number], m0: NDArray[numpy.number] | None = None, linearization: Union[Literal['akirich', 'fatti', 'PS'], list[Literal['akirich', 'fatti', 'PS']]] = 'akirich', explicit: bool = False, simultaneous: bool = False, epsI: float | None = None, epsR: float | None = None, dottest: bool = False, returnres: bool = False, epsRL1: float | None = None, kind: Literal['centered', 'forward'] = 'centered', vsvp: float | NDArray[numpy.number] = 0.5, **kwargs_solver) -> NDArray[numpy.number] | tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Pre-stack linearized seismic inversion.",
+   "parameters": [
+    {
+     "name": "data",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Band-limited seismic post-stack data of size :math:`[(n_\\text{lins} \\times) \\, n_{t_0} \\times n_{\\theta} \\, (\\times n_x \\times n_y)]`"
+    },
+    {
+     "name": "theta",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Incident angles in degrees"
+    },
+    {
+     "name": "wav",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Wavelet in time domain (must had odd number of elements and centered to zero)"
+    },
+    {
+     "name": "m0",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Background model of size :math:`[n_{t_0} \\times n_{m} \\,(\\times n_x \\times n_y)]`"
+    },
+    {
+     "name": "linearization",
+     "type": "`{\"akirich\", \"fatti\", \"PS\"}` or :obj:`list`, optional",
+     "desc": "* \"akirich\": Aki-Richards. See :py:func:`pylops.avo.avo.akirichards`.  * \"fatti\": Fatti. See :py:func:`pylops.avo.avo.fatti`.  * \"PS\": PS. See :py:func:`pylops.avo.avo.ps`.  * List which is a combination of previous options (required only when ``m0 is None``)."
+    },
+    {
+     "name": "explicit",
+     "type": ":obj:`bool`, optional",
+     "desc": "Create a chained linear operator (``False``, preferred for large data) or a ``MatrixMult`` linear operator with dense matrix (``True``, preferred for small data)"
+    },
+    {
+     "name": "simultaneous",
+     "type": ":obj:`bool`, optional",
+     "desc": "Simultaneously invert entire data (``True``) or invert trace-by-trace (``False``) when using ``explicit`` operator (note that the entire data is always inverted when working with linear operator)"
+    },
+    {
+     "name": "epsI",
+     "type": ":obj:`float` or :obj:`list`, optional",
+     "desc": "Damping factor(s) for Tikhonov regularization term. If a list of :math:`n_{m}` elements is provided, the regularization term will have different strenght for each elastic property"
+    },
+    {
+     "name": "epsR",
+     "type": ":obj:`float`, optional",
+     "desc": "Damping factor for additional Laplacian regularization term"
+    },
+    {
+     "name": "dottest",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply dot-test"
+    },
+    {
+     "name": "returnres",
+     "type": ":obj:`bool`, optional",
+     "desc": "Return residuals"
+    },
+    {
+     "name": "epsRL1",
+     "type": ":obj:`float`, optional",
+     "desc": "Damping factor for additional blockiness regularization term"
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Derivative kind (``centered`` or ``forward``)."
+    },
+    {
+     "name": "vsvp",
+     "type": ":obj:`float` or :obj:`numpy.ndarray`",
+     "desc": ":math:`V_S/V_P` ratio (constant or time/depth variant)"
+    },
+    {
+     "name": "**kwargs_solver",
+     "type": "",
+     "desc": "Arbitrary keyword arguments for :py:func:`scipy.linalg.lstsq` solver (if ``explicit=True`` and  ``epsR=None``) or :py:func:`scipy.sparse.linalg.lsqr` solver (if ``explicit=False`` and/or ``epsR`` is not ``None``))"
+    }
+   ],
+   "notes": "The different choices of cost functions and solvers used in the\nseismic pre-stack inversion module follow the same convention of the\nseismic post-stack inversion module.\n\nRefer to :py:func:`pylops.avo.poststack.PoststackInversion` for\nmore details.",
    "examples": ""
   }
  }
