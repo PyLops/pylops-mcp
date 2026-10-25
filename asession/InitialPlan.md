@@ -22,7 +22,7 @@ or ~$5/mo VPS); users' own Claude plans cover token usage.
 - Better search: token/fuzzy scoring over name, summary, tags; embeddings only if substring search proves insufficient.
 - `recommend_solver(problem)` (rule-based problem → solver map) — dropped for now, revisit later.
 - Optional `run_snippet` sandbox (dottest) — deferred; needs a security review first.
-- Add one `index.json` per PyLops version and return always the latest as default but allow passing pylops version to all tools as optional input param.
+- One index per PyLops version (done: `data/indexes/<version>.json` from 2.4.0, latest is the default, optional `pylops_version` on all tools, `list_versions`; built per version in isolated envs with `make index-all`/`index-missing`).
 
 ## Phase 3 — Remote hosting
 - `MCPServer("pylops")`; `mcp.run(transport="streamable-http", json_response=True, stateless_http=True, host=..., port=...)` (in `mcp` 2.x these options moved from the constructor to `run()`) via a `--http` CLI flag.

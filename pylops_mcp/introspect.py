@@ -83,7 +83,10 @@ def build_catalog() -> Catalog:
                 solvers[name] = describe(obj, "solver")
     workflows: dict[str, Entry] = {}
     for pkg_name in PUBLIC_PACKAGES:
-        pkg = importlib.import_module(pkg_name)
+        try:
+            pkg = importlib.import_module(pkg_name)
+        except ImportError:  # package absent in older PyLops
+            continue
         for name in getattr(pkg, "__all__", []):
             obj = getattr(pkg, name, None)
             is_op_class = inspect.isclass(obj) and issubclass(obj, LinearOperator)

@@ -1665,6 +1665,7 @@ source = { editable = "." }
 dependencies = [
     { name = "mcp", extra = ["cli"] },
     { name = "numpydoc" },
+    { name = "packaging" },
     { name = "pylops" },
 ]
 
@@ -1679,6 +1680,7 @@ dev = [
 requires-dist = [
     { name = "mcp", extras = ["cli"], specifier = ">=2,<3" },
     { name = "numpydoc", specifier = ">=1.11.0" },
+    { name = "packaging" },
     { name = "pylops", specifier = ">=2.8.0" },
 ]
 

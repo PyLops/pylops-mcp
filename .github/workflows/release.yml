@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0  # hatch-vcs derives the version from the git tag
       - uses: astral-sh/setup-uv@v5
       - run: uv sync
-      - run: make index  # prebuilt index against the latest PyLops
+      - run: make index-missing  # indexes for every PyLops release not yet committed
       - run: make all
       - run: uv build
       - run: uvx twine check dist/*
