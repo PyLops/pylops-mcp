@@ -95,4 +95,4 @@ the installed version.
 Versions come from git tags (`hatch-vcs`):
 
 - dry run: Actions → Release → *Run workflow* → `testpypi`
-- release: Releases → *Draft a new release* → create tag `v0.1.0` → *Publish release* (publishes to PyPI)
+- release: Releases → *Draft a new release* → create tag → *Publish release* (publishes to PyPI)
