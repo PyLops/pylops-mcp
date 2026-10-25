@@ -1,5 +1,7 @@
 # PyLops-MCP
 
+[![PyPI](https://img.shields.io/pypi/v/pylops-mcp)](https://pypi.org/project/pylops-mcp/)
+
 MCP server exposing [PyLops](https://pylops.readthedocs.io) operators and solvers
 in a structured way, so agents and users can query them instead of web searching
 or crawling files. 
@@ -28,11 +30,23 @@ Operator descriptions are also exposed as the MCP resource
 
 ### For Users
 
-Once published on PyPI (Phase 4), no clone or index build is needed. The
-release ships a prebuilt `index.json`, rebuilt by CI on every new PyLops release:
+No clone or index build is needed: the PyPI release ships a prebuilt `index.json`
+(rebuilt by CI against the latest PyLops at release time).
+
+**Claude Code:**
 
 ```
 claude mcp add --scope user pylops -- uvx pylops-mcp
+```
+
+**Claude Desktop:** add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "pylops": { "command": "uvx", "args": ["pylops-mcp"] }
+  }
+}
 ```
 
 ### For Developers
@@ -75,3 +89,10 @@ Running `make index` upfront is optional: the repository ships a prebuilt
 PyLops live at every startup (slower). Rebuild it with `make index` whenever
 you change the introspection code or upgrade PyLops, so the served docs match
 the installed version.
+
+## Releasing
+
+Versions come from git tags (`hatch-vcs`):
+
+- dry run: Actions → Release → *Run workflow* → `testpypi`
+- release: Releases → *Draft a new release* → create tag → *Publish release* (publishes to PyPI)

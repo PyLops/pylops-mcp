@@ -33,6 +33,7 @@ placeholder to be replaced.
 
 ## Phase 4 — Release and discovery
 - GitHub Actions: on new PyLops release, rebuild the index, run tests, publish to PyPI (`uvx pylops-mcp`).
+  - Done (PR-3): CI + tag-triggered release workflow with Trusted Publishing, PyPI metadata, LGPL-3.0. Still open: automatic trigger on new PyLops releases.
 - Publish `server.json` to the Official MCP Registry; consider submitting to the Claude Connectors Directory; optional Claude Code plugin (MCP + skill).
 - README: install snippets for Claude Code (`claude mcp add pylops -- uvx pylops-mcp`, and `--transport http` for remote), Claude Desktop (config JSON/.mcpb), and claude.ai custom connector (paid plan; verify current rules).
 
