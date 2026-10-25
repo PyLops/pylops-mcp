@@ -69,3 +69,25 @@ def test_search_workflow_kind() -> None:
 def test_unknown_workflow_gives_suggestions() -> None:
     res = server.get_workflow("PrestackInversio")
     assert "PrestackInversion" in res["suggestions"]
+
+
+def test_default_is_latest_version() -> None:
+    latest = server.list_versions()["default"]
+    assert server.get_operator("Convolve1D")["pylops_version"] == latest
+    assert latest == server.list_versions()["versions"][-1]
+
+
+def test_explicit_older_version() -> None:
+    res = server.get_operator("Convolve1D", pylops_version="2.4")
+    assert res["pylops_version"] == "2.4.0"
+    assert server.search("convolve1d", pylops_version="2.4.0")["pylops_version"] == (
+        "2.4.0"
+    )
+    assert server.list_solvers(pylops_version="2.4")["pylops_version"] == "2.4.0"
+
+
+def test_unknown_version() -> None:
+    res = server.get_operator("Convolve1D", pylops_version="9.9")
+    assert "error" in res
+    assert "2.4.0" in res["available_versions"]
+    assert "error" in server.list_operators(pylops_version="1.0")
