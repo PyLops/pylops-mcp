@@ -92,8 +92,7 @@ the installed version.
 
 ## Releasing
 
-Versions come from git tags (`hatch-vcs`). Create the PyPI/TestPyPI trusted publishers
-(workflow `release.yml`, environments `pypi` / `testpypi`) once, then:
+Versions come from git tags (`hatch-vcs`):
 
 - dry run: Actions → Release → *Run workflow* → `testpypi`
 - release: `git tag v0.1.0 && git push origin v0.1.0` (publishes to PyPI)
