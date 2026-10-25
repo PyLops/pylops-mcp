@@ -146,6 +146,10 @@ back to introspecting the installed PyLops live at every startup (slower).
 - `make index-all VERSIONS="2.4.0 2.5.0"` builds specific releases, each in an isolated environment.
 - `make index-missing` builds every PyPI release (>= 2.4.0) that has no index yet.
 
+The same can be done without a local setup via the *Update indexes* GitHub Action
+(Actions tab, *Run workflow*; optionally give a PyLops version), which opens a PR with the new index files.
+The release workflow does not generate indexes, so merge that PR before tagging.
+
 Indexes of released versions are kept as they are; rebuild one only if you
 change the introspection code.
 
