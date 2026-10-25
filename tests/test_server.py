@@ -45,3 +45,27 @@ def test_list_solvers_module_filter() -> None:
     assert "fista" in res["solvers"]
     assert "cgls" not in res["solvers"]
     assert "cgls" in server.list_solvers()["solvers"]
+
+
+def test_get_factory_operator() -> None:
+    res = server.get_operator("FFT")
+    assert res["kind"] == "operator"
+    assert "signature" in res
+
+
+def test_get_workflow() -> None:
+    res = server.get_workflow("MDD")
+    assert res["kind"] == "workflow"
+    assert "MDD" in server.list_workflows()["workflows"]
+    assert "MDD" not in server.list_operators()["operators"]
+
+
+def test_search_workflow_kind() -> None:
+    res = server.search("inversion", kind="workflow")
+    assert res["results"]
+    assert {h["kind"] for h in res["results"]} == {"workflow"}
+
+
+def test_unknown_workflow_gives_suggestions() -> None:
+    res = server.get_workflow("PrestackInversio")
+    assert "PrestackInversion" in res["suggestions"]
