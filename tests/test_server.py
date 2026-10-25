@@ -38,3 +38,10 @@ def test_list_operators_module_filter() -> None:
     res = server.list_operators("basicoperators")
     assert "Identity" in res["operators"]
     assert "Convolve1D" not in res["operators"]
+
+
+def test_list_solver_module_filter() -> None:
+    res = server.list_solver("sparsity")
+    assert "fista" in res["solvers"]
+    assert "cgls" not in res["solvers"]
+    assert "cgls" in server.list_solver()["solvers"]

@@ -65,6 +65,17 @@ def list_operators(module: str | None = None) -> dict[str, Any]:
 
 
 @mcp.tool()
+def list_solver(module: str | None = None) -> dict[str, Any]:
+    """List solver names, optionally filtered by module (e.g. "sparsity")."""
+    names = sorted(
+        name
+        for name, entry in CATALOG["solvers"].items()
+        if module is None or module in entry["module"]
+    )
+    return {"pylops_version": CATALOG["pylops_version"], "solvers": names}
+
+
+@mcp.tool()
 def get_operator(name: str) -> dict[str, Any]:
     """Get signature, parameters, notes and examples of a PyLops operator."""
     return _lookup("operator", name)
