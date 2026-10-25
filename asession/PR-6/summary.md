@@ -5,11 +5,11 @@ https://github.com/PyLops/pylops-mcp/pull/6 (branch `factory-operators`)
 ## Summary
 Completes the Phase 2 item "index operators built through factory functions".
 
-- `pylops_mcp/introspect.py`: besides `LinearOperator` subclasses, plain functions in the `__all__` of `pylops.basicoperators`, `signalprocessing`, `waveeqprocessing` and `avo` are indexed as operators (e.g. `FFT`, `FFT2D`, `Radon2D`, `MDC`, `PhaseShift`, avo modelling). Index grows from 71 to 88 operators.
-- Functions that run an inversion or decomposition (`MDD`, `SeismicInterpolation`, `WavefieldDecomposition`, `Deghosting`, `PoststackInversion`, `PrestackInversion`) are listed in an explicit `WORKFLOWS` set and get kind `workflow`.
+- `pylops_mcp/introspect.py`: besides `LinearOperator` subclasses, plain functions in the `__all__` of `pylops.basicoperators`, `signalprocessing`, `waveeqprocessing` and `avo` and `medical` are indexed as operators (e.g. `FFT`, `FFT2D`, `Radon2D`, `MDC`, `PhaseShift`, avo modelling). Index grows from 71 to 88 operators.
+- Functions that run an inversion or decomposition (`MDD`, `SeismicInterpolation`, `WavefieldDecomposition`, `Deghosting`, `PoststackInversion`, `PrestackInversion`, plus the plain classes `Marchenko` and `LSM`) are listed in an explicit `WORKFLOWS` set and get kind `workflow`.
 - `pylops_mcp/server.py`: new tools `list_workflows(module?)` and `get_workflow(name)`; `search` accepts `kind="workflow"`.
 - Catalog gains a `workflows` key; `index.json` regenerated; README tool table and `InitialPlan.md` updated.
-- Tests: completeness test comparing the index against the public `__all__` of those packages, plus tests for factory operators and the workflow tools.
+- Tests: completeness test comparing the index against every public class and function in the `__all__` of those packages, plus tests for factory operators and the workflow tools.
 
 ## Decisions
 - User asked for all public factory functions to be indexed; non-operator ones got their own kind rather than being dropped or mislabelled as operators.
@@ -22,4 +22,4 @@ Completes the Phase 2 item "index operators built through factory functions".
 
 ## Testing
 - `make all` equivalent: pytest (14 passed), ruff, mypy all green.
-- `python -m pylops_mcp.index`: 88 operators, 13 solvers, 6 workflows.
+- `python -m pylops_mcp.index`: 88 operators, 13 solvers, 8 workflows.

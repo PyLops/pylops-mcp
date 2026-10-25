@@ -16,8 +16,9 @@ PUBLIC_PACKAGES = (
     "pylops.signalprocessing",
     "pylops.waveeqprocessing",
     "pylops.avo",
+    "pylops.medical",
 )
-# Public functions that run an inversion or decomposition rather than return an operator
+# Public functions/classes that run an inversion or decomposition, not operators
 WORKFLOWS = {
     "MDD",
     "SeismicInterpolation",
@@ -25,6 +26,8 @@ WORKFLOWS = {
     "Deghosting",
     "PoststackInversion",
     "PrestackInversion",
+    "Marchenko",
+    "LSM",
 }
 
 
@@ -83,8 +86,9 @@ def build_catalog() -> Catalog:
         pkg = importlib.import_module(pkg_name)
         for name in getattr(pkg, "__all__", []):
             obj = getattr(pkg, name, None)
-            if not inspect.isfunction(obj):
-                continue
+            is_op_class = inspect.isclass(obj) and issubclass(obj, LinearOperator)
+            if is_op_class or not (inspect.isfunction(obj) or inspect.isclass(obj)):
+                continue  # operator classes are collected by the module walk above
             if name in WORKFLOWS:
                 workflows.setdefault(name, describe(obj, "workflow"))
             else:

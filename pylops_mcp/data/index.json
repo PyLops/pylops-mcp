@@ -5327,6 +5327,77 @@
    "notes": "Multi-dimensional deconvolution (MDD) is a mathematical ill-solved problem,\nwell-known in the image processing and geophysical community [1]_.\n\nMDD aims at removing the effects of a Multi-dimensional Convolution\n(MDC) kernel or the so-called blurring operator or point-spread\nfunction (PSF) from a given data. It can be written as\n\n.. math::\n    \\mathbf{d}= \\mathbf{D} \\mathbf{m}\n\nor, equivalently, by means of its normal equation\n\n.. math::\n    \\mathbf{m}= (\\mathbf{D}^H\\mathbf{D})^{-1} \\mathbf{D}^H\\mathbf{d}\n\nwhere :math:`\\mathbf{D}^H\\mathbf{D}` is the PSF.\n\n.. [1] Wapenaar, K., van der Neut, J., Ruigrok, E., Draganov, D., Hunziker,\n   J., Slob, E., Thorbecke, J., and Snieder, R., \"Seismic interferometry\n   by crosscorrelation and by multi-dimensional deconvolution: a\n   systematic comparison\", Geophyscial Journal International, vol. 185,\n   pp. 1335-1364. 2011.",
    "examples": ""
   },
+  "Marchenko": {
+   "name": "Marchenko",
+   "kind": "workflow",
+   "module": "pylops.waveeqprocessing.marchenko",
+   "signature": "(R: NDArray[numpy.number], dt: float = 0.004, nt: int | None = None, dr: float = 1.0, nfmax: int | None = None, wav: NDArray[numpy.number] | None = None, toff: float = 0.0, nsmooth: int = 10, saveRt: bool = True, prescaled: bool = False, fftengine: Literal['numpy', 'scipy', 'fftw'] = 'numpy', dtype: DTypeLike = 'float64', kwargs_fft: dict[str, typing.Any] | None = None) -> None",
+   "summary": "Marchenko redatuming",
+   "parameters": [
+    {
+     "name": "R",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Multi-dimensional reflection response in time or frequency domain of size :math:`[n_s \\times n_r \\times n_t (n_{f_\\text{max}})]`. If provided in time, ``R`` should not be of complex type. Note that the reflection response should have already been multiplied by 2."
+    },
+    {
+     "name": "dt",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling of time integration axis"
+    },
+    {
+     "name": "nt",
+     "type": ":obj:`float`, optional",
+     "desc": "Number of samples in time (not required if ``R`` is in time)"
+    },
+    {
+     "name": "dr",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling of receiver integration axis"
+    },
+    {
+     "name": "nfmax",
+     "type": ":obj:`int`, optional",
+     "desc": "Index of max frequency to include in deconvolution process"
+    },
+    {
+     "name": "wav",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Wavelet to apply to direct arrival when created using ``trav``"
+    },
+    {
+     "name": "toff",
+     "type": ":obj:`float`, optional",
+     "desc": "Time-offset to apply to traveltime"
+    },
+    {
+     "name": "nsmooth",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of samples of smoothing operator to apply to window"
+    },
+    {
+     "name": "saveRt",
+     "type": ":obj:`bool`, optional",
+     "desc": "Save ``R`` and ``R.H`` to speed up the computation of adjoint of :class:`pylops.signalprocessing.Fredholm1` (``True``) or create ``R.H`` on-the-fly (``False``) Note that ``saveRt=True`` will be faster but double the amount of required memory"
+    },
+    {
+     "name": "prescaled",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply scaling to ``R`` (``False``) or not (``False``) when performing spatial and temporal summations within the :class:`pylops.waveeqprocessing.MDC` operator. In case ``prescaled=True``, the ``R`` is assumed to have been pre-scaled by the user."
+    },
+    {
+     "name": "fftengine",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 1.17.0  Engine used for fft computation (``numpy``, ``scipy`` or ``fftw``)"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`bool`, optional",
+     "desc": "Type of elements in input array."
+    }
+   ],
+   "notes": "Marchenko redatuming is a method that allows to produce correct\nsubsurface-to-surface responses given the availability of a\nreflection data and a macro-velocity model [1]_.\n\nThe Marchenko equations can be written in a compact matrix\nform [2]_ and solved by means of iterative solvers such as LSQR:\n\n.. math::\n    \\begin{bmatrix}\n       \\Theta \\mathbf{R} \\mathbf{f_d^+}  \\\\\n       \\mathbf{0}\n    \\end{bmatrix} =\n    \\mathbf{I} -\n    \\begin{bmatrix}\n       \\mathbf{0}  &   \\Theta \\mathbf{R}   \\\\\n       \\Theta \\mathbf{R^*} & \\mathbf{0}\n    \\end{bmatrix}\n    \\begin{bmatrix}\n       \\mathbf{f^-}  \\\\\n       \\mathbf{f_m^+}\n    \\end{bmatrix}\n\nFinally the subsurface Green's functions can be obtained applying the\nfollowing operator to the retrieved focusing functions\n\n.. math::\n    \\begin{bmatrix}\n       -\\mathbf{g^-}  \\\\\n       \\mathbf{g^{+ *}}\n    \\end{bmatrix} =\n    \\mathbf{I} -\n    \\begin{bmatrix}\n       \\mathbf{0}  &    \\mathbf{R}   \\\\\n       \\mathbf{R^*} & \\mathbf{0}\n    \\end{bmatrix}\n    \\begin{bmatrix}\n       \\mathbf{f^-}  \\\\\n       \\mathbf{f^+}\n    \\end{bmatrix}\n\nHere :math:`\\mathbf{R}` is the monopole-to-particle velocity seismic\nresponse (already multiplied by 2).\n\n.. [1] Wapenaar, K., Thorbecke, J., Van der Neut, J., Broggini, F.,\n    Slob, E., and Snieder, R., \"Marchenko imaging\", Geophysics, vol. 79,\n    pp. WA39-WA57. 2014.\n\n.. [2] van der Neut, J., Vasconcelos, I., and Wapenaar, K. \"On Green's\n   function retrieval by iterative substitution of the coupled\n   Marchenko equations\", Geophysical Journal International, vol. 203,\n   pp. 792-813. 2015.",
+   "examples": ""
+  },
   "SeismicInterpolation": {
    "name": "SeismicInterpolation",
    "kind": "workflow",
@@ -5437,7 +5508,7 @@
    "name": "WavefieldDecomposition",
    "kind": "workflow",
    "module": "pylops.waveeqprocessing.wavedecomposition",
-   "signature": "(p: NDArray[numpy.number], vz: NDArray[numpy.number], nt: int, nr: int | collections.abc.Sequence[int] | NDArray[numpy.integer], dt: float, dr: float, rho: float, vel: float, nffts: collections.abc.Sequence[int] | NDArray[numpy.integer] | tuple[None, None, None] = (None, None, None), critical: float = 100.0, ntaper: int = 10, scaling: float = 1.0, kind: Literal['inverse', 'analytical'] = 'inverse', restriction: pylops.linearoperator.LinearOperator | None = None, sptransf: pylops.linearoperator.LinearOperator | None = None, solver: collections.abc.Callable = <function lsqr at 0x107b57920>, dottest: bool = False, dtype: DTypeLike = 'complex128', **kwargs_solver) -> tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "signature": "(p: NDArray[numpy.number], vz: NDArray[numpy.number], nt: int, nr: int | collections.abc.Sequence[int] | NDArray[numpy.integer], dt: float, dr: float, rho: float, vel: float, nffts: collections.abc.Sequence[int] | NDArray[numpy.integer] | tuple[None, None, None] = (None, None, None), critical: float = 100.0, ntaper: int = 10, scaling: float = 1.0, kind: Literal['inverse', 'analytical'] = 'inverse', restriction: pylops.linearoperator.LinearOperator | None = None, sptransf: pylops.linearoperator.LinearOperator | None = None, solver: collections.abc.Callable = <function lsqr at 0x107c1b920>, dottest: bool = False, dtype: DTypeLike = 'complex128', **kwargs_solver) -> tuple[NDArray[numpy.number], NDArray[numpy.number]]",
    "summary": "Up-down wavefield decomposition.",
    "parameters": [
     {
@@ -5543,7 +5614,7 @@
    "name": "Deghosting",
    "kind": "workflow",
    "module": "pylops.waveeqprocessing.oneway",
-   "signature": "(p: NDArray[numpy.number], nt: int, nr: int | tuple[int, int], dt: float, dr: collections.abc.Sequence[float], vel: float, zrec: float, kind: str | None = 'p', pd: NDArray[numpy.number] | None = None, win: NDArray[numpy.number] | None = None, npad: tuple[int] | tuple[int, int] = (11, 11), ntaper: tuple[int, int] = (11, 11), restriction: pylops.linearoperator.LinearOperator | None = None, sptransf: pylops.linearoperator.LinearOperator | None = None, solver: collections.abc.Callable = <function lsqr at 0x107b57920>, dottest: bool = False, dtype: DTypeLike = 'complex128', **kwargs_solver) -> tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "signature": "(p: NDArray[numpy.number], nt: int, nr: int | tuple[int, int], dt: float, dr: collections.abc.Sequence[float], vel: float, zrec: float, kind: str | None = 'p', pd: NDArray[numpy.number] | None = None, win: NDArray[numpy.number] | None = None, npad: tuple[int] | tuple[int, int] = (11, 11), ntaper: tuple[int, int] = (11, 11), restriction: pylops.linearoperator.LinearOperator | None = None, sptransf: pylops.linearoperator.LinearOperator | None = None, solver: collections.abc.Callable = <function lsqr at 0x107c1b920>, dottest: bool = False, dtype: DTypeLike = 'complex128', **kwargs_solver) -> tuple[NDArray[numpy.number], NDArray[numpy.number]]",
    "summary": "Wavefield deghosting.",
    "parameters": [
     {
@@ -5638,6 +5709,77 @@
     }
    ],
    "notes": "The up- and down-going components of a seismic data (:math:`p^-(x, t)`\nand :math:`p^+(x, t)`) can be estimated from single-component data\n:math:`p(x, t)` using a ghost model.\n\nThe basic idea [1]_ is that of using a one-way propagator in the f-k domain\n(also referred to as ghost model) to predict the down-going field\nfrom the up-going one (excluded the direct arrival and its source\nghost referred here to as :math:`p_d(x, t)`):\n\n.. math::\n    p^+ - p_d = e^{-j k_z 2 z_\\text{rec}} p^-\n\nwhere :math:`k_z` is the vertical wavenumber and :math:`z_\\text{rec}` is the\ndepth of the array of receivers\n\nIn a matrix form we can thus write the total wavefield as:\n\n.. math::\n    \\mathbf{p} - \\mathbf{p_d} = (\\mathbf{I} \\pm \\Phi) \\mathbf{p}^-\n\nwhere :math:`\\Phi` is one-way propagator implemented via the\n:class:`pylops.waveeqprocessing.PhaseShift` operator. Note that :math:`+` is\nused for the pressure data, whilst :math:`-` is used for the vertical velocity\ndata.\n\n.. [1] Amundsen, L., 1993, Wavenumber-based filtering of marine point-source\n   data: GEOPHYSICS, 58, 1335\u20131348.",
+   "examples": ""
+  },
+  "LSM": {
+   "name": "LSM",
+   "kind": "workflow",
+   "module": "pylops.waveeqprocessing.lsm",
+   "signature": "(z: NDArray[numpy.number], x: NDArray[numpy.number], t: NDArray[numpy.number], srcs: NDArray[numpy.number], recs: NDArray[numpy.number], vel: NDArray[numpy.number], wav: NDArray[numpy.number], wavcenter: int, y: NDArray[numpy.number] | None = None, kind: Literal['kirchhoff', 'twowayac'] = 'kirchhoff', dottest: bool = False, **kwargs_mod) -> None",
+   "summary": "Least-squares Migration (LSM).",
+   "parameters": [
+    {
+     "name": "z",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Depth axis"
+    },
+    {
+     "name": "x",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Spatial axis"
+    },
+    {
+     "name": "t",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Time axis for data"
+    },
+    {
+     "name": "srcs",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Sources in array of size :math:`\\lbrack 2(3) \\times n_s \\rbrack`"
+    },
+    {
+     "name": "recs",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Receivers in array of size :math:`\\lbrack 2(3) \\times n_r \\rbrack`"
+    },
+    {
+     "name": "vel",
+     "type": ":obj:`numpy.ndarray` or :obj:`float`",
+     "desc": "Velocity model of size :math:`\\lbrack (n_y \\times)\\, n_x \\times n_z \\rbrack` (or constant)"
+    },
+    {
+     "name": "wav",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Wavelet"
+    },
+    {
+     "name": "wavcenter",
+     "type": ":obj:`int`",
+     "desc": "Index of wavelet center"
+    },
+    {
+     "name": "y",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Additional spatial axis (for 3-dimensional problems)"
+    },
+    {
+     "name": "kind",
+     "type": ":str`, optional",
+     "desc": "Kind of modelling operator (``kirchhoff``, ``twoway``)"
+    },
+    {
+     "name": "dottest",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply dot-test"
+    },
+    {
+     "name": "**kwargs_mod",
+     "type": ":obj:`int`, optional",
+     "desc": "Additional arguments to pass to modelling operators"
+    }
+   ],
+   "notes": "Inverting a demigration operator is generally referred in the literature\nas least-squares migration (LSM) as historically a least-squares cost\nfunction has been used for this purpose. In practice any other cost\nfunction could be used, for examples if\n``solver='pylops.optimization.sparsity.FISTA'`` a sparse representation of\nreflectivity is produced as result of the inversion.\n\nThis routines provides users with a easy-to-use, out-of-the-box least-squares\nmigration application that currently implements:\n\n- Kirchhoff LSM: this problem is parametrized in terms of reflectivity\n  (i.e., vertical derivative of the acoustic impedance - or velocity in case of\n  constant density). Currently, a ray-based modelling engine is used for this case\n  (see :class:`pylops.waveeqprocessing.Kirchhoff`).\n\n- Born LSM: this problem is parametrized in terms of squared slowness perturbation\n  (in the constant density case) and it is solved using an acoustic two-way eave equation\n  modelling engine (see :class:`pylops.waveeqprocessing.AcousticWave2D`).\n\nThe following table shows the current status of the LSM application:\n\n+------------------+----------------------+-----------+------------+\n|                  |  Kirchhoff integral  |   WKBJ    |   Wave eq  |\n+==================+======================+===========+============+\n| Reflectivity     |          V           |    X      |     X      |\n+------------------+----------------------+-----------+------------+\n| Slowness-squared |          X           |    X      |     V      |\n+------------------+----------------------+-----------+------------+\n\nFinally, it is worth noting that for both cases the first iteration of an iterative\nscheme aimed at inverting the demigration operator is a simple a projection of the\nrecorded data into the model domain. An approximate (band-limited)  image of the subsurface\nis therefore created. This process is referred to in the literature as *migration*.",
    "examples": ""
   },
   "PoststackInversion": {
