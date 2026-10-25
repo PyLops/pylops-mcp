@@ -20,6 +20,7 @@ placeholder to be replaced.
 
 ## Phase 2 — Quality improvements
 - Migrate to `mcp` 2.x: drop the `mcp<2` pin, switch `FastMCP` (`mcp.server.fastmcp`) to `MCPServer` (`mcp.server.mcpserver`), and adapt other changed APIs (see https://py.sdk.modelcontextprotocol.io/v2/migration/).
+- Index operators built through factory functions (e.g. `FFT`, `Radon2D`): they are functions returning `LinearOperator` objects, not `LinearOperator` subclasses, so Phase 1 introspection misses them.
 - Index the PyLops `examples/` gallery by imported operators and return them from `get_operator`.
 - Structured fields: `explicit`, dtype, shape semantics, CuPy/JAX backend support, for filtering.
 - Better search: token/fuzzy scoring over name, summary, tags; embeddings only if substring search proves insufficient.
