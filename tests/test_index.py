@@ -104,5 +104,6 @@ def test_pyproximal_api_is_complete() -> None:
         assert hasattr(primal, name)
         assert name in cat["solvers"]
     assert {"PrimalDual", "PALM", "PlugAndPlay", "Bregman"} <= set(cat["solvers"])
-    # RED is both a proximal operator and a solver, kept in separate pools
-    assert cat["operators"]["RED"]["module"] != cat["solvers"]["RED"]["module"]
+    # a name can be both operator and solver (e.g. RED in newer releases)
+    for name in set(cat["operators"]) & set(cat["solvers"]):
+        assert cat["operators"][name]["module"] != cat["solvers"][name]["module"]
