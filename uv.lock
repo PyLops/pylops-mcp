@@ -1667,6 +1667,8 @@ dependencies = [
     { name = "numpydoc" },
     { name = "packaging" },
     { name = "pylops" },
+    { name = "pyproximal", version = "0.12.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "pyproximal", version = "0.13.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
 
 [package.dev-dependencies]
@@ -1682,6 +1684,7 @@ requires-dist = [
     { name = "numpydoc", specifier = ">=1.11.0" },
     { name = "packaging" },
     { name = "pylops", specifier = ">=2.8.0" },
+    { name = "pyproximal", specifier = ">=0.9.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -1689,6 +1692,50 @@ dev = [
     { name = "mypy" },
     { name = "pytest" },
     { name = "ruff" },
+]
+
+[[package]]
+name = "pyproximal"
+version = "0.12.0"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version < '3.11'",
+]
+dependencies = [
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "pylops", marker = "python_full_version < '3.11'" },
+    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/68/cf/5dca9c5e1d292969cda65e0a8e14cd2071a3c781157214ad619044f818c8/pyproximal-0.12.0.tar.gz", hash = "sha256:c3979e042c5324bbaaf4e19e80102cee6604a5eceec6350cdbe0445f4ccf1458", size = 359547, upload-time = "2026-04-18T20:06:02.737Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3b/a1/cbebf2a0d96b01a855b71941675542a57fc1791540ada591e2da5f2ee527/pyproximal-0.12.0-py3-none-any.whl", hash = "sha256:b84ba73404c4428c64867a1b6079bb1f87718209d5f41e2eb17f71d47dcfde8f", size = 114021, upload-time = "2026-04-18T20:06:01.106Z" },
+]
+
+[[package]]
+name = "pyproximal"
+version = "0.13.0"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version >= '3.15'",
+    "python_full_version == '3.14.*'",
+    "python_full_version == '3.13.*' and sys_platform == 'emscripten'",
+    "python_full_version == '3.12.*' and sys_platform == 'emscripten'",
+    "python_full_version == '3.13.*' and sys_platform != 'emscripten'",
+    "python_full_version == '3.12.*' and sys_platform != 'emscripten'",
+    "python_full_version == '3.11.*'",
+]
+dependencies = [
+    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
+    { name = "numpy", version = "2.5.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "pylops", marker = "python_full_version >= '3.11'" },
+    { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
+    { name = "scipy", version = "1.18.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "typing-extensions", marker = "python_full_version >= '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fc/5f/03f0e4e1e2d69a70f8c6519bb822172a391ff929cfd82f8b88ecbc6e9211/pyproximal-0.13.0.tar.gz", hash = "sha256:fd729c0ea4c9f0805ad8481854d6457173340b6efd9628b5ad29fa40836bc6f7", size = 367148, upload-time = "2026-10-03T19:56:04.939Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/35/43/5f26b4b144a63985a3e5bd03be81254137cc6fed896857bf0eb9fb992ed5/pyproximal-0.13.0-py3-none-any.whl", hash = "sha256:41f9df07e6880c03d6fc9a023964d5cbf39504cb061472edeee5c821423125bd", size = 136978, upload-time = "2026-10-03T19:56:03.35Z" },
 ]
 
 [[package]]

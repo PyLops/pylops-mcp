@@ -27,6 +27,7 @@ dependencies = [
     "mcp[cli]>=2,<3",
     "numpydoc>=1.11.0",
     "pylops>=2.8.0",
+    "pyproximal>=0.9.0",
     "packaging",
 ]
 
@@ -68,5 +69,5 @@ warn_unused_ignores = true
 pylops-mcp = "pylops_mcp.server:main"
 
 [[tool.mypy.overrides]]
-module = ["pylops.*", "numpydoc.*"]
+module = ["pylops.*", "pyproximal.*", "numpydoc.*"]
 ignore_missing_imports = true
