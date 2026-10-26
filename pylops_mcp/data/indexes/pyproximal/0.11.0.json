@@ -1,0 +1,2228 @@
+{
+ "pyproximal_version": "0.11.0",
+ "operators": {
+  "Box": {
+   "name": "Box",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Box",
+   "signature": "(lower: Union[float, NDArray[numpy.number]] = -inf, upper: Union[float, NDArray[numpy.number]] = inf) -> None",
+   "summary": "Box proximal operator.",
+   "parameters": [
+    {
+     "name": "lower",
+     "type": ":obj:`float` or :obj:`np.ndarray`, optional",
+     "desc": "Lower bound"
+    },
+    {
+     "name": "upper",
+     "type": ":obj:`float` or :obj:`np.ndarray`, optional",
+     "desc": "Upper bound"
+    }
+   ],
+   "notes": "As the Box is an indicator function, the proximal operator corresponds to\nits orthogonal projection (see :class:`pyproximal.projection.BoxProj` for\ndetails.",
+   "examples": ""
+  },
+  "Simplex": {
+   "name": "Simplex",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Simplex",
+   "signature": "(n: int, radius: float, dims: Optional[tuple[int, ...]] = None, axis: int = -1, maxiter: int = 100, ftol: float = 1e-08, xtol: float = 1e-08, call: bool = True, engine: str = 'numpy') -> pyproximal.ProxOperator.ProxOperator",
+   "summary": "Simplex proximal operator.",
+   "parameters": [
+    {
+     "name": "n",
+     "type": ":obj:`int`",
+     "desc": "Number of elements of input vector"
+    },
+    {
+     "name": "radius",
+     "type": ":obj:`float`",
+     "desc": "Radius"
+    },
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Dimensions of the matrix onto which the input vector is reshaped"
+    },
+    {
+     "name": "axis",
+     "type": ":obj:`int`, optional",
+     "desc": "Axis along which simplex is repeatedly applied when ``dims`` is provided"
+    },
+    {
+     "name": "maxiter",
+     "type": ":obj:`int`, optional",
+     "desc": "Maximum number of iterations used by bisection"
+    },
+    {
+     "name": "ftol",
+     "type": ":obj:`float`, optional",
+     "desc": "Function tolerance in bisection (only with ``engine='numba'`` or ``engine='cuda'``)"
+    },
+    {
+     "name": "xtol",
+     "type": ":obj:`float`, optional",
+     "desc": "Solution absolute tolerance in bisection"
+    },
+    {
+     "name": "call",
+     "type": ":obj:`bool`, optional",
+     "desc": "Evalutate call method (``True``) or not (``False``)"
+    },
+    {
+     "name": "engine",
+     "type": ":obj:`str`, optional",
+     "desc": "Engine used for simplex computation (``numpy``, ``numba``or ``cuda``)."
+    }
+   ],
+   "notes": "As the Simplex is an indicator function, the proximal operator corresponds\nto its orthogonal projection (see :class:`pyproximal.projection.SimplexProj`\nfor details.\n\nNote that ``tau`` does not have effect for this proximal operator, any\npositive number can be provided.",
+   "examples": ""
+  },
+  "Intersection": {
+   "name": "Intersection",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Intersection",
+   "signature": "(k: int, n: int, sigma: Union[float, NDArray[numpy.number]], niter: int = 100, tol: float = 1e-05, call: bool = True) -> None",
+   "summary": "Intersection of multiple convex sets operator.",
+   "parameters": [
+    {
+     "name": "k",
+     "type": ":obj:`int`",
+     "desc": "Size of vector to be projected"
+    },
+    {
+     "name": "n",
+     "type": ":obj:`int`",
+     "desc": "Number of vectors to be projected simultaneously"
+    },
+    {
+     "name": "sigma",
+     "type": ":obj:`np.ndarray` or :obj:`float`",
+     "desc": "Matrix of distances of size :math:`k \\times k` (or single value in the case of constant matrix)"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": "Toleance of update"
+    },
+    {
+     "name": "call",
+     "type": ":obj:`bool`, optional",
+     "desc": "Evalutate call method (``True``) or not (``False``)"
+    }
+   ],
+   "notes": "As the Intersection is an indicator function, the proximal operator\ncorresponds to its orthogonal projection (see\n:class:`pyproximal.projection.IntersectionProj` for details.",
+   "examples": ""
+  },
+  "AffineSet": {
+   "name": "AffineSet",
+   "kind": "operator",
+   "module": "pyproximal.proximal.AffineSet",
+   "signature": "(Op: 'LinearOperator', b: NDArray[numpy.number], niter: int) -> None",
+   "summary": "Affine set proximal operator.",
+   "parameters": [
+    {
+     "name": "Op",
+     "type": ":obj:`pylops.LinearOperator`",
+     "desc": "Linear operator"
+    },
+    {
+     "name": "b",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Data vector"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`",
+     "desc": "Number of iterations of iterative scheme used to compute the projection."
+    }
+   ],
+   "notes": "As the Affine set is an indicator function, the proximal operator corresponds to\nits orthogonal projection (see :class:`pyproximal.projection.AffineSetProj` for\ndetails.",
+   "examples": ""
+  },
+  "Quadratic": {
+   "name": "Quadratic",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Quadratic",
+   "signature": "(Op: Optional[ForwardRef('LinearOperator')] = None, b: Optional[NDArray[numpy.number]] = None, c: float = 0.0, niter: int = 10, x0: Optional[NDArray[numpy.number]] = None, warm: bool = True) -> None",
+   "summary": "Quadratic function proximal operator.",
+   "parameters": [
+    {
+     "name": "Op",
+     "type": ":obj:`pylops.LinearOperator`, optional",
+     "desc": "Linear operator (must be square)"
+    },
+    {
+     "name": "b",
+     "type": ":obj:`np.ndarray`, optional",
+     "desc": "Vector"
+    },
+    {
+     "name": "c",
+     "type": ":obj:`float`, optional",
+     "desc": "Scalar"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme used to compute the proximal"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`np.ndarray`, optional",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "warm",
+     "type": ":obj:`bool`, optional",
+     "desc": "Warm start (``True``) or not (``False``). Uses estimate from previous call of ``prox`` method."
+    }
+   ],
+   "notes": "The Quadratic proximal operator is defined as:\n\n.. math::\n\n    \\prox_{\\tau f}(\\mathbf{x}) =\n    \\left(\\mathbf{I} + \\tau  \\mathbf{Op} \\right)^{-1} \\left(\\mathbf{x} -\n    \\tau \\mathbf{b}\\right)\n\nwhen both ``Op`` and ``b`` are provided. This formula shows that the\nproximal operator requires the solution of an inverse problem. If the\noperator ``Op`` is of kind ``explicit=True``, we can solve this problem\ndirectly. On the other hand if ``Op`` is of kind ``explicit=False``, an\niterative solver is employed. In this case it is possible to provide a warm\nstart via the ``x0`` input parameter.\n\nWhen only ``b`` is provided, the proximal operator reduces to:\n\n.. math::\n\n    \\prox_{\\mathbf{b}^T \\mathbf{x} + c}(\\mathbf{x}) =\n    \\mathbf{x} - \\tau \\mathbf{b}\n\nFinally if also ``b`` is not provided, the proximal operator of a constant\nfunction simply becomes :math:`\\prox_c(\\mathbf{x}) = \\mathbf{x}`",
+   "examples": ""
+  },
+  "Euclidean": {
+   "name": "Euclidean",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Euclidean",
+   "signature": "(sigma: float = 1.0) -> None",
+   "summary": "Euclidean norm proximal operator.",
+   "parameters": [
+    {
+     "name": "sigma",
+     "type": ":obj:`int`, optional",
+     "desc": "Multiplicative coefficient of :math:`L_{2}` norm"
+    }
+   ],
+   "notes": "The Euclidean proximal operator is defined as:\n\n.. math::\n\n    \\prox_{\\tau \\sigma \\|\\cdot\\|_2}(\\mathbf{x}) =\n    \\left(1 - \\frac{\\tau \\sigma }{\\max\\{\\|\\mathbf{x}\\|_2,\n    \\tau \\sigma \\}}\\right) \\mathbf{x}\n\nThis operator is sometimes called *block soft thresholding*.\n\nMoreover, as the conjugate of the Euclidean norm is the orthogonal\nprojection of its dual norm (i.e., Euclidean norm) onto a unit ball,\nits dual operator is defined as:\n\n.. math::\n\n    \\prox^*_{\\tau \\sigma \\|\\cdot\\|_2}(\\mathbf{x}) =\n    \\frac{\\sigma \\mathbf{x}}{\\max\\{\\|\\mathbf{x}\\|_2, \\sigma\\}}",
+   "examples": ""
+  },
+  "EuclideanBall": {
+   "name": "EuclideanBall",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Euclidean",
+   "signature": "(center: Union[NDArray[numpy.number], float], radius: float) -> None",
+   "summary": "Euclidean ball proximal operator.",
+   "parameters": [
+    {
+     "name": "center",
+     "type": ":obj:`np.ndarray` or :obj:`float`",
+     "desc": "Center of the ball"
+    },
+    {
+     "name": "radius",
+     "type": ":obj:`float`",
+     "desc": "Radius"
+    }
+   ],
+   "notes": "As the Euclidean ball is an indicator function, the proximal operator\ncorresponds to its orthogonal projection\n(see :class:`pyproximal.projection.EuclideanBallProj` for details.",
+   "examples": ""
+  },
+  "L0": {
+   "name": "L0",
+   "kind": "operator",
+   "module": "pyproximal.proximal.L0",
+   "signature": "(sigma: Union[float, NDArray[numpy.number], Callable[[int], Union[float, NDArray[numpy.number]]]] = 1.0) -> None",
+   "summary": ":math:`L_0` norm proximal operator.",
+   "parameters": [
+    {
+     "name": "sigma",
+     "type": ":obj:`float` or :obj:`np.ndarray` or :obj:`func`, optional",
+     "desc": "Multiplicative coefficient of L0 norm. This can be a constant number, a list of values (for multidimensional inputs, acting on the second dimension) or a function that is called passing a counter which keeps track of how many times the ``prox`` method has been invoked before and returns a scalar (or a list of) ``sigma`` to be used."
+    }
+   ],
+   "notes": "The :math:`\\ell_0` proximal operator is defined as:\n\n.. math::\n\n    \\prox_{\\tau \\sigma \\|\\cdot\\|_0}(\\mathbf{x}) =\n    \\operatorname{hard}(\\mathbf{x}, \\tau \\sigma) =\n    \\begin{cases}\n    x_i, & x_i < -\\tau \\sigma \\\\\n    0, & -\\tau\\sigma \\leq x_i \\leq \\tau\\sigma \\\\\n    x_i,  & x_i > \\tau\\sigma\\\\\n    \\end{cases}\n\nwhere :math:`\\operatorname{hard}` is the so-called called *hard thresholding*.",
+   "examples": ""
+  },
+  "L0Ball": {
+   "name": "L0Ball",
+   "kind": "operator",
+   "module": "pyproximal.proximal.L0",
+   "signature": "(radius: Union[int, Callable[[int], int]]) -> None",
+   "summary": ":math:`L_0` ball proximal operator.",
+   "parameters": [
+    {
+     "name": "radius",
+     "type": ":obj:`int` or :obj:`func`, optional",
+     "desc": "Radius. This can be a constant number or a function that is called passing a counter which keeps track of how many times the ``prox`` method has been invoked before and returns a scalar ``radius`` to be used."
+    }
+   ],
+   "notes": "As the L0 ball is an indicator function, the proximal operator\ncorresponds to its orthogonal projection\n(see :class:`pyproximal.projection.L0BallProj` for details.",
+   "examples": ""
+  },
+  "L01Ball": {
+   "name": "L01Ball",
+   "kind": "operator",
+   "module": "pyproximal.proximal.L0",
+   "signature": "(ndim: int, radius: Union[int, Callable[[int], int]]) -> None",
+   "summary": "",
+   "parameters": [],
+   "notes": "",
+   "examples": ""
+  },
+  "L10Ball": {
+   "name": "L10Ball",
+   "kind": "operator",
+   "module": "pyproximal.proximal.L0",
+   "signature": "(ndim: int, radius: Union[int, Callable[[int], int]]) -> None",
+   "summary": ":math:`L_{1,0}` ball proximal operator.",
+   "parameters": [
+    {
+     "name": "ndim",
+     "type": ":obj:`int`",
+     "desc": "Number of dimensions :math:`N_{dim}`. Used to reshape the input array in a matrix of size :math:`N_{dim} \\times N'_{x}` where :math:`N'_x = \\frac{N_x}{N_{dim}}`. Note that the input vector ``x`` should be created by stacking vectors from different dimensions."
+    },
+    {
+     "name": "radius",
+     "type": ":obj:`int` or :obj:`func`, optional",
+     "desc": "Radius. This can be a constant number or a function that is called passing a counter which keeps track of how many times the ``prox`` method has been invoked before and returns a scalar ``radius`` to be used."
+    }
+   ],
+   "notes": "As the :math:`L_{1,0}` ball is an indicator function, the proximal operator\ncorresponds to its orthogonal projection\n(see :class:`pyproximal.projection.L10BallProj` for details.",
+   "examples": ""
+  },
+  "L1": {
+   "name": "L1",
+   "kind": "operator",
+   "module": "pyproximal.proximal.L1",
+   "signature": "(sigma: Union[float, NDArray[numpy.number], Callable[[int], Union[float, NDArray[numpy.number]]]] = 1.0, g: Optional[NDArray[numpy.number]] = None) -> None",
+   "summary": "L1 norm proximal operator.",
+   "parameters": [
+    {
+     "name": "sigma",
+     "type": ":obj:`float` or :obj:`np.ndarray` or :obj:`func`, optional",
+     "desc": "Multiplicative coefficient of L1 norm. This can be a constant number, a list of values (for multidimensional inputs, acting on the second dimension) or a function that is called passing a counter which keeps track of how many times the ``prox`` method has been invoked before and returns a scalar (or a list of) ``sigma`` to be used."
+    },
+    {
+     "name": "g",
+     "type": ":obj:`np.ndarray`, optional",
+     "desc": "Vector to be subtracted"
+    }
+   ],
+   "notes": "The :math:`\\ell_1` proximal operator is defined as [1]_:\n\n.. math::\n\n    \\prox_{\\tau \\sigma \\|\\cdot\\|_1}(\\mathbf{x}) =\n    \\operatorname{soft}(\\mathbf{x}, \\tau \\sigma) =\n    \\begin{cases}\n    x_i + \\tau \\sigma, & x_i - g_i < -\\tau \\sigma \\\\\n    g_i, & -\\tau\\sigma \\leq x_i - g_i \\leq \\tau\\sigma \\\\\n    x_i - \\tau\\sigma,  & x_i - g_i > \\tau\\sigma\\\\\n    \\end{cases}\n\nwhere :math:`\\operatorname{soft}` is the so-called called *soft thresholding*.\n\nMoreover, as the conjugate of the :math:`\\ell_1` norm is the orthogonal projection of\nits dual norm (i.e., :math:`\\ell_\\inf` norm) onto a unit ball, its dual\noperator (when :math:`\\mathbf{g}=\\mathbf{0}`) is defined as:\n\n.. math::\n\n    \\prox^*_{\\tau \\sigma \\|\\cdot\\|_1}(\\mathbf{x}) = P_{\\|\\cdot\\|_{\\infty} <=\\sigma}(\\mathbf{x}) =\n    \\begin{cases}\n    -\\sigma, & x_i < -\\sigma \\\\\n    x_i,& -\\sigma \\leq x_i \\leq \\sigma \\\\\n    \\sigma,  & x_i > \\sigma\\\\\n    \\end{cases}\n\n.. [1] Chambolle, and A., Pock, \"A first-order primal-dual algorithm for\n    convex problems with applications to imaging\", Journal of Mathematical\n    Imaging and Vision, 40, 8pp. 120\u2013145. 2011.",
+   "examples": ""
+  },
+  "L1Ball": {
+   "name": "L1Ball",
+   "kind": "operator",
+   "module": "pyproximal.proximal.L1",
+   "signature": "(n: int, radius: float, maxiter: int = 100, xtol: float = 1e-05) -> None",
+   "summary": "L1 ball proximal operator.",
+   "parameters": [
+    {
+     "name": "n",
+     "type": ":obj:`int`",
+     "desc": "Number of elements of input vector"
+    },
+    {
+     "name": "radius",
+     "type": ":obj:`float`",
+     "desc": "Radius"
+    },
+    {
+     "name": "maxiter",
+     "type": ":obj:`int`, optional",
+     "desc": "Maximum number of iterations used by :func:`scipy.optimize.bisect`"
+    },
+    {
+     "name": "xtol",
+     "type": ":obj:`float`, optional",
+     "desc": "Absolute tolerance of :func:`scipy.optimize.bisect`"
+    }
+   ],
+   "notes": "As the L1 ball is an indicator function, the proximal operator\ncorresponds to its orthogonal projection\n(see :class:`pyproximal.projection.L1BallProj` for details.",
+   "examples": ""
+  },
+  "L2": {
+   "name": "L2",
+   "kind": "operator",
+   "module": "pyproximal.proximal.L2",
+   "signature": "(Op: Optional[ForwardRef('LinearOperator')] = None, b: Optional[NDArray[numpy.number]] = None, q: Optional[NDArray[numpy.number]] = None, sigma: float = 1.0, alpha: float = 1.0, qgrad: bool = True, niter: Union[int, Callable[[int], int]] = 10, x0: Optional[NDArray[numpy.number]] = None, warm: bool = True, solver: Optional[str] = 'legacy', densesolver: Optional[str] = None, kwargs_solver: Optional[Dict[str, Any]] = None) -> None",
+   "summary": "L2 Norm proximal operator.",
+   "parameters": [
+    {
+     "name": "Op",
+     "type": ":obj:`pylops.LinearOperator`, optional",
+     "desc": "Linear operator"
+    },
+    {
+     "name": "b",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Data vector"
+    },
+    {
+     "name": "q",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Dot vector"
+    },
+    {
+     "name": "sigma",
+     "type": ":obj:`int`, optional",
+     "desc": "Multiplicative coefficient of L2 norm"
+    },
+    {
+     "name": "alpha",
+     "type": ":obj:`float`, optional",
+     "desc": "Multiplicative coefficient of dot product"
+    },
+    {
+     "name": "qgrad",
+     "type": ":obj:`bool`, optional",
+     "desc": "Add q term to gradient (``True``) or not (``False``)"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int` or :obj:`func`, optional",
+     "desc": "Number of iterations of iterative scheme used to compute the proximal. This can be a constant number or a function that is called passing a counter which keeps track of how many times the ``prox`` method has been invoked before and returns the ``niter`` to be used."
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`np.ndarray`, optional",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "warm",
+     "type": ":obj:`bool`, optional",
+     "desc": "Warm start (``True``) or not (``False``). Uses estimate from previous call of ``prox`` method."
+    },
+    {
+     "name": "solver",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 0.11.0  Name of solver to use with non-explicit operators:  - ``legacy``: enforces the legacy behaviour where :py:func:`scipy.sparse.linalg.lsqr` is   used with numpy data and :py:func:`pylops.optimization.basic.lsqr` is used with cupy data   (both are applied to the normal equations); - ``cg`` to use :py:func:`pylops.optimization.basic.cg` on the   normal equations; - ``cgls`` to use :py:func:`pylops.optimization.basic.cgls` on the   regularized system of equations;"
+    },
+    {
+     "name": "densesolver",
+     "type": ":obj:`str`, optional",
+     "desc": "Use ``numpy``, ``scipy``, or ``factorize`` when dealing with explicit operators. The former two rely on dense solvers from either library, whilst the last computes a factorization of the matrix to invert and avoids to do so unless the :math:`\\tau` or :math:`\\sigma` paramets have changed. Choose ``densesolver=None`` when using PyLops versions earlier than v1.18.1 or v2.0.0"
+    },
+    {
+     "name": "**kwargs_solver",
+     "type": ":obj:`dict`, optional",
+     "desc": "Dictionary containing extra arguments for the solver selected via the ``solver`` parameter."
+    }
+   ],
+   "notes": "The L2 proximal operator is defined as:\n\n.. math::\n\n    prox_{\\tau f_\\alpha}(\\mathbf{x}) =\n    \\left(\\mathbf{I} + \\tau \\sigma \\mathbf{Op}^T \\mathbf{Op} \\right)^{-1}\n    \\left( \\mathbf{x} + \\tau \\sigma \\mathbf{Op}^T \\mathbf{b} -\n    \\tau \\alpha \\mathbf{q}\\right)\n\nwhen both ``Op`` and ``b`` are provided. This formula shows that the\nproximal operator requires the solution of an inverse problem. If the\noperator ``Op`` is of kind ``explicit=True``, we can solve this problem\ndirectly. On the other hand if ``Op`` is of kind ``explicit=False``, an\niterative solver is employed. In this case it is possible to provide a warm\nstart via the ``x0`` input parameter.\n\nNote that alternatively the proximal operator can be computed solving the following\naugumented system of equations (instead of its normal equations as shown above):\n\n.. math::\n\n    \\begin{bmatrix}\n            \\sqrt{\\tau \\sigma} \\mathbf{Op}  \\\\\n            \\mathbf{I}\n        \\end{bmatrix}\n        prox_{\\tau f_\\alpha}(\\mathbf{x}) =\n        \\begin{bmatrix}\n            \\sqrt{\\tau \\sigma} \\mathbf{b} \\\\\n            \\mathbf{x} - \\tau \\alpha \\mathbf{q}\n        \\end{bmatrix}\n\nThe choice of the parameter ``solver`` determines which of the two\napproaches is used.\n\nAlternatively, when only ``b`` is provided, ``Op`` is assumed to be an\nIdentity operator and the proximal operator reduces to:\n\n.. math::\n\n    \\prox_{\\tau f_\\alpha}(\\mathbf{x}) =\n    \\frac{\\mathbf{x} + \\tau \\sigma \\mathbf{b} - \\tau \\alpha \\mathbf{q}}\n    {1 + \\tau \\sigma}\n\nIf ``b`` is not provided, the proximal operator reduces to:\n\n.. math::\n\n    \\prox_{\\tau f_\\alpha}(\\mathbf{x}) =\n    \\frac{\\mathbf{x} - \\tau \\alpha \\mathbf{q}}{1 + \\tau \\sigma}\n\nFinally, note that the second term in :math:`f_\\alpha(\\mathbf{x})` is added\nbecause this combined expression appears in several problems where Bregman\niterations are used alongside a proximal solver.",
+   "examples": ""
+  },
+  "L2Convolve": {
+   "name": "L2Convolve",
+   "kind": "operator",
+   "module": "pyproximal.proximal.L2",
+   "signature": "(h: NDArray[numpy.number], b: NDArray[numpy.number], nfft: int = 1024, sigma: float = 1.0, dims: Optional[tuple[int, ...]] = None, dir: Optional[int] = None) -> None",
+   "summary": "L2 Norm proximal operator with convolution operator",
+   "parameters": [
+    {
+     "name": "h",
+     "type": ":obj:`np.ndarray`",
+     "desc": "Kernel of convolution operator"
+    },
+    {
+     "name": "b",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Data vector"
+    },
+    {
+     "name": "nfft",
+     "type": ":obj:`int`, optional",
+     "desc": "Fourier transform number of samples"
+    },
+    {
+     "name": "sigma",
+     "type": ":obj:`int`, optional",
+     "desc": "Multiplicative coefficient of L2 norm"
+    },
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Number of samples for each dimension (``None`` if only one dimension is available)"
+    },
+    {
+     "name": "dir",
+     "type": ":obj:`int`, optional",
+     "desc": "Direction along which smoothing is applied."
+    }
+   ],
+   "notes": "The L2Convolve proximal operator is defined as:\n\n.. math::\n\n    prox_{\\tau f}(\\mathbf{x}) =\n    F^{-1}\\left(\\frac{\\tau\\sigma F(\\mathbf{h})^* F(\\mathbf{b}) + F(\\mathbf{x})}\n    {1 + \\tau\\sigma F(\\mathbf{h})^* F(\\mathbf{h})} \\right)",
+   "examples": ""
+  },
+  "L21": {
+   "name": "L21",
+   "kind": "operator",
+   "module": "pyproximal.proximal.L21",
+   "signature": "(ndim: int, sigma: float = 1.0) -> None",
+   "summary": ":math:`L_{2,1}` proximal operator.",
+   "parameters": [
+    {
+     "name": "ndim",
+     "type": ":obj:`int`",
+     "desc": "Number of dimensions :math:`N_{dim}`. Used to reshape the input array in a matrix of size :math:`N_{dim} \\times N'_{x}` where :math:`N'_x = \\frac{N_x}{N_{dim}}`. Note that the input vector ``x`` should be created by stacking vectors from different dimensions."
+    },
+    {
+     "name": "sigma",
+     "type": ":obj:`float`, optional",
+     "desc": "Multiplicative coefficient of :math:`L_{2,1}` norm"
+    }
+   ],
+   "notes": "Given the :math:`L_{2,1}` norm of a matrix of size\n:math:`N_{dim} \\times N'_x` defined as:\n\n.. math::\n\n    \\sigma \\|\\mathbf{X}\\|_{2,1} = \\sigma \\sum_{j=0}^{N'_x} \\|\\mathbf{x}_j\\|_2 =\n    \\sigma \\sum_{j=0}^{N'_x} \\sqrt{\\sum_{i=0}^{N_{dim}}} |x_{ij}|^2\n\nthe proximal operator is:\n\n.. math::\n\n    \\prox_{\\tau \\sigma \\|\\cdot\\|_{2,1}}(\\mathbf{x}_j) =\n    \\left(1 - \\frac{\\sigma \\tau}{max\\{||\\mathbf{x}_j||_2,\n    \\sigma \\tau \\}}\\right) \\mathbf{x}_j \\quad \\forall j\n\nSimilar to the Euclidean norm, the dual operator is defined as:\n\n.. math::\n\n    \\prox^*_{\\tau \\sigma \\||\\cdot\\|_{2,1}}(\\mathbf{x}_j) =\n    \\frac{\\sigma \\mathbf{x}_j}{\\max\\{||\\mathbf{x}_j||_2, \\sigma\\}}\n    \\quad \\forall j\n\nFinally, we note that the :math:`L_{2,1}` norm is a separable function\non each column on the matrix :math:`\\mathbf{X}`. Taking advantage of the\nproperty of proximal operator of separable function [1]_, its proximal and\ndual proximal operators can be interpreted as a series of\n:class:`pyproximal.proximal.Euclidean` operators on each column\nof the matrix :math:`\\mathbf{X}`.\n\n.. [1] N., Parikh, \"Proximal Algorithms\", Foundations and Trends\n    in Optimization. 2013.",
+   "examples": ""
+  },
+  "L21_plus_L1": {
+   "name": "L21_plus_L1",
+   "kind": "operator",
+   "module": "pyproximal.proximal.L21_plus_L1",
+   "signature": "(sigma: float = 1.0, rho: float = 0.8) -> None",
+   "summary": "L21 + L1 norm proximal operator.",
+   "parameters": [
+    {
+     "name": "sigma",
+     "type": ":obj:`float`, optional",
+     "desc": "Multiplicative coefficient of :math:`L_{2,1} + L_1` mixed-norm"
+    },
+    {
+     "name": "rho",
+     "type": ":obj:`float`, optional",
+     "desc": "Balancing between sparsity of :math:`L_1` and grouping of :math:`L_{2,1}`"
+    }
+   ],
+   "notes": "The proximal operator of the :math:`L_{2,1} + L_1` mixed-norm is simply the\nproduct of each individual proximal operator [1]_.\n\n.. [1] Gramfort, Alexandre, Daniel Strohmeier, Jens Haueisen, Matti Hamalainen,\n    and Matthieu Kowalski. \"Functional brain imaging with M/EEG using structured\n    sparsity in time-frequency dictionaries.\" In Biennial International Conference\n    on Information Processing in Medical Imaging, pp. 600-611. Springer, Berlin,\n    Heidelberg, 2011.",
+   "examples": ""
+  },
+  "Huber": {
+   "name": "Huber",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Huber",
+   "signature": "(alpha: float) -> None",
+   "summary": "Huber norm proximal operator.",
+   "parameters": [
+    {
+     "name": "alpha",
+     "type": ":obj:`float`",
+     "desc": "Huber parameter"
+    }
+   ],
+   "notes": "The Huber proximal operator is defined as:\n\n.. math::\n\n    \\prox_{\\tau H_\\alpha(\\cdot)}(\\mathbf{x}) =\n    \\begin{cases}\n    \\prox_{\\frac{\\tau}{2 \\alpha} |x_i|^2}(x_i), & |x_i| \\leq \\alpha \\\\\n    \\prox_{\\tau |x_i|}(x_i), & |x_i| > \\alpha\n    \\end{cases}",
+   "examples": ""
+  },
+  "HuberCircular": {
+   "name": "HuberCircular",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Huber",
+   "signature": "(alpha: float) -> None",
+   "summary": "Circular Huber norm proximal operator.",
+   "parameters": [
+    {
+     "name": "alpha",
+     "type": ":obj:`float`",
+     "desc": "Huber parameter"
+    }
+   ],
+   "notes": "The Circular Huber proximal operator is defined as [1]_:\n\n.. math::\n\n    \\prox_{\\tau H_\\alpha(\\cdot)}(\\mathbf{x}) =\n    \\left( 1 - \\frac{\\tau}{\\max\\{\\|\\mathbf{x}\\|_2, \\tau + \\alpha \\} } \\right) \\mathbf{x}\n\n.. [1] O\u2019Donoghue, B. and Stathopoulos, G. and Boyd, S. \"A Splitting Method for Optimal Control\",\n    In the IEEE Transactions on Control Systems Technology, 2013.",
+   "examples": ""
+  },
+  "TV": {
+   "name": "TV",
+   "kind": "operator",
+   "module": "pyproximal.proximal.TV",
+   "signature": "(dims: tuple[int, ...], sigma: float = 1.0, niter: Union[int, Callable[[int], int]] = 10, rtol: float = 0.0001, **kwargs: Any) -> None",
+   "summary": "TV Norm proximal operator.",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`",
+     "desc": "Number of samples for each dimension (``None`` if only one dimension is available)"
+    },
+    {
+     "name": "sigma",
+     "type": ":obj:`float`, optional",
+     "desc": "Multiplicative coefficient of TV norm"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int` or :obj:`func`, optional",
+     "desc": "Number of iterations of iterative scheme used to compute the proximal. This can be a constant number or a function that is called passing a counter which keeps track of how many times the ``prox`` method has been invoked before and returns the ``niter`` to be used."
+    },
+    {
+     "name": "rtol",
+     "type": ":obj:`float`, optional",
+     "desc": "Relative tolerance for stopping criterion."
+    }
+   ],
+   "notes": "The proximal algorithm is implemented following [1]_.\n\n.. [1] Beck, A. and Teboulle, M., \"Fast gradient-based algorithms for constrained total\n       variation image denoising and deblurring problems\", 2009.",
+   "examples": ""
+  },
+  "RelaxedMumfordShah": {
+   "name": "RelaxedMumfordShah",
+   "kind": "operator",
+   "module": "pyproximal.proximal.RelaxedMS",
+   "signature": "(sigma: Union[float, NDArray[numpy.number], Callable[[int], Union[float, NDArray[numpy.number]]]] = 1.0, kappa: Union[float, NDArray[numpy.number], Callable[[int], Union[float, NDArray[numpy.number]]]] = 1.0) -> None",
+   "summary": "Relaxed Mumford-Shah norm proximal operator.",
+   "parameters": [
+    {
+     "name": "sigma",
+     "type": ":obj:`float` or :obj:`np.ndarray` or :obj:`func`, optional",
+     "desc": "Multiplicative coefficient of L2 norm that controls the smoothness of the solutuon. This can be a constant number, a list of values (for multidimensional inputs, acting on the second dimension) or a function that is called passing a counter which keeps track of how many times the ``prox`` method has been invoked before and returns a scalar (or a list of) ``sigma`` to be used."
+    },
+    {
+     "name": "kappa",
+     "type": ":obj:`float` or :obj:`np.ndarray` or :obj:`func`, optional",
+     "desc": "Constant value in the rMS norm which essentially controls when the norm allows a jump. This can be a constant number, a list of values (for multidimensional inputs, acting on the second dimension) or a function that is called passing a counter which keeps track of how many times the ``prox`` method has been invoked before and returns a scalar (or a list of) ``kappa`` to be used."
+    }
+   ],
+   "notes": "The :math:`rMS` proximal operator is defined as [1]_:\n\n.. math::\n    \\text{prox}_{\\tau \\text{rMS}}(x) =\n    \\begin{cases}\n    \\frac{1}{1+2\\tau\\alpha}x & \\text{ if } & \\vert x\\vert \\leq \\sqrt{\\frac{\\kappa}{\\alpha}(1 + 2\\tau\\alpha)} \\\\\n    \\kappa & \\text{ else }\n    \\end{cases}.\n\n.. [1] Strekalovskiy, E., and D. Cremers, 2014, Real-time minimization of the piecewise smooth\n        Mumford-Shah functional: European Conference on Computer Vision, 127\u2013141.",
+   "examples": ""
+  },
+  "Nuclear": {
+   "name": "Nuclear",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Nuclear",
+   "signature": "(dim: tuple[int, ...], sigma: Union[float, NDArray[numpy.number]] = 1.0) -> None",
+   "summary": "Nuclear norm proximal operator.",
+   "parameters": [
+    {
+     "name": "dim",
+     "type": ":obj:`tuple`",
+     "desc": "Size of matrix :math:`\\mathbf{X}`"
+    },
+    {
+     "name": "sigma",
+     "type": ":obj:`float` or :obj:`numpy.ndarray`, optional",
+     "desc": "Multiplicative coefficient of the nuclear norm penalty. If ``sigma`` is a float the same penalty is applied for all singular values. If instead ``sigma`` is an array the weight ``sigma[i]`` will be applied to the *i*:th singular value. This is often referred to as the *weighted nuclear norm*."
+    }
+   ],
+   "notes": "The nuclear norm proximal operator is:\n\n.. math::\n\n    \\prox_{\\tau \\sigma \\|\\cdot\\|_*}(\\mathbf{X}) =\n    \\mathbf{U} \\diag \\{ \\prox_{\\tau \\sigma \\|\\cdot\\|_1}(\\boldsymbol\\lambda) \\} \\mathbf{V}^H\n\nwhere :math:`\\mathbf{U}`, :math:`\\boldsymbol\\lambda`, and\n:math:`\\mathbf{V}` define the SVD of :math:`X`.\n\nThe weighted nuclear norm is convex if the sequence :math:`\\{\\sigma_i\\}_i` is\nnon-ascending, but is in general non-convex; however, when the weights are\nnon-descending it can be shown that applying the soft-thresholding operator on the\nsingular values still yields a fixed point (w. r. t. a specific algorithm), see\n[1]_ for details.\n\n.. [1] Gu et al. \"Weighted Nuclear Norm Minimization with Application to Image\n    Denoising\", In the IEEE Conference on Computer Vision and Pattern Recognition,\n    2862-2869, 2014.",
+   "examples": ""
+  },
+  "NuclearBall": {
+   "name": "NuclearBall",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Nuclear",
+   "signature": "(dims: tuple[int, ...], radius: float, maxiter: int = 100, xtol: float = 1e-05) -> None",
+   "summary": "Nuclear ball proximal operator.",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`",
+     "desc": "Dimensions of input matrix"
+    },
+    {
+     "name": "radius",
+     "type": ":obj:`float`",
+     "desc": "Radius"
+    },
+    {
+     "name": "maxiter",
+     "type": ":obj:`int`, optional",
+     "desc": "Maximum number of iterations used by :func:`scipy.optimize.bisect`"
+    },
+    {
+     "name": "xtol",
+     "type": ":obj:`float`, optional",
+     "desc": "Absolute tolerance of :func:`scipy.optimize.bisect`"
+    }
+   ],
+   "notes": "As the Nuclear ball is an indicator function, the proximal operator\ncorresponds to its orthogonal projection\n(see :class:`pyproximal.projection.NuclearBallProj` for details.",
+   "examples": ""
+  },
+  "Orthogonal": {
+   "name": "Orthogonal",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Orthogonal",
+   "signature": "(f: pyproximal.ProxOperator.ProxOperator, Q: 'LinearOperator', partial: bool = False, b: Optional[NDArray[numpy.number]] = None, alpha: float = 1.0) -> None",
+   "summary": "Proximal operator of any function of the product between an orthogonal matrix and a vector (plus summation of a vector).",
+   "parameters": [
+    {
+     "name": "f",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator"
+    },
+    {
+     "name": "Q",
+     "type": ":obj:`pylops.LinearOperator`",
+     "desc": "Orthogonal operator"
+    },
+    {
+     "name": "partial",
+     "type": ":obj:`bool`, optional",
+     "desc": "Partial (``True``) of full (``False``) orthogonality"
+    },
+    {
+     "name": "b",
+     "type": ":obj:`np.ndarray`, optional",
+     "desc": "Vector"
+    },
+    {
+     "name": "alpha",
+     "type": ":obj:`float`, optional",
+     "desc": "Positive coefficient for partial orthogonality. It will be ignored if ``partial=False``"
+    }
+   ],
+   "notes": "The Proximal operator of any function of the form\n:math:`g(\\mathbf{x}) = f(\\mathbf{Qx} + \\mathbf{b})` with the operator\n:math:`\\mathbf{Q}` satisfying the following condition\n:math:`\\mathbf{Q}\\mathbf{Q}^T = \\alpha \\mathbf{I}` (partial orthogonality)\nis [1]_:\n\n.. math::\n\n    \\prox_{\\tau g}(x) = \\frac{1}{\\alpha} ((\\alpha \\mathbf{I} -\n    \\mathbf{Q}^H \\mathbf{Q}) \\mathbf{x} + \\mathbf{Q}^H\n    (\\prox_{\\alpha \\tau f}(\\mathbf{Qx} + \\mathbf{b}) - \\mathbf{b}))\n\nA special case arises when :math:`\\mathbf{Q}\\mathbf{Q}^T =\n\\mathbf{Q}^T\\mathbf{Q} = \\mathbf{I}`\n(full orthogonality), and the proximal operator reduces to:\n\n.. math::\n\n    \\prox_{\\tau g}(x) = \\mathbf{Q}^H (\\prox_{\\tau f}(\\mathbf{Qx} +\n    \\mathbf{b}) - \\mathbf{b}))\n\n.. [1] Daniel O'Connor, D., and Vandenberghe, L., \"Primal-Dual\n    Decomposition by Operator Splitting and Applications to Image\n    Deblurring\", SIAM J. Imaging Sciences, vol. 7, pp. 1724\u20131754. 2014.",
+   "examples": ""
+  },
+  "VStack": {
+   "name": "VStack",
+   "kind": "operator",
+   "module": "pyproximal.proximal.VStack",
+   "signature": "(ops: list['LinearOperator'], nn: Optional[list[tuple[int, ...]]] = None, restr: Optional[list['LinearOperator']] = None) -> None",
+   "summary": "Vertical stacking.",
+   "parameters": [
+    {
+     "name": "ops",
+     "type": ":obj:`list`",
+     "desc": "Proximal operators to be stacked"
+    },
+    {
+     "name": "nn",
+     "type": ":obj:`list`, optional",
+     "desc": "Size of each portion of the input vector (to be used when different portions are in consecutive order)"
+    },
+    {
+     "name": "restr",
+     "type": ":obj:`list`, optional",
+     "desc": "List of :class:`pylops.Restriction` operators extracting the subset of interest (to be used when different portions are not in consecutive order). It is user responsibility to ensure that all elements of the input vector are used exactly once)"
+    }
+   ],
+   "notes": "Given an input vector :math:`\\mathbf{x}` to which a number of :math:`N`\nfunctions are applied to different portions of the vector as:\n\n.. math::\n    f(\\mathbf{x}) = \\sum_{i=1}^N f_i(\\mathbf{x}_i)\n\nthe related proximal operator becomes:\n\n.. math::\n    \\prox_{\\tau f}(\\mathbf{x}) = \\left(\n    \\prox_{\\tau f_1}(\\mathbf{x}_1), \\ldots,\n    \\tau f_N(\\mathbf{x}_N) \\right)",
+   "examples": ""
+  },
+  "Nonlinear": {
+   "name": "Nonlinear",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Nonlinear",
+   "signature": "(x0: NDArray[numpy.number], niter: int = 10, warm: bool = True) -> None",
+   "summary": "Nonlinear function proximal operator.",
+   "parameters": [
+    {
+     "name": "x0",
+     "type": ":obj:`np.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme used to compute the proximal"
+    },
+    {
+     "name": "warm",
+     "type": ":obj:`bool`, optional",
+     "desc": "Warm start (``True``) or not (``False``). Uses estimate from previous call of ``prox`` method."
+    }
+   ],
+   "notes": "The proximal operator of a generic function requires solving the following\noptimization problem numerically\n\n.. math::\n\n    prox_{\\tau f} (\\mathbf{x}) = arg \\; min_{\\mathbf{y}} f(\\mathbf{y}) +\n    \\frac{1}{2 \\tau}||\\mathbf{y} - \\mathbf{x}||^2_2\n\nwhich is done via the provided ``optimize`` method.",
+   "examples": ""
+  },
+  "SCAD": {
+   "name": "SCAD",
+   "kind": "operator",
+   "module": "pyproximal.proximal.SCAD",
+   "signature": "(sigma: float, a: float = 3.7) -> None",
+   "summary": "Smoothly clipped absolute deviation (SCAD) penalty.",
+   "parameters": [
+    {
+     "name": "sigma",
+     "type": ":obj:`float`",
+     "desc": "First threshold parameter (named :math:`\\lambda` in the original paper [1]_)"
+    },
+    {
+     "name": "a",
+     "type": ":obj:`float`, optional",
+     "desc": "Second threshold parameter (must be larger than 2). Default is 3.7, see [1]_ for more information."
+    }
+   ],
+   "notes": "The SCAD penalty is continuous and differentiable and does not suffer from\nbiasedness as the :math:`\\ell_1`-norm, nor is discontinuous as the hard\nthresholding penalty. Thus, it fuses the most favourable properties of both\npenalties.\n\nThe proximal operator is given by\n\n.. math::\n\n    \\prox_{\\tau \\mathrm{SCAD}_{\\sigma, a}(\\cdot)}(\\mathbf{x}) =\n    \\begin{cases}\n    \\sgn(x_i)\\max(0, |x_i| - \\sigma), & |x_i| \\leq \\frac{\\sigma(a - 1 - \\tau + a\\tau)}{a - 1} \\\\\n    \\frac{(a-1)x_i - \\sgn(x_i)a\\tau\\sigma}{a-1-\\tau}, & \\frac{\\sigma(a - 1 - \\tau + a\\tau)}{a - 1} < |x_i| \\leq a\\sigma \\\\\n    x_i, & |x_i| > a\\sigma\n    \\end{cases}\n\n.. [1] Fan, J. and Li, R. \"Variable selection via nonconcave penalized likelihood and its oracle\n    properties\" Journal of the American Statistical Association, 96(456):1348\u20131360, 2001",
+   "examples": ""
+  },
+  "Log": {
+   "name": "Log",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Log",
+   "signature": "(sigma: float, gamma: float = 1.3) -> None",
+   "summary": "Logarithmic penalty.",
+   "parameters": [
+    {
+     "name": "sigma",
+     "type": ":obj:`float`",
+     "desc": "Regularization parameter."
+    },
+    {
+     "name": "gamma",
+     "type": ":obj:`float`, optional",
+     "desc": "Regularization parameter. Default is 1.3."
+    }
+   ],
+   "notes": "The logarithmic penalty is an extension of the elastic net family of penalties to\nnon-convex members, which should produce sparser solutions compared to the\n:math:`\\ell_1`-penalty [1]_. The pyproximal implementation considers a scaled\nversion that satisfies :math:`{\\mathrm{Log}_{\\sigma,\\gamma}(0) = 0}` and\n:math:`{\\mathrm{Log}_{\\sigma,\\gamma}(1) = \\sigma}`, which is suitable also for\npenalizing singular values. Note that when :math:`{\\gamma\\rightarrow 0}` the\nlogarithmic penalty approaches the l1-penalty and when\n:math:`{\\gamma\\rightarrow\\infty}` it mimicks the :math:`\\ell_0`-penalty.\n\nThe proximal operator can be analyzed using the one-dimensional case\n\n.. math::\n    \\prox_{\\tau \\mathrm{Log}(\\cdot)}(x) = \\argmin_{z} \\mathrm{Log}(z) + \\frac{1}{2\\tau}(x - z)^2\n\nwhere we assume that :math:`x\\geq 0`. The minima can be obtained when :math:`z=0`\nor at a local minimum. Consider therefore\n\n.. math::\n    f(z) = k \\log(\\gamma z + 1) + \\frac{1}{2} (x - z)^2\n\nwhere :math:`k= \\frac{\\tau \\sigma}{\\log(\\gamma + 1)}` is introduced for\nconvenience. The condition that :math:`f'(z) = 0` yields the following equation\n\n.. math::\n    \\gamma z^2 + (1-\\gamma y) x + k\\gamma - y = 0 .\n\nThe discriminant :math:`\\Delta` is given by\n\n.. math::\n    \\Delta = (1-\\gamma y)^2-4\\gamma (k\\gamma - y) .\n\nWhen the discriminant is negative the global optimum is obtained at\n:math:`z=0`; otherwise, it is obtained when\n\n.. math::\n    z = \\frac{\\gamma x - 1 +\\sqrt{\\Delta}}{2\\gamma} .\n\nNote that the other stationary point must be a local maximum since\n:math:`\\gamma>0` and can therefore be discarded.\n\n.. [1] Friedman, J. H. \"Fast sparse regression and classification\",\n    International Journal of Forecasting, 28(3):722 \u2013 738, 2012.",
+   "examples": ""
+  },
+  "Log1": {
+   "name": "Log1",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Log",
+   "signature": "(sigma: float, delta: float = 1e-10) -> None",
+   "summary": "Logarithmic penalty 2.",
+   "parameters": [
+    {
+     "name": "sigma",
+     "type": ":obj:`float`",
+     "desc": "Multiplicative coefficient of Log norm."
+    },
+    {
+     "name": "delta",
+     "type": ":obj:`float`, optional",
+     "desc": "Regularization parameter. Default is 1e-10."
+    }
+   ],
+   "notes": "The logarithmic penalty gives rise to a log-thresholding that is\na smooth alternative falling in between the hard and soft thresholding.\n\nThe proximal operator is defined as [1]_:\n\n.. math::\n\n    \\prox_{\\tau \\sigma log}(\\mathbf{x}) =\n    \\begin{cases}\n    0.5 (x_i + \\delta - \\sqrt{(x_i-\\delta)^2-2\\tau \\sigma}), & x_i < -x_0 \\\\\n    0, & -x_0 \\leq x_i \\leq  x_0 \\\\\n    0.5 (x_i - \\delta + \\sqrt{(x_i+\\delta)^2-2\\tau \\sigma}), & x_i  > x_0\\\\\n    \\end{cases}\n\nwhere :math:`x_0=\\sqrt{2 \\tau \\sigma} - \\delta`.\n\n.. [1] Malioutov, D., and Aravkin, A. \"Iterative log thresholding\",\n    Arxiv, 2013.",
+   "examples": ""
+  },
+  "ETP": {
+   "name": "ETP",
+   "kind": "operator",
+   "module": "pyproximal.proximal.ETP",
+   "signature": "(sigma: float, gamma: float = 1.0) -> None",
+   "summary": "Exponential-type penalty (ETP).",
+   "parameters": [
+    {
+     "name": "sigma",
+     "type": ":obj:`float`",
+     "desc": "Regularization parameter."
+    },
+    {
+     "name": "gamma",
+     "type": ":obj:`float`, optional",
+     "desc": "Regularization parameter. Default is 1.0."
+    }
+   ],
+   "notes": "As :math:`{\\gamma\\rightarrow 0}` the exponential-type penalty approaches the :math:`\\ell_1`-penalty and when\n:math:`{\\gamma\\rightarrow\\infty}` tends to the :math:`\\ell_0`-penalty [1]_.\n\nAs for the proximal operator, consider the one-dimensional case\n\n.. math::\n\n    \\prox_{\\tau \\mathrm{ETP}(\\cdot)}(x) = \\argmin_{z} \\mathrm{ETP}(z) + \\frac{1}{2\\tau}(x - z)^2\n\nand assume that :math:`x\\geq 0`. The minima can be obtained when :math:`z=0` or at a stationary point,\nwhere the latter must satisfy\n\n.. math::\n\n    x = z + \\frac{\\gamma \\sigma \\tau}{1-e^{-\\gamma}} e^{-\\gamma z} .\n\nThe solution to the above equation can be expressed using the *Lambert W function*.\n\n.. [1] Gao, C. et al. \"A Feasible Nonconvex Relaxation Approach to Feature Selection\",\n    In the Proceedings of the Conference on Artificial Intelligence (AAAI), 2011.",
+   "examples": ""
+  },
+  "Geman": {
+   "name": "Geman",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Geman",
+   "signature": "(sigma: float, gamma: float = 1.3) -> None",
+   "summary": "Geman penalty.",
+   "parameters": [
+    {
+     "name": "sigma",
+     "type": ":obj:`float`",
+     "desc": "Regularization parameter."
+    },
+    {
+     "name": "gamma",
+     "type": ":obj:`float`, optional",
+     "desc": "Regularization parameter. Default is 1.3."
+    }
+   ],
+   "notes": "In order to compute the proximal operator of the Geman penalty one must find the\nroots of a cubic polynomial. Consider the one-dimensional problem\n\n.. math::\n    \\prox_{\\tau \\mathrm{Geman}(\\cdot)}(x) = \\argmin_{z} \\mathrm{Geman}(z) + \\frac{1}{2\\tau}(x - z)^2\n\nand assume :math:`{x\\geq 0}`. Either the minimum is obtained when :math:`z=0` or\nwhen\n\n.. math::\n    \\tau\\sigma\\gamma + (z-x)(z+\\gamma)^2 = 0 .\n\nThe pyproximal implementation uses the closed-form solution for a cubic equation,\nand discards infeasible roots, to find the minimum.\n\n.. [1] Geman and Yang \"Nonlinear image recovery with half-quadratic regularization\",\n    IEEE Transactions on Image Processing, 4(7):932 \u2013 946, 1995.",
+   "examples": ""
+  },
+  "QuadraticEnvelopeCard": {
+   "name": "QuadraticEnvelopeCard",
+   "kind": "operator",
+   "module": "pyproximal.proximal.QuadraticEnvelope",
+   "signature": "(mu: float) -> None",
+   "summary": "Quadratic envelope of the :math:`\\ell_0`-penalty.",
+   "parameters": [
+    {
+     "name": "mu",
+     "type": ":obj:`float`",
+     "desc": "Threshold parameter."
+    }
+   ],
+   "notes": "The terminology *quadratic envelope* was coined in [1]_, however, the rationale has\nbeen used earlier, e.g. in [2]_. In a general setting, the quadratic envelope\n:math:`\\mathcal{Q}(f)(x)` is defined such that\n\n.. math::\n\n    \\left(f(x) + \\frac{1}{2}\\|x-y\\|_2^2\\right)^{**} = \\mathcal{Q}(f)(x) + \\frac{1}{2}\\|x-y\\|_2^2\n\nwhere :math:`g^{**}` denotes the bi-conjugate of :math:`g`, which is the l.s.c.\nconvex envelope of :math:`g`.\n\nThere is no closed-form expression for :math:`\\mathcal{Q}(f)(x)` given an arbitrary\nfunction :math:`f`. However, for certain special cases, such as in the case of the\ncardinality function, such expressions do exist.\n\nThe proximal operator is given by\n\n.. math::\n\n    \\prox_{\\tau\\mathcal{Q}(\\mu\\|\\cdot\\|_0)}(x) =\n    \\begin{cases}\n    x_i, & |x_i| \\geq \\sqrt{2 \\mu} \\\\\n    \\frac{x_i-\\tau\\sqrt{2\\mu}\\sgn(x_i)}{1-\\tau}, & \\tau\\sqrt{2\\mu} < |x_i| < \\sqrt{2 \\mu} \\\\\n    0, & |x_i| \\leq \\tau\\sqrt{2 \\mu}\n    \\end{cases}\n\nBy inspecting the structure of the proximal operator it is clear that large values\nare unaffected, whereas smaller ones are penalized partially or completely. Such\nproperties are desirable to counter the effect of *shrinking bias* observed with\ne.g. the :math:`\\ell_1`-penalty. Note that in the limit :math:`\\tau=1` this becomes\nthe hard thresholding with threshold :math:`\\sqrt{2\\mu}`. It should also be noted\nthat this proximal operator is identical to the Minimax Concave Penalty (MCP)\nproposed in [3]_.",
+   "examples": ""
+  },
+  "SingularValuePenalty": {
+   "name": "SingularValuePenalty",
+   "kind": "operator",
+   "module": "pyproximal.proximal.SingularValuePenalty",
+   "signature": "(dim: tuple[int, ...], penalty: pyproximal.ProxOperator.ProxOperator) -> None",
+   "summary": "Proximal operator of a penalty acting on the singular values.",
+   "parameters": [
+    {
+     "name": "dim",
+     "type": ":obj:`tuple`",
+     "desc": "Size of matrix :math:`\\mathbf{X}`."
+    },
+    {
+     "name": "penalty",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Function acting on the singular values."
+    }
+   ],
+   "notes": "The pyproximal implementation allows ``penalty`` to be any\n:class:`pyproximal.ProxOperator` acting on the singular values; however, not all\npenalties will result in a mathematically accurate proximal operator defined this\nway. Given a penalty :math:`f`, the proximal operator is assumed to be\n\n.. math::\n\n    \\prox_{\\tau \\mathcal{R}_f}(\\mathbf{X}) =\n    \\mathbf{U} \\diag\\left( \\prox_{\\tau f}(\\boldsymbol\\lambda)\\right) \\mathbf{V}^H\n\nwhere :math:`\\mathbf{X} = \\mathbf{U}\\diag(\\boldsymbol\\lambda)\\mathbf{V}^H`, is an\nSVD of :math:`\\mathbf{X}`. It is the user's responsibility to check that this is\ntrue for their particular choice of ``penalty``.",
+   "examples": ""
+  },
+  "QuadraticEnvelopeCardIndicator": {
+   "name": "QuadraticEnvelopeCardIndicator",
+   "kind": "operator",
+   "module": "pyproximal.proximal.QuadraticEnvelope",
+   "signature": "(r0: Union[int, NDArray[numpy.integer]]) -> None",
+   "summary": "Quadratic envelope of the indicator function of the :math:`\\ell_0`-penalty.",
+   "parameters": [
+    {
+     "name": "r0",
+     "type": ":obj:`int`",
+     "desc": "Threshold parameter."
+    }
+   ],
+   "notes": "The terminology *quadratic envelope* was coined in [1]_, however, the rationale has\nbeen used earlier, e.g. in [2]_. In a general setting, the quadratic envelope\n:math:`\\mathcal{Q}(f)(x)` is defined such that\n\n.. math::\n\n    \\left(f(x) + \\frac{1}{2}\\|x-y\\|_2^2\\right)^{**} = \\mathcal{Q}(f)(x) + \\frac{1}{2}\\|x-y\\|_2^2\n\nwhere :math:`g^{**}` denotes the bi-conjugate of :math:`g`, which is the l.s.c.\nconvex envelope of :math:`g`.\n\nThere is no closed-form expression for :math:`\\mathcal{Q}(f)(x)` given an arbitrary\nfunction :math:`f`. However, for certain special cases, such as in the case of the\nindicator function of the cardinality function, such expressions do exist.\n\nThe proximal operator does not have a closed-form, and we refer to [1]_ for more details.\nNote that this is a non-separable penalty.",
+   "examples": ""
+  },
+  "QuadraticEnvelopeRankL2": {
+   "name": "QuadraticEnvelopeRankL2",
+   "kind": "operator",
+   "module": "pyproximal.proximal.QuadraticEnvelope",
+   "signature": "(dim: tuple[int, ...], r0: int, M: NDArray[numpy.number]) -> None",
+   "summary": "Quadratic envelope of the rank function with an L2 misfit term.",
+   "parameters": [
+    {
+     "name": "dim",
+     "type": ":obj:`tuple`",
+     "desc": "Size of input matrix :math:`X`."
+    },
+    {
+     "name": "r0",
+     "type": ":obj:`int`",
+     "desc": "Threshold parameter, encouraging matrices with rank lower than or equal to r0."
+    },
+    {
+     "name": "M",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "L2 misfit term (must be the same size as the input matrix)."
+    }
+   ],
+   "notes": "The proximal operator solves the minimization problem\n\n    .. math::\n        \\argmin_Z \\mathcal{R}_{r_0}(Z) + \\frac{1}{2}\\|Z - M\\|_F^2 + \\frac{1}{2\\tau}\\| Z - X \\|_F^2\n\nwhich is a convex-concave min-max problem, see [1]_ for details.",
+   "examples": ""
+  },
+  "Hankel": {
+   "name": "Hankel",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Hankel",
+   "signature": "(dim: tuple[int, ...]) -> None",
+   "summary": "Hankel proximal operator.",
+   "parameters": [
+    {
+     "name": "dim",
+     "type": ":obj:`tuple`",
+     "desc": "Dimension of the Hankel matrix."
+    }
+   ],
+   "notes": "As the Hankel Operator is an indicator function, the proximal operator corresponds to\nits orthogonal projection (see :class:`pyproximal.projection.HankelProj` for\ndetails).",
+   "examples": ""
+  },
+  "HalfSpace": {
+   "name": "HalfSpace",
+   "kind": "operator",
+   "module": "pyproximal.proximal.HalfSpace",
+   "signature": "(w: NDArray[numpy.number], b: float) -> None",
+   "summary": "Half space proximal operator.",
+   "parameters": [
+    {
+     "name": "w",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Coefficients of the half space"
+    },
+    {
+     "name": "b",
+     "type": ":obj:`float`",
+     "desc": "bias of the half space"
+    }
+   ],
+   "notes": "As the half space is an indicator function, the proximal operator\ncorresponds to its orthogonal projection\n(see :class:`pyproximal.projection.HalfSpaceProj` for details.",
+   "examples": ""
+  },
+  "GenericIntersectionProx": {
+   "name": "GenericIntersectionProx",
+   "kind": "operator",
+   "module": "pyproximal.proximal.GenericIntersection",
+   "signature": "(projections: List[Callable[[NDArray[numpy.number]], NDArray[numpy.number]]], niter: int = 1000, tol: float = 1e-06, use_parallel: bool = False) -> None",
+   "summary": "The proximal operator corresponding to the convex projection to the intersection of convex sets using Dykstra's algorithm.",
+   "parameters": [
+    {
+     "name": "projections",
+     "type": ":obj:`list`",
+     "desc": "A list of projection functions :math:`P_1, \\ldots, P_m`."
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional, default=1000",
+     "desc": "The maximum number of iterations."
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional, default=1e-6",
+     "desc": "Tolerance on change of the solution (used as stopping criterion). If ``tol=0``, run until ``niter`` is reached."
+    },
+    {
+     "name": "use_parallel",
+     "type": ":obj:`bool`, optional, default=False",
+     "desc": "If True, use the parallel version when $m=2$."
+    }
+   ],
+   "notes": "As the intersection of convex sets is an indicator function,\nthe proximal operator corresponds to its convex projection\n(see :class:`pyproximal.projection.GenericIntersectionProj` for details).",
+   "examples": ""
+  },
+  "Sum": {
+   "name": "Sum",
+   "kind": "operator",
+   "module": "pyproximal.proximal.Sum",
+   "signature": "(ops: List[pyproximal.ProxOperator.ProxOperator], weights: Union[NDArray[numpy.number], List[float], NoneType] = None, niter: int = 1000, tol: float = 1e-07, use_parallel: bool = False, use_original_tau: bool = False) -> None",
+   "summary": "Proximal operator of the sum of proximable functions using Dykstra-like algorithm.",
+   "parameters": [
+    {
+     "name": "ops",
+     "type": ":obj:`list`",
+     "desc": "A list of proximable functions :math:`f_1, \\ldots, f_m`."
+    },
+    {
+     "name": "weights",
+     "type": ":obj:`np.ndarray` or :obj:`list` or :obj:`None`, optional, default=None",
+     "desc": "Weights :math:`\\sum_{i=1}^m w_i = 1, \\ 0 < w_i < 1`, used when :math:`m > 2`, or :math:`m = 2` and ``use_parallel=True``. Defaults to None, which means :math:`w_1 = \\cdots = w_m = \\frac{1}{m}.`"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional, default=1000",
+     "desc": "The maximum number of iterations."
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional, default=1e-7",
+     "desc": "Tolerance on change of the solution (used as stopping criterion). If ``tol=0``, run until ``niter`` is reached."
+    },
+    {
+     "name": "use_parallel",
+     "type": ":obj:`bool`, optional, default=False",
+     "desc": "The parallel version is used when :math:`m > 2`, or :math:`m = 2` and `use_parallel=True`."
+    },
+    {
+     "name": "use_original_tau",
+     "type": ":obj:`bool`, optional, default=False",
+     "desc": "Use the original value of :math:`\\tau` (``True``) or the scaled version :math:`\\tau_i = \\tau / w_i` (``False``)."
+    }
+   ],
+   "notes": "Given two functions :math:`f` and :math:`g`, or a set of proximable functions\n:math:`f_i` and corresponding weights :math:`w_i` for :math:`i=1, \\ldots, m`,\nthis class computes the proximal operator of the sum of two functions\n\n.. math:: \\prox_{\\tau (f + g)}\n\nusing the Dykstra-like algorithm, or of the weighted sum of functions\n\n.. math:: \\prox_{\\tau \\ \\sum_{i=1}^m w_i f_i}\n\nusing the parallel Dykstra-like algorithm.\n\nFor :math:`m=2`, the proximal mapping :math:`\\prox_{\\tau (f + g)}(\\mathbf{x})` of\n:math:`\\mathbf{x}` is computed by the Dykstra-like algorithm [1]_, [2]_:\n\n* :math:`\\mathbf{x}^0 = \\mathbf{x}, \\mathbf{p}^0 = \\mathbf{q}^0 = \\mathbf{0}`\n* for :math:`k = 1, \\ldots`\n\n  * :math:`\\mathbf{y}^k = \\prox_{\\tau g}(\\mathbf{x}^k + \\mathbf{p}^k)`\n  * :math:`\\mathbf{p}^{k+1} = \\mathbf{p}^k + \\mathbf{x}^k - \\mathbf{y}^k`\n  * :math:`\\mathbf{x}^{k+1} = \\prox_{\\tau f}(\\mathbf{y}^k + \\mathbf{q}^k)`\n  * :math:`\\mathbf{q}^{k+1} = \\mathbf{q}^k + \\mathbf{y}^k - \\mathbf{x}^{k+1}`\n\nFor :math:`m \\ge 2`, the proximal mapping :math:`\\prox_{\\tau \\sum_{i=1}^m w_i f_i}(\\mathbf{x})`\nof :math:`\\mathbf{x}` is computed by\nthe parallel Dykstra-like algorithm [3]_, [4]_, [5]_,\nwhere :math:`\\sum_{i=1}^m w_i = 1, \\ 0 < w_i < 1`:\n\n* :math:`\\mathbf{x}^0 = \\mathbf{z}_1^0 = \\cdots = \\mathbf{z}_m^0 = \\mathbf{x}`\n* for :math:`k = 1, \\ldots`\n\n  * :math:`\\mathbf{x}^{k+1} = \\sum_{i=1}^{m} w_i \\prox_{\\tau_i f_i} (\\mathbf{z}_{i}^k)`\n  * for :math:`i = 1, \\ldots, m`\n\n    * :math:`\\mathbf{z}_{i}^{k+1} = \\mathbf{z}_{i}^k + \\mathbf{x}^{k+1} - \\prox_{\\tau_i f_i} (\\mathbf{z}_{i}^k)`\n\nNote that :math:`\\tau_i = \\tau / w_i` if ``use_original_tau==False`` (default),\notherwise :math:`\\tau_i = \\tau`.",
+   "examples": ""
+  }
+ },
+ "solvers": {
+  "Bregman": {
+   "name": "Bregman",
+   "kind": "solver",
+   "module": "pyproximal.optimization.bregman",
+   "signature": "(proxf: pyproximal.ProxOperator.ProxOperator, proxg: pyproximal.ProxOperator.ProxOperator, x0: NDArray[numpy.number], solver: Callable[..., NDArray[numpy.number]], A: Optional[ForwardRef('LinearOperator')] = None, alpha: float = 1.0, niterouter: int = 10, warm: bool = False, tolx: float = 1e-10, tolf: float = 1e-10, bregcallback: Optional[Callable[[NDArray[numpy.number]], NoneType]] = None, show: bool = False, **kwargs_solver: Dict[str, Any]) -> NDArray[numpy.number]",
+   "summary": "Bregman iterations with Proximal Solver",
+   "parameters": [
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "solver",
+     "type": ":func:`pyproximal.optimization.primal`",
+     "desc": "Solver used to solve the inner loop optimization problems"
+    },
+    {
+     "name": "A",
+     "type": ":obj:`pylops.LinearOperator`, optional",
+     "desc": "Linear operator of g"
+    },
+    {
+     "name": "alpha",
+     "type": ":obj:`float`, optional",
+     "desc": "Scalar of g function"
+    },
+    {
+     "name": "niterouter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of outerloop"
+    },
+    {
+     "name": "warm",
+     "type": ":obj:`bool`, optional",
+     "desc": "Warm start  - i.e., previous estimate is used as starting guess of the current optimization (``True``) or not - i.e., provided starting guess is used as starting guess of every optimization (``False``)."
+    },
+    {
+     "name": "tolx",
+     "type": ":obj:`callable`, optional",
+     "desc": "Tolerance on solution update, stop when :math:`||\\mathbf{x}^{k+1} - \\mathbf{x}^k||_2<tol_x` is satisfied"
+    },
+    {
+     "name": "tolf",
+     "type": ":obj:`callable`, optional",
+     "desc": "Tolerance on ``f`` function, stop when :math:`f(\\mathbf{x}^{k+1})_2<tol_f` is satisfied"
+    },
+    {
+     "name": "bregcallback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each Bregman iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    },
+    {
+     "name": "**kwargs_solver",
+     "type": ":obj:`dict`, optional",
+     "desc": "Arbitrary keyword arguments for chosen solver"
+    }
+   ],
+   "notes": "The Bregman iterations can be expressed with the following recursion\n\n.. math::\n\n    \\mathbf{x}^{k+1} = \\argmin_{\\mathbf{x}} \\quad f + \\alpha g -\n    \\alpha (\\mathbf{q}^{k})^T \\mathbf{x}\\\\\n    \\mathbf{q}^{k+1} = \\mathbf{q}^{k} - \\frac{1}{\\alpha}\n    \\nabla f(\\mathbf{x}^{k+1})\n\nwhere the minimization problem can be solved using one the proximal solvers\nin the :mod:`pyproximal.optimization.primal` module.",
+   "examples": ""
+  },
+  "PALM": {
+   "name": "PALM",
+   "kind": "solver",
+   "module": "pyproximal.optimization.palm",
+   "signature": "(H: pyproximal.utils.bilinear.BilinearOperator, proxf: Optional[pyproximal.ProxOperator.ProxOperator], proxg: Optional[pyproximal.ProxOperator.ProxOperator], x0: NDArray[numpy.number], y0: NDArray[numpy.number], gammaf: Optional[float] = 1.0, gammag: Optional[float] = 1.0, beta: float = 0.5, niter: int = 10, niterback: int = 100, callback: Optional[Callable[[NDArray[numpy.number], NDArray[numpy.number]], NoneType]] = None, show: bool = False) -> Tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Proximal Alternating Linearized Minimization",
+   "parameters": [
+    {
+     "name": "H",
+     "type": ":obj:`pyproximal.utils.bilinear.Bilinear`",
+     "desc": "Bilinear function"
+    },
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial x vector"
+    },
+    {
+     "name": "y0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial y vector"
+    },
+    {
+     "name": "gammaf",
+     "type": ":obj:`float`, optional",
+     "desc": "Positive scalar weight for ``f`` function update. If ``None``, use backtracking"
+    },
+    {
+     "name": "gammag",
+     "type": ":obj:`float`, optional",
+     "desc": "Positive scalar weight for ``g`` function update. If ``None``, use backtracking"
+    },
+    {
+     "name": "beta",
+     "type": ":obj:`float`, optional",
+     "desc": "Backtracking parameter (must be between 0 and 1)"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "niterback",
+     "type": ":obj:`int`, optional",
+     "desc": "Max number of iterations of backtracking"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` and ``y`` are the current model vectors"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "PALM [1]_ can be expressed by the following recursion:\n\n.. math::\n\n    \\mathbf{x}^{k+1} = \\prox_{c_k f}(\\mathbf{x}^{k} -\n    \\frac{1}{c_k}\\nabla_x H(\\mathbf{x}^{k}, \\mathbf{y}^{k}))\\\\\n    \\mathbf{y}^{k+1} = \\prox_{d_k g}(\\mathbf{y}^{k} -\n    \\frac{1}{d_k}\\nabla_y H(\\mathbf{x}^{k+1}, \\mathbf{y}^{k}))\\\\\n\nHere :math:`c_k=\\gamma_f L_x` and :math:`d_k=\\gamma_g L_y`, where\n:math:`L_x` and :math:`L_y` are the Lipschitz constant of :math:`\\nabla_x H`\nand :math:`\\nabla_y H`, respectively. When such constants cannot be easily\ncomputed, a back-tracking algorithm can be instead employed to find suitable\n:math:`c_k` and :math:`d_k` parameters.\n\n.. [1] Bolte, J., Sabach, S., and Teboulle, M. \"Proximal alternating\n   linearized minimization for nonconvex and nonsmooth problems\",\n   Mathematical Programming, vol. 146, pp. 459\u2013494. 2014.",
+   "examples": ""
+  },
+  "iPALM": {
+   "name": "iPALM",
+   "kind": "solver",
+   "module": "pyproximal.optimization.palm",
+   "signature": "(H: pyproximal.utils.bilinear.BilinearOperator, proxf: Optional[pyproximal.ProxOperator.ProxOperator], proxg: Optional[pyproximal.ProxOperator.ProxOperator], x0: NDArray[numpy.number], y0: NDArray[numpy.number], gammaf: Optional[float] = 1.0, gammag: Optional[float] = 1.0, a: List[float] = [1.0, 1.0], beta: float = 0.5, niter: int = 10, niterback: int = 100, callback: Optional[Callable[[NDArray[numpy.number], NDArray[numpy.number]], NoneType]] = None, show: bool = False) -> Tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Inertial Proximal Alternating Linearized Minimization",
+   "parameters": [
+    {
+     "name": "H",
+     "type": ":obj:`pyproximal.utils.bilinear.Bilinear`",
+     "desc": "Bilinear function"
+    },
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial x vector"
+    },
+    {
+     "name": "y0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial y vector"
+    },
+    {
+     "name": "gammaf",
+     "type": ":obj:`float`, optional",
+     "desc": "Positive scalar weight for ``f`` function update. If ``None``, use backtracking"
+    },
+    {
+     "name": "gammag",
+     "type": ":obj:`float`, optional",
+     "desc": "Positive scalar weight for ``g`` function update. If ``None``, use backtracking"
+    },
+    {
+     "name": "a",
+     "type": ":obj:`list`, optional",
+     "desc": "Inertial parameters (:math:`a  \\in [0, 1]`)"
+    },
+    {
+     "name": "beta",
+     "type": ":obj:`float`, optional",
+     "desc": "Backtracking parameter (must be between 0 and 1)"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "niterback",
+     "type": ":obj:`int`, optional",
+     "desc": "Max number of iterations of backtracking"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` and ``y`` are the current model vectors"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "iPALM [1]_ can be expressed by the following recursion:\n\n.. math::\n\n    \\mathbf{x}_z^k = \\mathbf{x}^k + \\alpha_x (\\mathbf{x}^k - \\mathbf{x}^{k-1})\\\\\n    \\mathbf{x}^{k+1} = \\prox_{c_k f}(\\mathbf{x}_z^k  -\n    \\frac{1}{c_k}\\nabla_x H(\\mathbf{x}_z^k, \\mathbf{y}^{k}))\\\\\n    \\mathbf{y}_z^k = \\mathbf{y}^k + \\alpha_y (\\mathbf{y}^k - \\mathbf{y}^{k-1})\\\\\n    \\mathbf{y}^{k+1} = \\prox_{d_k g}(\\mathbf{y}_z^k -\n    \\frac{1}{d_k}\\nabla_y H(\\mathbf{x}^{k+1}, \\mathbf{y}_z^k))\n\nHere :math:`c_k=\\gamma_f L_x` and :math:`d_k=\\gamma_g L_y`, where\n:math:`L_x` and :math:`L_y` are the Lipschitz constant of :math:`\\nabla_x H`\nand :math:`\\nabla_y H`, respectively. When such constants cannot be easily\ncomputed, a back-tracking algorithm can be instead employed to find suitable\n:math:`c_k` and :math:`d_k` parameters.\n\nFinally, note that we have implemented the version of iPALM where :math:`\\beta_x=\\alpha_x`\nand :math:`\\beta_y=\\alpha_y`.\n\n.. [1] Pock, T., and Sabach, S. \"Inertial Proximal\n   Alternating Linearized Minimization (iPALM) for Nonconvex and\n   Nonsmooth Problems\", SIAM Journal on Imaging Sciences, vol. 9. 2016.",
+   "examples": ""
+  },
+  "PlugAndPlay": {
+   "name": "PlugAndPlay",
+   "kind": "solver",
+   "module": "pyproximal.optimization.pnp",
+   "signature": "(proxf: pyproximal.ProxOperator.ProxOperator, denoiser: Callable[[NDArray[numpy.number], float], NDArray[numpy.number]], dims: tuple[int, ...], x0: NDArray[numpy.number], solver: Callable[..., NDArray[numpy.number]] = <function ADMM at 0x10a59f100>, **kwargs_solver: Dict[str, Any]) -> Union[NDArray[numpy.number], Tuple[NDArray[numpy.number], ...]]",
+   "summary": "Plug-and-Play Priors with any proximal algorithm of choice",
+   "parameters": [
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function"
+    },
+    {
+     "name": "denoiser",
+     "type": ":obj:`func`",
+     "desc": "Denoiser (must be a function with two inputs, the first is the signal to be denoised, the second is the tau constant of the y-update in PlugAndPlay)"
+    },
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`",
+     "desc": "Dimensions used to reshape the vector ``x`` in the ``prox`` method prior to calling the ``denoiser``"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "solver",
+     "type": ":func:`pyproximal.optimization.primal` or :func:`pyproximal.optimization.primaldual`",
+     "desc": "Solver of choice"
+    },
+    {
+     "name": "kwargs_solver",
+     "type": ":obj:`dict`",
+     "desc": "Additonal parameters required by the selected solver"
+    }
+   ],
+   "notes": "Plug-and-Play Priors [1]_ can be used with any proximal algorithm of choice. For example, when\nADMM is selected, the resulting scheme can be expressed by the following recursion:\n\n.. math::\n\n    \\mathbf{x}^{k+1} = \\prox_{\\tau f}(\\mathbf{z}^{k} - \\mathbf{u}^{k})\\\\\n    \\mathbf{z}^{k+1} = \\operatorname{Denoise}(\\mathbf{x}^{k+1} + \\mathbf{u}^{k}, \\tau \\lambda)\\\\\n    \\mathbf{u}^{k+1} = \\mathbf{u}^{k} + \\mathbf{x}^{k+1} - \\mathbf{z}^{k+1}\n\nwhere :math:`\\operatorname{Denoise}` is a denoising algorithm of choice. This rather peculiar step originates\nfrom the intuition that the optimization process associated with the z-update can be interpreted as a denoising\ninverse problem, or more specifically a MAP denoiser where the noise is gaussian with zero mean and variance\nequal to :math:`\\tau \\lambda`. For this reason any denoising of choice can be used instead of a function with\nknown proximal operator.\n\nFinally, whilst the :math:`\\tau \\lambda` denoising parameter should be chosen to\nrepresent an estimate of the noise variance (of the denoiser, not the data of the problem we wish to solve!),\nspecial care must be taken when setting up the denoiser and calling this optimizer. More specifically,\n:math:`\\lambda` should not be passed to the optimizer, rather set directly in the denoiser.\nOn the other hand :math:`\\tau` must be passed to the optimizer as it is also affecting the x-update;\nwhen defining the denoiser, ensure that :math:`\\tau` is multiplied to :math:`\\lambda` as shown in the tutorial.\n\nAlternative, as suggested in [2]_, the :math:`\\tau` could be set to 1. The parameter :math:`\\lambda` can then be set\nto maximize the value of the denoiser and a second tuning parameter can be added directly to :math:`f`.\n\n.. [1] Venkatakrishnan, S. V., Bouman, C. A. and Wohlberg, B.\n   \"Plug-and-Play priors for model based reconstruction\",\n   IEEE. 2013.\n\n.. [2] Meinhardt, T., Moeller, M, Hazirbas, C., and Cremer, D.\n   \"Learning Proximal Operators: Using Denoising Networks for Regularizing Inverse Imaging Problems\",\n   arXiv. 2017.",
+   "examples": ""
+  },
+  "ProximalPoint": {
+   "name": "ProximalPoint",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primal",
+   "signature": "(prox: pyproximal.ProxOperator.ProxOperator, x0: NDArray[numpy.number], tau: float, niter: int = 10, tol: Optional[float] = None, callback: Optional[Callable[[NDArray[numpy.number]], NoneType]] = None, show: bool = False) -> NDArray[numpy.number]",
+   "summary": "Proximal point algorithm",
+   "parameters": [
+    {
+     "name": "prox",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float`",
+     "desc": "Positive scalar weight"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": "Tolerance on change of objective function (used as stopping criterion). If ``tol=None``, run until ``niter`` is reached"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "The Proximal point algorithm can be expressed by the following recursion:\n\n.. math::\n\n    \\mathbf{x}^{k+1} = \\prox_{\\tau f}(\\mathbf{x}^k)",
+   "examples": ""
+  },
+  "ProximalGradient": {
+   "name": "ProximalGradient",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primal",
+   "signature": "(proxf: pyproximal.ProxOperator.ProxOperator, proxg: pyproximal.ProxOperator.ProxOperator, x0: NDArray[numpy.number], epsg: Union[float, NDArray[numpy.number]] = 1.0, tau: Optional[float] = None, backtracking: bool = False, beta: float = 0.5, eta: float = 1.0, niter: int = 10, niterback: int = 100, acceleration: Optional[str] = None, tol: Optional[float] = None, callback: Optional[Callable[[NDArray[numpy.number]], NoneType]] = None, show: bool = False) -> NDArray[numpy.number]",
+   "summary": "Proximal gradient (optionally accelerated)",
+   "parameters": [
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function (must have ``grad`` implemented)"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "epsg",
+     "type": ":obj:`float` or :obj:`numpy.ndarray`, optional",
+     "desc": "Scaling factor of g function"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float` or :obj:`numpy.ndarray`, optional",
+     "desc": "Positive scalar weight, which should satisfy the following condition to guarantees convergence: :math:`\\tau  \\in (0, 1/L]` where ``L`` is the Lipschitz constant of :math:`\\nabla f`. When ``tau=None``, backtracking is used to adaptively estimate the best tau at each iteration. Finally, note that :math:`\\tau` can be chosen to be a vector when dealing with problems with multiple right-hand-sides"
+    },
+    {
+     "name": "backtracking",
+     "type": ":obj:`bool`, optional",
+     "desc": "Force backtracking, even if ``tau`` is not equal to ``None``. In this case the chosen ``tau`` will be used as the initial guess in the first step of backtracking"
+    },
+    {
+     "name": "beta",
+     "type": ":obj:`float`, optional",
+     "desc": "Backtracking parameter (must be between 0 and 1)"
+    },
+    {
+     "name": "eta",
+     "type": ":obj:`float`, optional",
+     "desc": "Relaxation parameter (must be between 0 and 1, 0 excluded)."
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "niterback",
+     "type": ":obj:`int`, optional",
+     "desc": "Max number of iterations of backtracking"
+    },
+    {
+     "name": "acceleration",
+     "type": ":obj:`str`, optional",
+     "desc": "Acceleration (``None``, ``vandenberghe`` or ``fista``)"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": "Tolerance on change of objective function (used as stopping criterion). If ``tol=None``, run until ``niter`` is reached"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "The Proximal gradient algorithm can be expressed by the following recursion:\n\n.. math::\n\n    \\mathbf{x}^{k+1} = \\mathbf{y}^k + \\eta (\\prox_{\\tau^k \\epsilon g}(\\mathbf{y}^k -\n    \\tau^k \\nabla f(\\mathbf{y}^k)) - \\mathbf{y}^k) \\\\\n    \\mathbf{y}^{k+1} = \\mathbf{x}^k + \\omega^k\n    (\\mathbf{x}^k - \\mathbf{x}^{k-1})\n\nwhere at each iteration :math:`\\tau^k` can be estimated by back-tracking\nas follows:\n\n.. math::\n\n    \\begin{aligned}\n    &\\tau = \\tau^{k-1} &\\\\\n    &repeat \\; \\mathbf{z} = \\prox_{\\tau \\epsilon g}(\\mathbf{x}^k -\n    \\tau \\nabla f(\\mathbf{x}^k)), \\tau = \\beta \\tau \\quad if \\;\n    f(\\mathbf{z}) \\leq \\tilde{f}_\\tau(\\mathbf{z}, \\mathbf{x}^k) \\\\\n    &\\tau^k = \\tau, \\quad \\mathbf{x}^{k+1} = \\mathbf{z} &\\\\\n    \\end{aligned}\n\nwhere :math:`\\tilde{f}_\\tau(\\mathbf{x}, \\mathbf{y}) = f(\\mathbf{y}) +\n\\nabla f(\\mathbf{y})^T (\\mathbf{x} - \\mathbf{y}) +\n1/(2\\tau)||\\mathbf{x} - \\mathbf{y}||_2^2`.\n\nDifferent accelerations are provided:\n\n- ``acceleration=None``: :math:`\\omega^k = 0`;\n- ``acceleration=vandenberghe`` [1]_: :math:`\\omega^k = k / (k + 3)` for `\n- ``acceleration=fista``: :math:`\\omega^k = (t_{k-1}-1)/t_k` where\n  :math:`t_k = (1 + \\sqrt{1+4t_{k-1}^{2}}) / 2` [2]_\n\n.. [1] Vandenberghe, L., \"Fast proximal gradient methods\", 2010.\n.. [2] Beck, A., and Teboulle, M. \"A Fast Iterative Shrinkage-Thresholding\n   Algorithm for Linear Inverse Problems\", SIAM Journal on\n   Imaging Sciences, vol. 2, pp. 183-202. 2009.",
+   "examples": ""
+  },
+  "AcceleratedProximalGradient": {
+   "name": "AcceleratedProximalGradient",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primal",
+   "signature": "(proxf: pyproximal.ProxOperator.ProxOperator, proxg: pyproximal.ProxOperator.ProxOperator, x0: NDArray[numpy.number], tau: Optional[float] = None, beta: float = 0.5, epsg: float = 1.0, niter: int = 10, niterback: int = 100, acceleration: str = 'vandenberghe', tol: Optional[float] = None, callback: Optional[Callable[[NDArray[numpy.number]], NoneType]] = None, show: bool = False) -> NDArray[numpy.number]",
+   "summary": "Accelerated Proximal gradient",
+   "parameters": [],
+   "notes": "",
+   "examples": ""
+  },
+  "AndersonProximalGradient": {
+   "name": "AndersonProximalGradient",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primal",
+   "signature": "(proxf: pyproximal.ProxOperator.ProxOperator, proxg: pyproximal.ProxOperator.ProxOperator, x0: NDArray[numpy.number], epsg: Union[float, NDArray[numpy.number]] = 1.0, tau: Union[float, NDArray[numpy.number]] = 1.0, niter: int = 10, nhistory: int = 10, epsr: float = 1e-10, safeguard: bool = False, tol: Optional[float] = None, callback: Optional[Callable[[NDArray[numpy.number]], NoneType]] = None, show: bool = False) -> NDArray[numpy.number]",
+   "summary": "Proximal gradient with Anderson acceleration",
+   "parameters": [
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function (must have ``grad`` implemented)"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "epsg",
+     "type": ":obj:`float` or :obj:`numpy.ndarray`, optional",
+     "desc": "Scaling factor of g function"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float` or :obj:`numpy.ndarray`, optional",
+     "desc": "Positive scalar weight, which should satisfy the following condition to guarantees convergence: :math:`\\tau  \\in (0, 1/L]` where ``L`` is the Lipschitz constant of :math:`\\nabla f`. N   ote that :math:`\\tau` can be chosen to be a vector when dealing with problems with multiple right-hand-sides"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "nhistory",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of previous iterates to be kept in memory (to compute the scaling factors"
+    },
+    {
+     "name": "epsr",
+     "type": ":obj:`float`, optional",
+     "desc": "Scaling factor for regularization added to the inverse of :math:\\mathbf{R}^T \\mathbf{R}`"
+    },
+    {
+     "name": "safeguard",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply safeguarding strategy to the update (``True``) or not (``False``)"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": "Tolerance on change of objective function (used as stopping criterion). If ``tol=None``, run until ``niter`` is reached"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "The Proximal gradient algorithm with Anderson acceleration can be expressed by the\nfollowing recursion [1]_:\n\n.. math::\n    m_k = min(m, k)\\\\\n    \\mathbf{g}^{k} = \\mathbf{x}^{k} - \\tau^k \\nabla f(\\mathbf{x}^k)\\\\\n    \\mathbf{r}^{k} = \\mathbf{g}^{k} - \\mathbf{g}^{k}\\\\\n    \\mathbf{G}^{k} = [\\mathbf{g}^{k},..., \\mathbf{g}^{k-m_k}]\\\\\n    \\mathbf{R}^{k} = [\\mathbf{r}^{k},..., \\mathbf{r}^{k-m_k}]\\\\\n    \\alpha_k = (\\mathbf{R}^{kT} \\mathbf{R}^{k})^{-1} \\mathbf{1} / \\mathbf{1}^T\n    (\\mathbf{R}^{kT} \\mathbf{R}^{k})^{-1} \\mathbf{1}\\\\\n    \\mathbf{y}^{k+1} = \\mathbf{G}^{k} \\alpha_k\\\\\n    \\mathbf{x}^{k+1} = \\prox_{\\tau^{k+1} g}(\\mathbf{y}^{k+1})\n\nwhere :math:`m` equals ``nhistory``, :math:`k=1,2,...,n_{iter}`, :math:`\\mathbf{y}^{0}=\\mathbf{x}^{0}`,\n:math:`\\mathbf{y}^{1}=\\mathbf{x}^{0} - \\tau^0 \\nabla f(\\mathbf{x}^0)`,\n:math:`\\mathbf{x}^{1}=\\prox_{\\tau^k g}(\\mathbf{y}^{1})`, and\n:math:`\\mathbf{g}^{0}=\\mathbf{y}^{1}`.\n\nRefer to [1]_ for the guarded version of the algorithm (when ``safeguard=True``).\n\n.. [1] Mai, V., and Johansson, M. \"Anderson Acceleration of Proximal Gradient\n   Methods\", 2020.",
+   "examples": ""
+  },
+  "GeneralizedProximalGradient": {
+   "name": "GeneralizedProximalGradient",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primal",
+   "signature": "(proxfs: List[pyproximal.ProxOperator.ProxOperator], proxgs: List[pyproximal.ProxOperator.ProxOperator], x0: NDArray[numpy.number], tau: Optional[float], epsg: Union[float, NDArray[numpy.number]] = 1.0, weights: Optional[NDArray[numpy.number]] = None, eta: float = 1.0, niter: int = 10, acceleration: Optional[str] = None, callback: Optional[Callable[[NDArray[numpy.number]], NoneType]] = None, show: bool = False) -> NDArray[numpy.number]",
+   "summary": "Generalized Proximal gradient",
+   "parameters": [
+    {
+     "name": "proxfs",
+     "type": ":obj:`list`",
+     "desc": "Proximal operators of the :math:`f_i` functions (must have ``grad`` implemented)"
+    },
+    {
+     "name": "proxgs",
+     "type": ":obj:`list`",
+     "desc": "Proximal operators of the :math:`g_j` functions"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float`",
+     "desc": "Positive scalar weight, which should satisfy the following condition to guarantees convergence: :math:`\\tau  \\in (0, 1/L]` where ``L`` is the Lipschitz constant of :math:`\\sum_{i=1}^n \\nabla f_i`."
+    },
+    {
+     "name": "epsg",
+     "type": ":obj:`float` or :obj:`numpy.ndarray`, optional",
+     "desc": "Scaling factor(s) of ``g`` function(s)"
+    },
+    {
+     "name": "weights",
+     "type": ":obj:`float`, optional",
+     "desc": "Weighting factors of ``g`` functions. Must sum to 1."
+    },
+    {
+     "name": "eta",
+     "type": ":obj:`float`, optional",
+     "desc": "Relaxation parameter (must be between 0 and 1, 0 excluded). Note that this will be only used when ``acceleration=None``."
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "acceleration:  :obj:`str`, optional",
+     "type": "",
+     "desc": "Acceleration (``None``, ``vandenberghe`` or ``fista``)"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "The Generalized Proximal gradient algorithm can be expressed by the\nfollowing recursion:\n\n.. math::\n    \\text{for } j=1,\\cdots,n, \\\\\n    ~~~~\\mathbf z_j^{k+1} = \\mathbf z_j^{k} + \\eta\n    \\left[prox_{\\frac{\\tau^k \\epsilon_j}{w_j} g_j}\\left(2 \\mathbf{x}^{k} - \\mathbf{z}_j^{k}\n    - \\tau^k \\sum_{i=1}^n \\nabla f_i(\\mathbf{x}^{k})\\right) - \\mathbf{x}^{k} \\right] \\\\\n    \\mathbf{x}^{k+1} = \\sum_{j=1}^n w_j \\mathbf z_j^{k+1} \\\\\n\nwhere :math:`\\sum_{j=1}^n w_j=1`. In the current implementation, :math:`w_j=1/n` when\nnot provided.",
+   "examples": ""
+  },
+  "HQS": {
+   "name": "HQS",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primal",
+   "signature": "(proxf: pyproximal.ProxOperator.ProxOperator, proxg: pyproximal.ProxOperator.ProxOperator, x0: NDArray[numpy.number], tau: Union[float, NDArray[numpy.number]], niter: int = 10, z0: Optional[NDArray[numpy.number]] = None, gfirst: bool = True, callback: Optional[Callable[..., NoneType]] = None, callbackz: bool = False, show: bool = False) -> Tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Half Quadratic splitting",
+   "parameters": [
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector (not required when ``gfirst=False``, can pass ``None``)"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float` or :obj:`numpy.ndarray`",
+     "desc": "Positive scalar weight, which should satisfy the following condition to guarantees convergence: :math:`\\tau  \\in (0, 1/L]` where ``L`` is the Lipschitz constant of :math:`\\nabla f`. Finally note that :math:`\\tau` can be chosen to be a vector of size ``niter`` such that different :math:`\\tau` is used at different iterations (i.e., continuation strategy)"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "z0",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Initial z vector (not required when ``gfirst=True``)"
+    },
+    {
+     "name": "gfirst",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply Proximal of operator ``g`` first (``True``) or Proximal of operator ``f`` first (``False``)"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "callbackz",
+     "type": ":obj:`bool`, optional",
+     "desc": "Modify callback signature to (``callback(x, z)``) when ``callbackz=True``"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "The HQS algorithm can be expressed by the following recursion [1]_:\n\n.. math::\n\n    \\mathbf{z}^{k+1} = \\prox_{\\tau g}(\\mathbf{x}^{k}) \\\\\n    \\mathbf{x}^{k+1} = \\prox_{\\tau f}(\\mathbf{z}^{k+1})\n\nfor ``gfirst=False``, or\n\n.. math::\n\n    \\mathbf{x}^{k+1} = \\prox_{\\tau f}(\\mathbf{z}^{k}) \\\\\n    \\mathbf{z}^{k+1} = \\prox_{\\tau g}(\\mathbf{x}^{k+1})\n\nfor ``gfirst=False``. Note that ``x`` and ``z`` converge to each other,\nhowever if iterations are stopped too early ``x`` is guaranteed to belong to\nthe domain of ``f`` while ``z`` is guaranteed to belong to the domain of ``g``.\nDepending on the problem either of the two may be the best solution.\n\n.. [1] D., Geman, and C., Yang, \"Nonlinear image recovery with halfquadratic\n     regularization\", IEEE Transactions on Image Processing,\n     4, 7, pp. 932-946, 1995.",
+   "examples": ""
+  },
+  "ADMM": {
+   "name": "ADMM",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primal",
+   "signature": "(proxf: pyproximal.ProxOperator.ProxOperator, proxg: pyproximal.ProxOperator.ProxOperator, x0: NDArray[numpy.number], tau: float, niter: int = 10, z0: Optional[NDArray[numpy.number]] = None, gfirst: bool = False, callback: Optional[Callable[..., NoneType]] = None, callbackz: bool = False, show: bool = False) -> Tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Alternating Direction Method of Multipliers",
+   "parameters": [
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector (not required when ``gfirst=False``, can pass ``None``)"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float`",
+     "desc": "Positive scalar weight, which should satisfy the following condition to guarantees convergence: :math:`\\tau  \\in (0, 1/L]` where ``L`` is the Lipschitz constant of :math:`\\nabla f`."
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "z0",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Initial z vector (not required when ``gfirst=True``)"
+    },
+    {
+     "name": "gfirst",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply Proximal of operator ``g`` first (``True``) or Proximal of operator ``f`` first (``False``)"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "callbackz",
+     "type": ":obj:`bool`, optional",
+     "desc": "Modify callback signature to (``callback(x, z)``) when ``callbackz=True``"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "The ADMM algorithm can be expressed by the following recursion [1]_:\n\n.. math::\n\n    \\mathbf{x}^{k+1} = \\prox_{\\tau f}(\\mathbf{z}^{k} - \\mathbf{u}^{k})\\\\\n    \\mathbf{z}^{k+1} = \\prox_{\\tau g}(\\mathbf{x}^{k+1} + \\mathbf{u}^{k})\\\\\n    \\mathbf{u}^{k+1} = \\mathbf{u}^{k} + \\mathbf{x}^{k+1} - \\mathbf{z}^{k+1}\n\nNote that ``x`` and ``z`` converge to each other, however if iterations are\nstopped too early ``x`` is guaranteed to belong to the domain of ``f``\nwhile ``z`` is guaranteed to belong to the domain of ``g``. Depending on\nthe problem either of the two may be the best solution.\n\n.. [1] S. Boyd, N. Parikh, E. Chu, B. Peleato, and J. Eckstein. 2011.\n    Distributed optimization and statistical learning via the alternating\n    direction method of multipliers. Foundations and Trends in Machine\n    Learning, 3 (1), 1-122. https://doi.org/10.1561/2200000016.",
+   "examples": ""
+  },
+  "ADMML2": {
+   "name": "ADMML2",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primal",
+   "signature": "(proxg: pyproximal.ProxOperator.ProxOperator, Op: 'LinearOperator', b: NDArray[numpy.number], A: 'LinearOperator', x0: NDArray[numpy.number], tau: float, niter: int = 10, z0: Optional[NDArray[numpy.number]] = None, gfirst: bool = False, callback: Optional[Callable[[NDArray[numpy.number]], NoneType]] = None, show: bool = False, **kwargs_solver: Dict[str, Any]) -> Tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Alternating Direction Method of Multipliers for L2 misfit term",
+   "parameters": [
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "Op",
+     "type": ":obj:`pylops.LinearOperator`",
+     "desc": "Linear operator of data misfit term"
+    },
+    {
+     "name": "b",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Data"
+    },
+    {
+     "name": "A",
+     "type": ":obj:`pylops.LinearOperator`",
+     "desc": "Linear operator of regularization term"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float`",
+     "desc": "Positive scalar weight, which should satisfy the following condition to guarantees convergence: :math:`\\tau \\in (0, 1/\\lambda_{max}(\\mathbf{A}^H\\mathbf{A})]`."
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "z0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial auxiliary vector. If ``None``, initialized to ``A @ x0``."
+    },
+    {
+     "name": "gfirst",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply Proximal of operator ``g`` first (``True``) or Proximal of operator ``f`` first (``False``)"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    },
+    {
+     "name": "**kwargs_solver",
+     "type": "",
+     "desc": "Arbitrary keyword arguments for :py:func:`scipy.sparse.linalg.lsqr` used to solve the x-update"
+    }
+   ],
+   "notes": "The ADMM algorithm can be expressed by the following recursion:\n\n.. math::\n\n    \\mathbf{x}^{k+1} = \\argmin_{\\mathbf{x}} \\frac{1}{2}||\\mathbf{Op}\\mathbf{x}\n    - \\mathbf{b}||_2^2 + \\frac{1}{2\\tau} ||\\mathbf{Ax} - \\mathbf{z}^k + \\mathbf{u}^k||_2^2\\\\\n    \\mathbf{z}^{k+1} = \\prox_{\\tau g}(\\mathbf{Ax}^{k+1} + \\mathbf{u}^{k})\\\\\n    \\mathbf{u}^{k+1} = \\mathbf{u}^{k} + \\mathbf{Ax}^{k+1} - \\mathbf{z}^{k+1}",
+   "examples": ""
+  },
+  "LinearizedADMM": {
+   "name": "LinearizedADMM",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primal",
+   "signature": "(proxf: pyproximal.ProxOperator.ProxOperator, proxg: pyproximal.ProxOperator.ProxOperator, A: 'LinearOperator', x0: NDArray[numpy.number], tau: float, mu: float, niter: int = 10, z0: Optional[NDArray[numpy.number]] = None, callback: Optional[Callable[[NDArray[numpy.number]], NoneType]] = None, show: bool = False) -> Tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Linearized Alternating Direction Method of Multipliers",
+   "parameters": [
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "A",
+     "type": ":obj:`pylops.LinearOperator`",
+     "desc": "Linear operator"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float`, optional",
+     "desc": "Positive scalar weight, which should satisfy the following condition to guarantee convergence: :math:`\\mu \\in (0, \\tau/\\lambda_{max}(\\mathbf{A}^H\\mathbf{A})]`."
+    },
+    {
+     "name": "mu",
+     "type": ":obj:`float`, optional",
+     "desc": "Second positive scalar weight, which should satisfy the following condition to guarantees convergence: :math:`\\mu \\in (0, \\tau/\\lambda_{max}(\\mathbf{A}^H\\mathbf{A})]`."
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "z0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial auxiliary vector. If ``None``, initialized to ``A @ x0``."
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "The Linearized-ADMM algorithm can be expressed by the following recursion [1]_:\n\n.. math::\n\n    \\mathbf{x}^{k+1} = \\prox_{\\mu f}(\\mathbf{x}^{k} - \\frac{\\mu}{\\tau}\n    \\mathbf{A}^H(\\mathbf{A} \\mathbf{x}^k - \\mathbf{z}^k + \\mathbf{u}^k))\\\\\n    \\mathbf{z}^{k+1} = \\prox_{\\tau g}(\\mathbf{A} \\mathbf{x}^{k+1} +\n    \\mathbf{u}^k)\\\\\n    \\mathbf{u}^{k+1} = \\mathbf{u}^{k} + \\mathbf{A}\\mathbf{x}^{k+1} -\n    \\mathbf{z}^{k+1}\n\n.. [1] N., Parikh, \"Proximal Algorithms\", Foundations and Trends\n    in Optimization. 2013.",
+   "examples": ""
+  },
+  "TwIST": {
+   "name": "TwIST",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primal",
+   "signature": "(proxg: pyproximal.ProxOperator.ProxOperator, A: 'LinearOperator', b: NDArray[numpy.number], x0: NDArray[numpy.number], alpha: Optional[float] = None, beta: Optional[float] = None, eigs: Optional[Tuple[float, float]] = None, niter: int = 10, callback: Optional[Callable[[NDArray[numpy.number]], NoneType]] = None, show: bool = False, returncost: bool = False) -> Union[NDArray[numpy.number], Tuple[NDArray[numpy.number], NDArray[numpy.number]]]",
+   "summary": "Two-step Iterative Shrinkage/Threshold",
+   "parameters": [
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "A",
+     "type": ":obj:`pylops.LinearOperator`",
+     "desc": "Linear operator"
+    },
+    {
+     "name": "b",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Data"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "alpha",
+     "type": ":obj:`float`, optional",
+     "desc": "Positive scalar weight (if ``None``, estimated based on the eigenvalues of :math:`\\mathbf{A}`, see Notes for details)"
+    },
+    {
+     "name": "beta",
+     "type": ":obj:`float`, optional",
+     "desc": "Positive scalar weight (if ``None``, estimated based on the eigenvalues of :math:`\\mathbf{A}`, see Notes for details)"
+    },
+    {
+     "name": "eigs",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Largest and smallest eigenvalues of :math:`\\mathbf{A}^H \\mathbf{A}`. If passed, computes `alpha` and `beta` based on them."
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    },
+    {
+     "name": "returncost",
+     "type": ":obj:`bool`, optional",
+     "desc": "Return cost function"
+    }
+   ],
+   "notes": "The TwIST algorithm can be expressed by the following recursion:\n\n.. math::\n\n    \\mathbf{x}^{k+1} = (1-\\alpha) \\mathbf{x}^{k-1} +\n    (\\alpha-\\beta) \\mathbf{x}^k +\n    \\beta \\prox_{g} (\\mathbf{x}^k + \\mathbf{A}^H\n    (\\mathbf{b} - \\mathbf{A}\\mathbf{x}^k)).\n\nwhere :math:`\\mathbf{x}^{1} = \\prox_{g} (\\mathbf{x}^0 + \\mathbf{A}^T\n(\\mathbf{b} - \\mathbf{A}\\mathbf{x}^0))`.\n\nThe optimal weighting parameters :math:`\\alpha` and :math:`\\beta` are\nlinked to the smallest and largest eigenvalues of\n:math:`\\mathbf{A}^H\\mathbf{A}` as follows:\n\n.. math::\n\n    \\alpha = 1 + \\rho^2 \\\\\n    \\beta =\\frac{2 \\alpha}{\\Lambda_{max} + \\lambda_{min}}\n\nwhere :math:`\\rho=\\frac{1-\\sqrt{k}}{1+\\sqrt{k}}` with\n:math:`k=\\frac{\\lambda_{min}}{\\Lambda_{max}}` and\n:math:`\\Lambda_{max}=max(1, \\lambda_{max})`.\n\nExperimentally, it has been observed that TwIST is robust to the\nchoice of such parameters. Finally, note that in the case of\n:math:`\\alpha=1` and :math:`\\beta=1`, TwIST is identical to IST.",
+   "examples": ""
+  },
+  "DouglasRachfordSplitting": {
+   "name": "DouglasRachfordSplitting",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primal",
+   "signature": "(proxf: pyproximal.ProxOperator.ProxOperator, proxg: pyproximal.ProxOperator.ProxOperator, x0: NDArray[numpy.number], tau: float, eta: float = 1.0, niter: int = 10, gfirst: bool = True, callback: Optional[Callable[..., NoneType]] = None, callbacky: bool = False, show: bool = False) -> Tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Douglas-Rachford Splitting",
+   "parameters": [
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float`",
+     "desc": "Positive scalar weight"
+    },
+    {
+     "name": "eta",
+     "type": ":obj:`float`, optional",
+     "desc": "Relaxation parameter (must be between 0 and 2, 0 excluded)."
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "gfirst",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply Proximal of operator ``g`` first (``True``) or Proximal of operator ``f`` first (``False``)"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "callbacky",
+     "type": ":obj:`bool`, optional",
+     "desc": "Modify callback signature to (``callback(x, y)``) when ``callbacky=True``"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "The Douglas-Rachford Splitting algorithm can be expressed by the following\nrecursion [1]_, [2]_:\n\n.. math::\n\n    \\mathbf{y}^{k} &= \\prox_{\\tau g}(\\mathbf{x}^k) \\\\\n    \\mathbf{x}^{k+1} &= \\mathbf{x}^{k} +\n    \\eta (\\prox_{\\tau f}(2 \\mathbf{y}^{k} - \\mathbf{x}^{k})\n    - \\mathbf{y}^{k})\n\n.. [1] Patrick L. Combettes and Jean-Christophe Pesquet. 2011. Proximal\n    Splitting Methods in Signal Processing. In Fixed-Point Algorithms for\n    Inverse Problems in Science and Engineering, Springer, 185-212.\n    https://doi.org/10.1007/978-1-4419-9569-8_10\n.. [2] Scott B. Lindstrom and Brailey Sims. 2021. Survey: Sixty Years of\n    Douglas-Rachford. Journal of the Australian Mathematical Society, 110,\n    3, 333-370. https://doi.org/10.1017/S1446788719000570\n    https://arxiv.org/abs/1809.07181",
+   "examples": ""
+  },
+  "PrimalDual": {
+   "name": "PrimalDual",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primaldual",
+   "signature": "(proxf: pyproximal.ProxOperator.ProxOperator, proxg: pyproximal.ProxOperator.ProxOperator, A: 'LinearOperator', x0: NDArray[numpy.number], tau: Union[float, NDArray[numpy.number]], mu: Union[float, NDArray[numpy.number]], y0: Optional[NDArray[numpy.number]] = None, z: Optional[NDArray[numpy.number]] = None, theta: float = 1.0, niter: int = 10, gfirst: bool = True, callback: Optional[Callable[..., NoneType]] = None, callbacky: bool = False, returny: bool = False, show: bool = False) -> Union[NDArray[numpy.number], Tuple[NDArray[numpy.number], NDArray[numpy.number]]]",
+   "summary": "Primal-dual algorithm",
+   "parameters": [
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "A",
+     "type": ":obj:`pylops.LinearOperator`",
+     "desc": "Linear operator of g"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float` or :obj:`np.ndarray`",
+     "desc": "Stepsize of subgradient of :math:`f`. This can be constant or function of iterations (in the latter cases provided as np.ndarray)"
+    },
+    {
+     "name": "mu",
+     "type": ":obj:`float` or :obj:`np.ndarray`",
+     "desc": "Stepsize of subgradient of :math:`g^*`. This can be constant or function of iterations (in the latter cases provided as np.ndarray)"
+    },
+    {
+     "name": "y0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial auxiliary vector. If ``None``, set to zero"
+    },
+    {
+     "name": "z",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Additional vector"
+    },
+    {
+     "name": "theta",
+     "type": ":obj:`float`",
+     "desc": "Scalar between 0 and 1 that defines the update of the :math:`\\bar{\\mathbf{x}}` variable - note that ``theta=0`` is a special case that represents the semi-implicit classical Arrow-Hurwicz algorithm"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "gfirst",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply Proximal of operator ``g`` first (``True``) or Proximal of operator ``f`` first (``False``)"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "callbacky",
+     "type": ":obj:`bool`, optional",
+     "desc": "Modify callback signature to (``callback(x, y)``) when ``callbacky=True``"
+    },
+    {
+     "name": "returny",
+     "type": ":obj:`bool`, optional",
+     "desc": "Return also ``y``"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "The Primal-dual algorithm can be expressed by the following recursion\n(``gfirst=True``):\n\n.. math::\n\n    \\mathbf{y}^{k+1} = \\prox_{\\mu g^*}(\\mathbf{y}^{k} +\n    \\mu \\mathbf{A}\\bar{\\mathbf{x}}^{k})\\\\\n    \\mathbf{x}^{k+1} = \\prox_{\\tau f}(\\mathbf{x}^{k} -\n    \\tau (\\mathbf{A}^H \\mathbf{y}^{k+1} + \\mathbf{z})) \\\\\n    \\bar{\\mathbf{x}}^{k+1} = \\mathbf{x}^{k+1} +\n    \\theta (\\mathbf{x}^{k+1} - \\mathbf{x}^k)\n\nwhere :math:`\\tau \\mu \\lambda_{max}(\\mathbf{A}^H\\mathbf{A}) < 1`.\n\nAlternatively for ``gfirst=False`` the scheme becomes:\n\n.. math::\n\n    \\mathbf{x}^{k+1} = \\prox_{\\tau f}(\\mathbf{x}^{k} -\n    \\tau (\\mathbf{A}^H \\mathbf{y}^{k} + \\mathbf{z})) \\\\\n    \\bar{\\mathbf{x}}^{k+1} = \\mathbf{x}^{k+1} +\n    \\theta (\\mathbf{x}^{k+1} - \\mathbf{x}^k) \\\\\n    \\mathbf{y}^{k+1} = \\prox_{\\mu g^*}(\\mathbf{y}^{k} +\n    \\mu \\mathbf{A}\\bar{\\mathbf{x}}^{k+1})\n\n.. [1] A., Chambolle, and T., Pock, \"A first-order primal-dual algorithm for\n    convex problems with applications to imaging\", Journal of Mathematical\n    Imaging and Vision, 40, 8pp. 120-145. 2011.",
+   "examples": ""
+  },
+  "AdaptivePrimalDual": {
+   "name": "AdaptivePrimalDual",
+   "kind": "solver",
+   "module": "pyproximal.optimization.primaldual",
+   "signature": "(proxf: pyproximal.ProxOperator.ProxOperator, proxg: pyproximal.ProxOperator.ProxOperator, A: 'LinearOperator', x0: NDArray[numpy.number], tau: float, mu: float, alpha: float = 0.5, eta: float = 0.95, s: float = 1.0, delta: float = 1.5, z: Optional[NDArray[numpy.number]] = None, niter: int = 10, tol: float = 1e-10, callback: Optional[Callable[[NDArray[numpy.number]], NoneType]] = None, show: bool = False) -> Tuple[NDArray[numpy.number], Tuple[NDArray[numpy.number], NDArray[numpy.number], NDArray[numpy.number]]]",
+   "summary": "Adaptive Primal-dual algorithm",
+   "parameters": [
+    {
+     "name": "proxf",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of f function"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "A",
+     "type": ":obj:`pylops.LinearOperator`",
+     "desc": "Linear operator of g"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float`",
+     "desc": "Stepsize of subgradient of :math:`f`"
+    },
+    {
+     "name": "mu",
+     "type": ":obj:`float`",
+     "desc": "Stepsize of subgradient of :math:`g^*`"
+    },
+    {
+     "name": "alpha",
+     "type": ":obj:`float`, optional",
+     "desc": "Initial adaptivity level (must be between 0 and 1)"
+    },
+    {
+     "name": "eta",
+     "type": ":obj:`float`, optional",
+     "desc": "Scaling of adaptivity level to be multipled to the current alpha every time the norm of the two residuals start to diverge (must be between 0 and 1)"
+    },
+    {
+     "name": "s",
+     "type": ":obj:`float`, optional",
+     "desc": "Scaling of residual balancing principle"
+    },
+    {
+     "name": "delta",
+     "type": ":obj:`float`, optional",
+     "desc": "Balancing factor. Step sizes are updated only when their ratio exceeds this value."
+    },
+    {
+     "name": "z",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Additional vector"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`int`, optional",
+     "desc": "Tolerance on residual norms"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "The Adative Primal-dual algorithm share the the same iterations of the\noriginal :func:`pyproximal.optimization.primaldual.PrimalDual` solver.\nThe main difference lies in the fact that the step sizes ``tau`` and ``mu``\nare adaptively changed at each iteration leading to faster converge.\n\nChanges are applied by tracking the norm of the primal and dual\nresiduals. When their mutual ratio increases beyond a certain treshold\n``delta`` the step lenghts are updated to balance the minimization and\nmaximization part of the overall optimization process.\n\n.. [1] T., Goldstein, M., Li, X., Yuan, E., Esser, R., Baraniuk, \"Adaptive\n    Primal-Dual Hybrid Gradient Methods for Saddle-Point Problems\",\n    ArXiv, 2013.",
+   "examples": ""
+  },
+  "Segment": {
+   "name": "Segment",
+   "kind": "solver",
+   "module": "pyproximal.optimization.segmentation",
+   "signature": "(y: NDArray[numpy.number], cl: NDArray[numpy.number], sigma: float, alpha: float, clsigmas: Optional[NDArray[numpy.number]] = None, z: Optional[NDArray[numpy.number]] = None, niter: int = 10, x0: Optional[NDArray[numpy.number]] = None, callback: Optional[Callable[[NDArray[numpy.number]], NoneType]] = None, show: bool = False, kwargs_simplex: Optional[Dict[str, Any]] = None) -> Tuple[NDArray[numpy.number], NDArray[numpy.number]]",
+   "summary": "Primal-dual algorithm for image segmentation",
+   "parameters": [
+    {
+     "name": "y",
+     "type": ":obj:`np.ndarray`",
+     "desc": "Image to segment (must have 2 or more dimensions)"
+    },
+    {
+     "name": "cl",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Classes"
+    },
+    {
+     "name": "sigma",
+     "type": ":obj:`float`",
+     "desc": "Positive scalar weight of the misfit term"
+    },
+    {
+     "name": "alpha",
+     "type": ":obj:`float`",
+     "desc": "Positive scalar weight of the regularization term"
+    },
+    {
+     "name": "clsigmas",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Classes standard deviations"
+    },
+    {
+     "name": "z",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Additional vector"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    },
+    {
+     "name": "kwargs_simplex",
+     "type": ":obj:`dict`, optional",
+     "desc": "Arbitrary keyword arguments for :py:func:`pyproximal.Simplex` operator"
+    }
+   ],
+   "notes": "This solver performs image segmentation over :math:`N_{cl}` classes solving\nthe following nonlinear minimization problem using the general version of\nthe first-order primal-dual algorithm of [1]_:\n\n.. math::\n\n    \\min_{\\mathbf{x} \\in X} \\frac{\\sigma}{2} \\mathbf{x}^T \\mathbf{f} +\n    \\mathbf{x}^T \\mathbf{z} + \\frac{\\alpha}{2}||\\nabla \\mathbf{x}||_{2,1}\n\nwhere :math:`X=\\{ \\mathbf{x}: \\sum_{i=1}^{N_{cl}} x_i = 1,\\; x_i \\geq 0 \\}`\nis a simplex and :math:`\\mathbf{f}=[\\mathbf{f}_1, ...,\n\\mathbf{f}_{N_{cl}}]^T` with :math:`\\mathbf{f}_i = |\\mathbf{y}-c_i|^2/\\sigma_i`.\nHere :math:`\\mathbf{c}=[c_1, ..., c_{N_{cl}}]^T` and\n:math:`\\mathbf{\\sigma}=[\\sigma_1, ..., \\sigma_{N_{cl}}]^T` are vectors\nrepresenting the optimal mean and standard deviations for each class.\n\n.. [1] Chambolle, and A., Pock, \"A first-order primal-dual algorithm for\n    convex problems with applications to imaging\", Journal of Mathematical\n    Imaging and Vision, 40, 8pp. 120\u2013145. 2011.",
+   "examples": ""
+  },
+  "SR3": {
+   "name": "SR3",
+   "kind": "solver",
+   "module": "pyproximal.optimization.sr3",
+   "signature": "(Op: 'LinearOperator', Reg: 'LinearOperator', data: NDArray[numpy.number], kappa: float, eps: float, x0: Optional[NDArray[numpy.number]] = None, adaptive: bool = True, iter_lim_outer: int = 100, iter_lim_inner: int = 100) -> NDArray[numpy.number]",
+   "summary": "Sparse Relaxed Regularized Regression",
+   "parameters": [
+    {
+     "name": "Op",
+     "type": ":obj:`pylops.LinearOperator`",
+     "desc": "Forward operator"
+    },
+    {
+     "name": "Reg",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Regularization operator"
+    },
+    {
+     "name": "data",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Data"
+    },
+    {
+     "name": "kappa",
+     "type": ":obj:`float`",
+     "desc": "Parameter controlling the difference between :math:`\\mathbf{z}` and :math:`\\mathbf{Lx}`"
+    },
+    {
+     "name": "eps",
+     "type": ":obj:`float`",
+     "desc": "Regularization parameter"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Initial guess"
+    },
+    {
+     "name": "adaptive",
+     "type": ":obj:`bool`, optional",
+     "desc": "Use adaptive SR3 with a stopping criterion for the inner iterations or not"
+    },
+    {
+     "name": "iter_lim_outer",
+     "type": ":obj:`int`, optional",
+     "desc": "Maximum number of iterations for the outer iteration"
+    },
+    {
+     "name": "iter_lim_inner",
+     "type": ":obj:`int`, optional",
+     "desc": "Maximum number of iterations for the inner iteration"
+    }
+   ],
+   "notes": "SR3 uses the following algorithm:\n\n    .. math::\n        \\mathbf{x}_{k+1} = (\\mathbf{A}^T\\mathbf{A} + \\kappa\n        \\mathbf{L}^T\\mathbf{L})^{-1}(\\mathbf{A}^T\\mathbf{b} +\n        \\kappa \\mathbf{L}^T\\mathbf{y}_k) \\\\\n        \\mathbf{y}_{k+1} = \\prox_{\\lambda/\\kappa\\mathcal{R}}\n        (\\mathbf{Lx}_{k+1})",
+   "examples": ""
+  }
+ }
+}

@@ -53,7 +53,7 @@ def describe(obj: Any, kind: str) -> Entry:
     }
 
 
-def build_catalog() -> Catalog:
+def build_pylops_catalog() -> Catalog:
     """Introspect the installed PyLops and return its operators and solvers."""
     operators: dict[str, Entry] = {}
     solvers: dict[str, Entry] = {}
@@ -101,4 +101,36 @@ def build_catalog() -> Catalog:
         "operators": operators,
         "solvers": solvers,
         "workflows": workflows,
+    }
+
+
+def build_pyproximal_catalog() -> Catalog:
+    """Introspect the installed PyProximal and return its operators and solvers."""
+    import pyproximal
+    import pyproximal.optimization
+    import pyproximal.proximal
+
+    operators: dict[str, Entry] = {}
+    for name in pyproximal.proximal.__all__:
+        obj = getattr(pyproximal.proximal, name, None)
+        if inspect.isclass(obj) or inspect.isfunction(obj):  # Simplex is a function
+            operators[name] = describe(obj, "operator")
+    solvers: dict[str, Entry] = {}
+    opt = pyproximal.optimization
+    for info in pkgutil.walk_packages(opt.__path__, "pyproximal.optimization."):
+        try:
+            mod = importlib.import_module(info.name)
+        except Exception:  # optional dependencies may be missing
+            continue
+        for name, obj in vars(mod).items():
+            if (
+                not name.startswith("_")
+                and inspect.isfunction(obj)
+                and obj.__module__ == info.name
+            ):
+                solvers.setdefault(name, describe(obj, "solver"))
+    return {
+        "pyproximal_version": pyproximal.__version__,
+        "operators": operators,
+        "solvers": solvers,
     }
