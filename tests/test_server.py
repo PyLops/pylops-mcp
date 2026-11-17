@@ -162,3 +162,66 @@ def test_search_all_spans_both_packages() -> None:
     res = server.search("convolve")
     assert res["pylops_version"] and res["pyproximal_version"]
     assert {"operator", "proxoperator"} <= {h["kind"] for h in res["results"]}
+
+
+def test_get_mpioperator() -> None:
+    res = server.get_mpioperator("MPIBlockDiag")
+    assert res["name"] == "MPIBlockDiag"
+    assert res["kind"] == "operator"
+    assert res["module"].startswith("pylops_mpi.basicoperators")
+    assert res["pylops_mpi_version"]
+    assert "pylops_version" not in res
+
+
+def test_mpi_factory_and_case_insensitive() -> None:
+    assert server.get_mpioperator("mpimdc")["name"] == "MPIMDC"
+    assert server.get_mpisolver("CGLS")["name"] == "cgls"
+
+
+def test_mpi_pools() -> None:
+    assert {"cg", "cgls", "ista", "fista"} <= set(server.list_mpisolvers()["solvers"])
+    assert "DistributedArray" in server.list_mpiarrays()["arrays"]
+    assert server.get_mpiarray("DistributedArray")["kind"] == "array"
+    assert {"MPIProxOperator", "MPIL2"} <= set(
+        server.list_mpiproxoperators()["proxoperators"]
+    )
+    assert "ProximalGradient" in server.list_mpiproxsolvers()["proxsolvers"]
+    assert server.get_mpiproxsolver("PrimalDual")["module"].startswith("pylops_mpi")
+
+
+def test_mpi_module_filter() -> None:
+    ops = server.list_mpioperators("signalprocessing")["operators"]
+    assert "MPIFFT2D" in ops
+    assert "MPIBlockDiag" not in ops
+
+
+def test_mpi_explicit_and_unknown_version() -> None:
+    res = server.get_mpioperator("MPIBlockDiag", pylops_mpi_version="0.6")
+    assert res["pylops_mpi_version"] == "0.6.1"
+    # the proximal module only exists from 0.7.0
+    assert server.list_mpiproxsolvers(pylops_mpi_version="0.6")["proxsolvers"] == []
+    bad = server.get_mpisolver("cg", pylops_mpi_version="9.9")
+    assert "error" in bad
+    assert "0.5.0" in bad["available_versions"]
+
+
+def test_mpi_unknown_name_gives_suggestions() -> None:
+    assert "MPIBlockDiag" in server.get_mpioperator("MPIBlockDig")["suggestions"]
+
+
+def test_search_mpi_kinds() -> None:
+    res = server.search("fft", kind="mpioperator")
+    assert {"MPIFFT2D", "MPIFFTND"} <= {h["name"] for h in res["results"]}
+    assert {h["kind"] for h in res["results"]} == {"mpioperator"}
+    assert res["pylops_mpi_version"]
+    assert "pylops_version" not in res
+    assert "DistributedArray" in [
+        h["name"] for h in server.search("distributed", kind="mpiarray")["results"]
+    ]
+
+
+def test_search_all_includes_mpi() -> None:
+    res = server.search("mpifft")
+    assert res["pylops_mpi_version"]
+    assert "mpioperator" in {h["kind"] for h in res["results"]}
+    assert "pylops_mpi" in server.list_versions()

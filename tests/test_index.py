@@ -13,8 +13,10 @@ from pylops_mcp.index import (
     write_index,
 )
 from pylops_mcp.introspect import (
+    MPI_PUBLIC_PACKAGES,
     PUBLIC_PACKAGES,
     build_pylops_catalog,
+    build_pylops_mpi_catalog,
     build_pyproximal_catalog,
 )
 
@@ -107,3 +109,33 @@ def test_pyproximal_api_is_complete() -> None:
     # a name can be both operator and solver (e.g. RED in newer releases)
     for name in set(cat["operators"]) & set(cat["solvers"]):
         assert cat["operators"][name]["module"] != cat["solvers"][name]["module"]
+
+
+def _require_pylops_mpi() -> None:
+    """Skip if PyLops-MPI (or the MPI library it needs) is not available."""
+    try:
+        import pylops_mpi  # noqa: F401
+    except (ImportError, RuntimeError) as e:  # mpi4py raises RuntimeError
+        pytest.skip(f"pylops_mpi not importable: {e}"[:200])
+
+
+def test_pylops_mpi_roundtrip(tmp_path: Path) -> None:
+    _require_pylops_mpi()
+    version = build_pylops_mpi_catalog()["pylops_mpi_version"]
+    built = write_index("pylops_mpi", tmp_path / f"{version}.json")
+    assert load_index(package="pylops_mpi", index_dir=tmp_path) == built
+    assert built["operators"] and built["solvers"] and built["arrays"]
+
+
+def test_pylops_mpi_api_is_complete() -> None:
+    _require_pylops_mpi()
+    cat = build_pylops_mpi_catalog()
+    for pkg_name in MPI_PUBLIC_PACKAGES:
+        pkg = importlib.import_module(pkg_name)
+        for name in pkg.__all__:
+            obj = getattr(pkg, name)
+            if inspect.isclass(obj) or inspect.isfunction(obj):
+                assert name in cat["operators"], f"{pkg_name}.{name} missing"
+    assert {"cg", "cgls", "ista", "fista"} <= set(cat["solvers"])
+    assert not {"first_distarray", "CGLS"} & set(cat["solvers"])
+    assert {"DistributedArray", "StackedDistributedArray"} <= set(cat["arrays"])
