@@ -1,0 +1,1355 @@
+{
+ "pylops_mpi_version": "0.7.0",
+ "operators": {
+  "MPIBlockDiag": {
+   "name": "MPIBlockDiag",
+   "kind": "operator",
+   "module": "pylops_mpi.basicoperators.BlockDiag",
+   "signature": "(ops: Sequence[pylops.linearoperator.LinearOperator], base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, mask: Optional[List[numbers.Integral]] = None, dtype: Optional[DTypeLike] = None)",
+   "summary": "MPI Block-diagonal operator.",
+   "parameters": [
+    {
+     "name": "ops",
+     "type": ":obj:`list`",
+     "desc": "One or more :class:`pylops.LinearOperator` to be stacked."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "Base MPI Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "mask",
+     "type": ":obj:`list`, optional",
+     "desc": "Mask defining subsets of ranks to consider when performing 'global' operations on the distributed array such as dot product or norm."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    }
+   ],
+   "notes": "An MPI Block Diagonal operator is composed of N linear operators, represented by **L**.\nEach rank has one or more :class:`pylops.LinearOperator`, which we represent here compactly\nas :math:`\\mathbf{L}_i` for rank :math:`i`.\n\nEach operator performs forward mode operations using its corresponding model vector, denoted as **m**.\nThis vector is effectively a :class:`pylops_mpi.DistributedArray` partitioned at each rank in such a way that\nits local shapes agree with those of the corresponding linear operators.\nThe forward mode of each operator is then collected from all ranks as a DistributedArray, referred to as **d**.\n\n.. math::\n    \\begin{bmatrix}\n    \\mathbf{d}_1 \\\\\n    \\mathbf{d}_2 \\\\\n    \\vdots \\\\\n    \\mathbf{d}_n\n    \\end{bmatrix} =\n    \\begin{bmatrix}\n    \\mathbf{L}_1 & \\mathbf{0} & \\ldots & \\mathbf{0} \\\\\n    \\mathbf{0} & \\mathbf{L}_2 & \\ldots & \\mathbf{0} \\\\\n    \\vdots & \\vdots & \\ddots & \\vdots \\\\\n    \\mathbf{0} & \\mathbf{0} & \\ldots & \\mathbf{L}_n\n    \\end{bmatrix}\n    \\begin{bmatrix}\n    \\mathbf{m}_1 \\\\\n    \\mathbf{m}_2 \\\\\n    \\vdots \\\\\n    \\mathbf{m}_n\n    \\end{bmatrix}\n\nLikewise, for the adjoint mode, each operator executes operations in the adjoint mode,\nthe adjoint mode of each operator is then collected from all ranks as a DistributedArray\nreferred as **d**.\n\n.. math::\n    \\begin{bmatrix}\n    \\mathbf{d}_1 \\\\\n    \\mathbf{d}_2 \\\\\n    \\vdots \\\\\n    \\mathbf{d}_n\n    \\end{bmatrix} =\n    \\begin{bmatrix}\n    \\mathbf{L}_1^H & \\mathbf{0} & \\ldots & \\mathbf{0} \\\\\n    \\mathbf{0} & \\mathbf{L}_2^H & \\ldots & \\mathbf{0} \\\\\n    \\vdots & \\vdots & \\ddots & \\vdots \\\\\n    \\mathbf{0} & \\mathbf{0} & \\ldots & \\mathbf{L}_n^H\n    \\end{bmatrix}\n    \\begin{bmatrix}\n    \\mathbf{m}_1 \\\\\n    \\mathbf{m}_2 \\\\\n    \\vdots \\\\\n    \\mathbf{m}_n\n    \\end{bmatrix}",
+   "examples": ""
+  },
+  "MPIStackedBlockDiag": {
+   "name": "MPIStackedBlockDiag",
+   "kind": "operator",
+   "module": "pylops_mpi.basicoperators.BlockDiag",
+   "signature": "(ops: Sequence[pylops_mpi.LinearOperator.MPILinearOperator], base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, dtype: Optional[DTypeLike] = None)",
+   "summary": "MPI Stacked BlockDiag Operator",
+   "parameters": [
+    {
+     "name": "ops",
+     "type": ":obj:`list`",
+     "desc": "One or more :class:`pylops_mpi.MPILinearOperator` to be stacked."
+    }
+   ],
+   "notes": "A MPIStackedBlockDiag is composed of N :class:pylops_mpi.MPILinearOperator instances stacked along the diagonal.\nThese MPI operators will be applied sequentially, with distributed computations\nperformed within each operator.",
+   "examples": ""
+  },
+  "MPIVStack": {
+   "name": "MPIVStack",
+   "kind": "operator",
+   "module": "pylops_mpi.basicoperators.VStack",
+   "signature": "(ops: Sequence[pylops.linearoperator.LinearOperator], base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, dtype: Optional[DTypeLike] = None)",
+   "summary": "MPI VStack Operator",
+   "parameters": [
+    {
+     "name": "ops",
+     "type": ":obj:`list`",
+     "desc": "One or more :class:`pylops.LinearOperator` to be vertically stacked."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "Base MPI Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    }
+   ],
+   "notes": "An MPIVStack is composed of N linear operators stacked vertically, represented by **L**.\nEach rank has one or more :class:`pylops.LinearOperator`, which we represent here compactly\nas :math:`\\mathbf{L}_i` for rank :math:`i`.\n\nEach operator performs forward mode operations using its corresponding model vector, denoted as **m**.\nThis vector is effectively a :class:`pylops_mpi.DistributedArray` with :obj:`pylops_mpi.Partition.BROADCAST`\ni.e. broadcasted at all ranks in such a way that the global shape is equal to the local shape of the array\nand these local shapes agree with the corresponding linear operators.\n\nAfterwards, the forward mode of each operator is collected from each rank in a\n:class:`pylops_mpi.DistributedArray`, represented by **d**.\n\n.. math::\n      \\begin{bmatrix}\n        \\mathbf{d}_1 \\\\\n        \\mathbf{d}_2 \\\\\n        \\vdots \\\\\n        \\mathbf{d}_n\n      \\end{bmatrix} =\n      \\begin{bmatrix}\n        \\mathbf{L}_1 \\\\\n        \\mathbf{L}_2 \\\\\n        \\vdots \\\\\n        \\mathbf{L}_n\n      \\end{bmatrix}\n      m\n\nLikewise for the adjoint mode, each operator performs adjoint operations using its corresponding\nmodel vector, denoted as **m** which is a :class:`pylops_mpi.DistributedArray` with\n:obj:`pylops_mpi.Partition.SCATTER` i.e. partitioned at each rank.\n\nAfterwards, a collective reduction operation is performed where adjoint values from linear operators\nare summed up, and the final sum is broadcasted to all processes in the communicator, represented by **d**.\n\n.. math::\n      d =\n      \\begin{bmatrix}\n        \\mathbf{L}_1^H &\n        \\mathbf{L}_2^H &\n        \\ldots &\n        \\mathbf{L}_n^H\n      \\end{bmatrix}\n      \\begin{bmatrix}\n        \\mathbf{m}_1 \\\\\n        \\mathbf{m}_2 \\\\\n        \\vdots \\\\\n        \\mathbf{m}_n\n      \\end{bmatrix}",
+   "examples": ""
+  },
+  "MPIStackedVStack": {
+   "name": "MPIStackedVStack",
+   "kind": "operator",
+   "module": "pylops_mpi.basicoperators.VStack",
+   "signature": "(ops: Sequence[pylops_mpi.LinearOperator.MPILinearOperator], base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, dtype: Optional[DTypeLike] = None)",
+   "summary": "MPI Stacked VStack Operator",
+   "parameters": [
+    {
+     "name": "ops",
+     "type": ":obj:`list`",
+     "desc": "One or more :class:`pylops_mpi.MPILinearOperator` to be vertically stacked."
+    }
+   ],
+   "notes": "An MPIStackedVStack is composed of N  :class:`pylops_mpi.MPILinearOperator` stacked\nvertically. These MPI operators will be applied sequentially, however distributed\ncomputations will be performed within each operator.",
+   "examples": ""
+  },
+  "MPIHStack": {
+   "name": "MPIHStack",
+   "kind": "operator",
+   "module": "pylops_mpi.basicoperators.HStack",
+   "signature": "(ops: Sequence[pylops.linearoperator.LinearOperator], base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, dtype: Optional[DTypeLike] = None)",
+   "summary": "MPI HStack Operator",
+   "parameters": [
+    {
+     "name": "ops",
+     "type": ":obj:`list`",
+     "desc": "One or more :class:`pylops.LinearOperator` to be horizontally stacked."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "Base MPI Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    }
+   ],
+   "notes": "An MPIHStack is composed of N linear operators stacked horizontally, represented by **L**.\nEach rank has one or more :class:`pylops.LinearOperator`, which we represent here compactly\nas :math:`\\mathbf{L}_i` for rank :math:`i`.\n\nEach operator performs forward mode operations using its corresponding model vector, denoted as **m**.\nThis vector is effectively a :class:`pylops_mpi.DistributedArray`, with partition set to\n:obj:`pylops_mpi.Partition.SCATTER` i.e. unique portions assigned to each rank.\n\nAfterwards, a collective reduction operation is performed where matrix-vector product values from linear operators\nare summed up, and broadcasted to all ranks in the communicator, represented by **d**.\n\n.. math::\n      d =\n      \\begin{bmatrix}\n        \\mathbf{L}_1 &\n        \\mathbf{L}_2 &\n        \\ldots &\n        \\mathbf{L}_n\n      \\end{bmatrix}\n      \\begin{bmatrix}\n        \\mathbf{m}_1 \\\\\n        \\mathbf{m}_2 \\\\\n        \\vdots \\\\\n        \\mathbf{m}_n\n      \\end{bmatrix}\n\nFor the adjoint mode, each operator performs adjoint matrix-vector product using its corresponding\nmodel vector, denoted by **m** which is a :class:`pylops_mpi.DistributedArray` with partition set to\n:obj:`pylops_mpi.Partition.BROADCAST` i.e. array is broadcasted to all ranks.\n\nAfterwards, the result of the adjoint matrix-vector product is stored in a :obj:`pylops_mpi.DistributedArray`,\nwhich is represented by the variable **d**.\n\n.. math::\n      \\begin{bmatrix}\n        \\mathbf{d}_1 \\\\\n        \\mathbf{d}_2 \\\\\n        \\vdots \\\\\n        \\mathbf{d}_n\n      \\end{bmatrix} =\n      \\begin{bmatrix}\n        \\mathbf{L}_1^H \\\\\n        \\mathbf{L}_2^H \\\\\n        \\vdots \\\\\n        \\mathbf{L}_n^H\n      \\end{bmatrix}\n      m",
+   "examples": ""
+  },
+  "MPIFirstDerivative": {
+   "name": "MPIFirstDerivative",
+   "kind": "operator",
+   "module": "pylops_mpi.basicoperators.FirstDerivative",
+   "signature": "(dims: Union[int, collections.abc.Sequence[int], NDArray[numpy.integer]], sampling: float = 1.0, kind: str = 'centered', edge: bool = False, order: int = 3, base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, dtype: DTypeLike = <class 'numpy.float64'>)",
+   "summary": "MPI First Derivative",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`int` or :obj:`tuple`",
+     "desc": "Number of samples for each dimension."
+    },
+    {
+     "name": "sampling",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling step :math:`\\Delta x`."
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Derivative kind (``forward``, ``centered``, or ``backward``)."
+    },
+    {
+     "name": "edge",
+     "type": ":obj:`bool`, optional",
+     "desc": "Use reduced order derivative at edges (``True``) or ignore them (``False``). This is currently only available for centered derivative."
+    },
+    {
+     "name": "order",
+     "type": ":obj:`int`, optional",
+     "desc": "Derivative order (``3`` or ``5``). This is currently only available for centered derivative."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "MPI Base Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in the input array."
+    }
+   ],
+   "notes": "The MPIFirstDerivative operator applies a first derivative to a :class:`pylops_mpi.DistributedArray`\nusing either a first-order backward and forward stencil or a second or third ordered centered stencil.\n\nWhen computing the first derivative using a :class:`pylops_mpi.DistributedArray`, a technique named **ghosting**\nis employed, often in conjunction with MPI for communication between different processes. Ghosting involves\ncreating additional **\"ghost cells\"** around the boundary of each process's local data domain. These ghost cells\nare replicated copies of the border cells from neighboring processes, these cells allow each process\nto perform local computations without the need for explicit communication with other processes.\n\nNow, for a one-dimensional DistributedArray, the first order forward stencil is:\n\n.. math::\n    y[i] = (x[i+1] - x[i]) / \\Delta x\n\nwhile the first order backward stencil is:\n\n.. math::\n    y[i] = (x[i] - x[i-1]) / \\Delta x\n\nand the second-order centered stencil is:\n\n.. math::\n    y[i] = 0.5 * (x[i+1] - x[i-1]) / \\Delta x\n\nwhere :math:`y` is a DistributedArray and :math:`x` is a Ghosted array created by adding\nborder cells of neighboring processes to the local array at each rank.\n\nFormulas for the third-order centered stencil can be found at\nthis `link <https://en.wikipedia.org/wiki/Finite_difference_coefficient>`_.",
+   "examples": ""
+  },
+  "MPISecondDerivative": {
+   "name": "MPISecondDerivative",
+   "kind": "operator",
+   "module": "pylops_mpi.basicoperators.SecondDerivative",
+   "signature": "(dims: Union[int, collections.abc.Sequence[int], NDArray[numpy.integer]], sampling: float = 1.0, kind: str = 'centered', edge: bool = False, base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, dtype: DTypeLike = <class 'numpy.float64'>) -> None",
+   "summary": "MPI Second Derivative",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`int` or :obj:`tuple`",
+     "desc": "Number of samples for each dimension."
+    },
+    {
+     "name": "sampling",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling step :math:`\\Delta x`."
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Derivative kind (``forward``, ``centered``, or ``backward``)."
+    },
+    {
+     "name": "edge",
+     "type": ":obj:`bool`, optional",
+     "desc": "Use reduced order derivative at edges (``True``) or ignore them (``False``). This is currently only available for centered derivative."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "MPI Base Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in the input array."
+    }
+   ],
+   "notes": "The MPISecondDerivative operator applies a second derivative to a :class:`pylops_mpi.DistributedArray`\nusing either a second-order forward, backward or a centered stencil.\n\nSimilar to the concept of :py:class:`pylops_mpi.basicoperators.MPIFirstDerivative`,\n**ghosting** is applied at each rank to include duplicated copies of border cells\n(ghost cells) from neighboring processes. These ghost cells enable each process\nto perform local computations independently, avoiding the necessity for direct\ncommunication with other processes. As a result, it becomes possible to calculate\nthe Second Derivative of the entire distributed array efficiently.\n\nNow, for a one-dimensional DistributedArray, the second-order forward stencil is:\n\n.. math::\n    y[i] = (x[i+2] - 2 * x[i+1] + x[i]) / \\mathbf{\\Delta x}^2\n\nwhile the second-order backward stencil is:\n\n.. math::\n    y[i] = (x[i] - 2 * x[i-1] + x[i-2]) / \\mathbf{\\Delta x}^2\n\nand the second-order centered stencil is:\n\n.. math::\n    y[i] = (x[i+1] - 2 * x[i] + x[i-1]) / \\mathbf{\\Delta x}^2\n\nwhere :math:`y` is a DistributedArray and :math:`x` is a Ghosted array created\nby adding border cells of neighboring processes to the local array at each rank.",
+   "examples": ""
+  },
+  "MPILaplacian": {
+   "name": "MPILaplacian",
+   "kind": "operator",
+   "module": "pylops_mpi.basicoperators.Laplacian",
+   "signature": "(dims: collections.abc.Sequence[int] | NDArray[numpy.integer], axes: collections.abc.Sequence[int] | NDArray[numpy.integer] = (-2, -1), weights: Tuple[float, ...] = (1, 1), sampling: Tuple[float, ...] = (1, 1), edge: bool = False, kind: str = 'centered', base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, dtype: DTypeLike = <class 'numpy.float64'>)",
+   "summary": "MPI Laplacian",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`",
+     "desc": "Number of samples for each dimension."
+    },
+    {
+     "name": "axes",
+     "type": ":obj:`int`, optional",
+     "desc": "Axes along which the Laplacian is applied."
+    },
+    {
+     "name": "weights",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Weight to apply to each direction (real laplacian operator if ``weights=(1, 1)``)"
+    },
+    {
+     "name": "sampling",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Sampling steps for each direction"
+    },
+    {
+     "name": "edge",
+     "type": ":obj:`bool`, optional",
+     "desc": "Use reduced order derivative at edges (``True``) or ignore them (``False``) for centered derivative"
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Derivative kind (``forward``, ``centered``, or ``backward``)"
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "MPI Base Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    }
+   ],
+   "notes": "The MPILaplacian operator applies a second derivative along multiple directions of\na multi-dimensional distributed array.\n\nWe utilize the :py:class:`pylops_mpi.basicoperators.MPISecondDerivative` to\ncalculate the second derivative along the first direction(i.e., axis=0).\nFor other values of axis, the :py:class:`pylops.SecondDerivative` operator is\npushed into the :py:class:`pylops_mpi.basicoperators.MPIBlockDiag` operator.\nSubsequently, the matrix-vector product is performed between the\nSecondDerivative operator and the distributed data.\n\nFor simplicity, given a two-dimensional array, the Laplacian is:\n\n.. math::\n    y[i, j] = (x[i+1, j] + x[i-1, j] + x[i, j-1] +x[i, j+1] - 4x[i, j])\n              / (\\Delta x \\Delta y)",
+   "examples": ""
+  },
+  "MPIGradient": {
+   "name": "MPIGradient",
+   "kind": "operator",
+   "module": "pylops_mpi.basicoperators.Gradient",
+   "signature": "(dims: Union[int, collections.abc.Sequence[int], NDArray[numpy.integer]], sampling: Union[int, collections.abc.Sequence[int], NDArray[numpy.integer]] = 1, edge: bool = False, kind: str = 'centered', base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, dtype: DTypeLike = 'float64')",
+   "summary": "MPI Gradient",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`int` or :obj:`tuple`",
+     "desc": "Number of samples for each dimension."
+    },
+    {
+     "name": "sampling",
+     "type": ":obj:`int` or :obj:`tuple`, optional",
+     "desc": "Sampling steps for each direction."
+    },
+    {
+     "name": "edge",
+     "type": ":obj:`bool`, optional",
+     "desc": "Use reduced order derivative at edges (``True``) or ignore them (``False``)."
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Derivative kind (``forward``, ``centered``, or ``backward``)."
+    },
+    {
+     "name": "base_comm",
+     "type": ": obj:`MPI.Comm`, optional",
+     "desc": "MPI Base Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    }
+   ],
+   "notes": "The MPIGradient operator applies a first-order derivative to each dimension of\na multi-dimensional distributed array in forward mode.\n\nWe utilize the :py:class:`pylops_mpi.basicoperators.MPIFirstDerivative` to\ncalculate the first derivative along the first direction (i.e., axis=0).\nFor all remaining axes, the :py:class:`pylops.FirstDerivative` operator is\npushed into the :py:class:`pylops_mpi.basicoperators.MPIBlockDiag` operator.\n\nFinally, using the :py:class:`pylops_mpi.basicoperators.MPIStackedVStack` we vertically\nstack the :py:class:`pylops_mpi.basicoperators.MPIFirstDerivative` and the\n:py:class:`pylops_mpi.basicoperators.MPIBlockDiag` operators.\n\nFor the forward mode, the matrix vector product is performed between the\n:py:class:`pylops_mpi.basicoperators.MPIStackedVStack` and the :py:class:`pylops_mpi.DistributedArray`.\n\nFor simplicity, given a three-dimensional array, the MPIGradient in forward mode using a\ncentered stencil can be expressed as:\n\n.. math::\n    \\mathbf{g}_{i, j, k} =\n        (f_{i+1, j, k} - f_{i-1, j, k}) / d_1 \\mathbf{i_1} +\n        (f_{i, j+1, k} - f_{i, j-1, k}) / d_2 \\mathbf{i_2} +\n        (f_{i, j, k+1} - f_{i, j, k-1}) / d_3 \\mathbf{i_3}\n\nIn adjoint mode, the adjoint matrix vector product is performed between the\n:py:class:`pylops_mpi.basicoperators.MPIStackedVStack` and the :py:class:`pylops_mpi.StackedDistributedArray`.",
+   "examples": ""
+  },
+  "MPIHalo": {
+   "name": "MPIHalo",
+   "kind": "operator",
+   "module": "pylops_mpi.basicoperators.Halo",
+   "signature": "(dims: tuple, halo: Union[int, tuple], proc_grid_shape: Optional[tuple] = None, comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, dtype: Any = <class 'numpy.float64'>) -> None",
+   "summary": "MPI Halo",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`",
+     "desc": "Number of samples for each dimension."
+    },
+    {
+     "name": "halo",
+     "type": ":obj:`int` or :obj:`tuple`",
+     "desc": "Number of halo samples to add around each local block. A scalar value applies the same halo to both sides of every axis. A tuple of length ``ndim`` applies a symmetric halo per axis. A tuple of length ``2 * ndim`` specifies the halo to apply at the start and at the end for each axis."
+    },
+    {
+     "name": "proc_grid_shape",
+     "type": ":obj:`tuple`",
+     "desc": "Number of MPI ranks along each dimension."
+    },
+    {
+     "name": "comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "MPI Base Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in the input array."
+    }
+   ],
+   "notes": "The MPIHalo operator extends each rank's local array with a **halo** (ghost cells)\nof width ``halo`` along the haloed axes, providing the neighboring rank's data for\nstencil-like operators. Ranks are arranged in an N-dimensional Cartesian grid as\nprovided by ``proc_grid_shape``, whereby each rank owns a contiguous block of the\nglobal array. The ``halo`` is normalised to a tuple of length ``2 * ndim``, containing\none ``(minus, plus)`` halo-width pair for each axis. The tuple is flattened in\naxis order as\n\n.. math::\n    (h_{0,-}, h_{0,+}, h_{1,-}, h_{1,+}, \\ldots)\n\nwhere :math:`h_{i,-}`` and :math:`h_{i,+}`` represent the halo widths on the\nnegative and positive side of the i-th axis, respectively. For convenience,\n``halo`` may be provided as a scalar when the same symmetric halo is\nrequired along all axes, or as a tuple of length ``ndim`` when symmetric halos\nof different width are applied to different axis. Ghost cells on the global\nboundary of an axis are zero by default.\n\nIn the forward mode, each rank exchanges boundary slices with its left and\nright neighbors along each axis via ``MPI_Sendrecv``. Ranks at a global\nboundary have ``MPI.PROC_NULL`` as their neighbor on that side, so those\nghost regions remain zero and no exchange is attempted. Once the exchange\nis complete, local PyLops operators can be applied independently\non each rank's extended block, typically wrapped into a\n:class:`pylops_mpi.basicoperators.MPIBlockDiag` operator.\n\nIn the adjoint mode, the reverse operation is performed the original\nlocal domain is extracted by removing the ghost cells.\n\nFinally, note that the Halo operator is not linear operator per se; instead,\nit is meant to sandwitch any linear operator to implement equivalent\nbehaviours to the serial version of such an operator.",
+   "examples": ""
+  },
+  "MPIFredholm1": {
+   "name": "MPIFredholm1",
+   "kind": "operator",
+   "module": "pylops_mpi.signalprocessing.Fredholm1",
+   "signature": "(G: NDArray[numpy.number], nz: int = 1, saveGt: bool = False, usematmul: bool = True, base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, dtype: DTypeLike = 'float64') -> None",
+   "summary": "Fredholm integral of first kind.",
+   "parameters": [
+    {
+     "name": "G",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Multi-dimensional convolution kernel of size :math:`[n_{\\text{slice}} \\times n_x \\times n_y]`"
+    },
+    {
+     "name": "nz",
+     "type": ":obj:`int`, optional",
+     "desc": "Additional dimension of model"
+    },
+    {
+     "name": "saveGt",
+     "type": ":obj:`bool`, optional",
+     "desc": "Save ``G`` and ``G.H`` to speed up the computation of adjoint (``True``) or create ``G.H`` on-the-fly (``False``) Note that ``saveGt=True`` will double the amount of required memory"
+    },
+    {
+     "name": "usematmul",
+     "type": ":obj:`bool`, optional",
+     "desc": "Use :func:`numpy.matmul` (``True``) or for-loop with :func:`numpy.dot` (``False``). As it is not possible to define which approach is more performant (this is highly dependent on the size of ``G`` and input arrays as well as the hardware used in the computation), we advise users to time both methods for their specific problem prior to making a choice."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "MPI Base Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    }
+   ],
+   "notes": "A multi-dimensional Fredholm integral of first kind can be expressed as\n\n.. math::\n\n    d(k, x, z) = \\int{G(k, x, y) m(k, y, z) \\,\\mathrm{d}y}\n    \\quad \\forall k=1,\\ldots,n_{slice}\n\non the other hand its adjoint is expressed as\n\n.. math::\n\n    m(k, y, z) = \\int{G^*(k, y, x) d(k, x, z) \\,\\mathrm{d}x}\n    \\quad \\forall k=1,\\ldots,n_{\\text{slice}}\n\nThis integral is implemented in a distributed fashion, where ``G``\nis split across ranks along its first dimension. The inputs\nof both the forward and adjoint are distributed arrays with broadcast partion:\neach rank takes a portion of such arrays, computes a partial integral, and\nthe resulting outputs are then gathered by all ranks to return a\ndistributed arrays with broadcast partion.",
+   "examples": ""
+  },
+  "MPIFFTND": {
+   "name": "MPIFFTND",
+   "kind": "operator",
+   "module": "pylops_mpi.signalprocessing.FFTND",
+   "signature": "(dims: collections.abc.Sequence[int] | NDArray[numpy.integer], axes: collections.abc.Sequence[int] | NDArray[numpy.integer] = (0, 1, 2), sampling: Union[float, Sequence[float]] = 1.0, norm: str = 'none', real: bool = False, ifftshift_before: bool = False, fftshift_after: bool = False, dtype: DTypeLike = 'complex128', base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>) -> None",
+   "summary": "N-dimensional Fast-Fourier Transform.",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`",
+     "desc": "Number of samples for each dimension"
+    },
+    {
+     "name": "axes",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Axes (or axis) along which FFTND is applied"
+    },
+    {
+     "name": "sampling",
+     "type": ":obj:`tuple` or :obj:`float`, optional",
+     "desc": "Sampling steps for each direction. When supplied a single value, it is used for all directions."
+    },
+    {
+     "name": "norm",
+     "type": "`{\"none\", \"1/n\"}`, optional",
+     "desc": "- \"none\": Does not scale the forward or the adjoint FFT transforms. Default is \"none\". - \"1/n\": Scales both the forward and adjoint FFT transforms by   :math:`1/N_F`."
+    },
+    {
+     "name": "real",
+     "type": ":obj:`bool`, optional",
+     "desc": "Model to which fft is applied has real numbers (``True``) or not (``False``). Used to enforce that the output of adjoint of a real model is real. Note that the real FFT is applied only to the first dimension to which the FFTND operator is applied (last element of ``axes``)"
+    },
+    {
+     "name": "ifftshift_before",
+     "type": ":obj:`tuple` or :obj:`bool`, optional",
+     "desc": "Apply ifftshift (``True``) or not (``False``) to model vector (before FFT). Consider using this option when the model vector's respective axis is symmetric with respect to the zero value sample. This will shift the zero value sample to coincide with the zero index sample. With such an arrangement, FFT will not introduce a sample-dependent phase-shift when compared to the continuous Fourier Transform. When passing a single value, the shift will the same for every direction. Pass a tuple to specify which dimensions are shifted."
+    },
+    {
+     "name": "fftshift_after",
+     "type": ":obj:`tuple` or :obj:`bool`, optional",
+     "desc": "Apply fftshift (``True``) or not (``False``) to data vector (after FFT). Consider using this option when you require frequencies to be arranged naturally, from negative to positive. When not applying fftshift after FFT, frequencies are arranged from zero to largest positive, and then from negative Nyquist to the frequency bin before zero. When passing a single value, the shift will the same for every direction. Pass a tuple to specify which dimensions are shifted."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array. Note that the ``dtype`` of the operator is the corresponding complex type even when a real type is provided. In addition, note that the NumPy backend does not support returning ``dtype`` different from ``complex128``."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "MPI Base Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    }
+   ],
+   "notes": "The MPIFFTND operator applies the forward and inverse N-dimensional FFT to a\n:class:`pylops_mpi.DistributedArray`, accepted as a 1D flattened array and reshaped internally\nto the layout defined by ``dims``. The distributed FFT transform is performed by\n:class:`mpi4py_fft.mpifft.PFFT` via :class:`mpi4py_fft.pencil.Subcomm`. Since the 1D input is\nalways distributed along ``axis=0`` after reshaping, PFFT is configured to distribute along\n``axis=0`` by default. The exception is when ``axes[-1] == 0``: PFFT requires the final\ntransform axis to be local on each rank, so the distribution is shifted to ``axis=1`` and the\ninput is redistributed accordingly before the transform. After the transform, the output is\nflattened back to 1D.\n\nThe class uses PFFT's two internal pencil layouts: ``pencil[False]`` for forward-input/backward-output and\n``pencil[True]`` for forward-output/backward-input. During initialization, it records the distributed axes\nof these layouts as ``_pfft_in_axis`` and ``_pfft_out_axis``, and redistributes the input\n:class:`pylops_mpi.DistributedArray` as needed before each transform.\n\nIn the forward pass, :meth:`PFFT.forward` is called with ``normalize=False``, computing:\n\n.. math::\n    D(k_1, \\ldots, k_N) = \\mathscr{F} (d) =\n    \\int\\limits_{-\\infty}^\\infty \\cdots \\int\\limits_{-\\infty}^\\infty\n    d(x_1, \\ldots, x_N)\n    e^{-j2\\pi k_1 x_1} \\cdots\n    e^{-j 2 \\pi k_N x_N}  \\,\\mathrm{d}x_1 \\cdots \\mathrm{d}x_N\n\nWhen ``norm=\"1/n\"``, the result is additionally scaled by :math:`1/N_F`.\n\nIn the adjoint pass, :meth:`PFFT.backward` is called with ``normalize=True``, so ``PFFT``\ninternally divides by :math:`N_F = \\prod_i N_i`, computing:\n\n.. math::\n    d(x_1, \\ldots, x_N) = \\mathscr{F}^{-1} (D) = \\frac{1}{N_F}\n    \\int\\limits_{-\\infty}^\\infty \\cdots \\int\\limits_{-\\infty}^\\infty\n    D(k_1, \\ldots, k_N)\n    e^{j2\\pi k_1 x_1} \\cdots\n    e^{j 2 \\pi k_N x_N} \\,\\mathrm{d}k_1 \\cdots  \\mathrm{d}k_N\n\nWhen ``norm=\"none\"``, the adjoint multiplies by :math:`N_F` to cancel this internal scaling,\nreturning a true unscaled adjoint. The result is then flattened back to a 1D\n:class:`pylops_mpi.DistributedArray`. All inter-rank data movement is handled internally by\n``mpi4py_fft``.",
+   "examples": ""
+  },
+  "MPIFFT2D": {
+   "name": "MPIFFT2D",
+   "kind": "operator",
+   "module": "pylops_mpi.signalprocessing.FFT2D",
+   "signature": "(dims: collections.abc.Sequence[int] | NDArray[numpy.integer], axes: collections.abc.Sequence[int] | NDArray[numpy.integer] = (0, 1), sampling: Union[float, Sequence[float]] = 1.0, norm: str = 'none', real: bool = False, ifftshift_before: bool = False, fftshift_after: bool = False, dtype: DTypeLike = 'complex128', base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>) -> None",
+   "summary": "Two-dimensional Fast-Fourier Transform.",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`tuple`",
+     "desc": "Number of samples for each dimension"
+    },
+    {
+     "name": "axes",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Pair of axes along which FFT2D is applied"
+    },
+    {
+     "name": "sampling",
+     "type": ":obj:`tuple` or :obj:`float`, optional",
+     "desc": "Sampling steps for each axis in ``axes``. When supplied a single value, it is used for both axes."
+    },
+    {
+     "name": "norm",
+     "type": "`{\"none\", \"1/n\"}`, optional",
+     "desc": "- \"none\": Does not scale the forward or the adjoint FFT transforms. Default is \"none\". - \"1/n\": Scales both the forward and adjoint FFT transforms by   :math:`1/N_F`."
+    },
+    {
+     "name": "real",
+     "type": ":obj:`bool`, optional",
+     "desc": "Model to which fft is applied has real numbers (``True``) or not (``False``). Used to enforce that the output of adjoint of a real model is real. Note that the real FFT is applied only to the first dimension to which the FFT2D operator is applied (last element of ``axes``)"
+    },
+    {
+     "name": "ifftshift_before",
+     "type": ":obj:`tuple` or :obj:`bool`, optional",
+     "desc": "Apply ifftshift (``True``) or not (``False``) to model vector (before FFT). Consider using this option when the model vector's respective axis is symmetric with respect to the zero value sample. This will shift the zero value sample to coincide with the zero index sample. With such an arrangement, FFT will not introduce a sample-dependent phase-shift when compared to the continuous Fourier Transform. When passing a single value, the shift will the same for every direction. Pass a tuple to specify which dimensions are shifted."
+    },
+    {
+     "name": "fftshift_after",
+     "type": ":obj:`tuple` or :obj:`bool`, optional",
+     "desc": "Apply fftshift (``True``) or not (``False``) to data vector (after FFT). Consider using this option when you require frequencies to be arranged naturally, from negative to positive. When not applying fftshift after FFT, frequencies are arranged from zero to largest positive, and then from negative Nyquist to the frequency bin before zero. When passing a single value, the shift will the same for every direction. Pass a tuple to specify which dimensions are shifted."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array. Note that the ``dtype`` of the operator is the corresponding complex type even when a real type is provided. In addition, note that the NumPy backend does not support returning ``dtype`` different from ``complex128``."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "MPI Base Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "**kwargs_fft",
+     "type": "",
+     "desc": "Arbitrary keyword arguments to be passed to the selected fft method"
+    }
+   ],
+   "notes": "The MPIFFT2D operator applies the forward and inverse 2-dimensional FFT to a\n:class:`pylops_mpi.DistributedArray`, accepted as a 1D flattened array and reshaped internally\nto the layout defined by ``dims``. The distributed FFT transform is performed by\n:class:`mpi4py_fft.mpifft.PFFT` via :class:`mpi4py_fft.pencil.Subcomm`. Since the 1D input is\nalways distributed along ``axis=0`` after reshaping, PFFT is configured to distribute along\n``axis=0`` by default. The exception is when ``axes[-1] == 0``: PFFT requires the final\ntransform axis to be local on each rank, so the distribution is shifted to ``axis=1`` and the\ninput is redistributed accordingly before the transform. After the transform, the output is\nflattened back to 1D.\n\nThe class uses PFFT's two internal pencil layouts: ``pencil[False]`` for forward-input/backward-output and\n``pencil[True]`` for forward-output/backward-input. During initialization, it records the distributed axes\nof these layouts as ``_pfft_in_axis`` and ``_pfft_out_axis``, and redistributes the input\n:class:`pylops_mpi.DistributedArray` as needed before each transform.\n\nIn the forward pass, :meth:`PFFT.forward` is called with ``normalize=False``, computing:\n\n.. math::\n    D(k_y, k_x) = \\mathscr{F} (d) = \\iint\\limits_{-\\infty}^\\infty d(y, x) e^{-j2\\pi k_yy}\n    e^{-j2\\pi k_xx} \\,\\mathrm{d}y \\,\\mathrm{d}x\n\nWhen ``norm=\"1/n\"``, the result is additionally scaled by :math:`1/N_F`.\n\nIn the adjoint pass, :meth:`PFFT.backward` is called with ``normalize=True``, so ``PFFT``\ninternally divides by :math:`N_F = N_1 \\cdot N_2`, computing:\n\n.. math::\n    d(y,x) = \\mathscr{F}^{-1} (D) = \\frac{1}{N_F} \\iint\\limits_{-\\infty}^\\infty D(k_y, k_x) e^{j2\\pi k_yy}\n    e^{j2\\pi k_xx} \\,\\mathrm{d}k_y  \\,\\mathrm{d}k_x\n\nWhen ``norm=\"none\"``, the adjoint multiplies by :math:`N_F` to cancel this internal scaling,\nreturning a true unscaled adjoint. The result is then flattened back to a 1D\n:class:`pylops_mpi.DistributedArray`. All inter-rank data movement is handled internally by\n``mpi4py_fft``.",
+   "examples": ""
+  },
+  "MPIMatrixMult": {
+   "name": "MPIMatrixMult",
+   "kind": "operator",
+   "module": "pylops_mpi.basicoperators.MatrixMult",
+   "signature": "(A: NDArray[numpy.number], M: int, saveAt: bool = False, base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, kind: Literal['summa', 'block'] = 'summa', dtype: DTypeLike = 'float64', base_comm_nccl: Optional[Any] = None)",
+   "summary": "MPI Distributed Matrix Multiplication Operator",
+   "parameters": [
+    {
+     "name": "A",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Local block of the matrix operator."
+    },
+    {
+     "name": "M",
+     "type": ":obj:`int`",
+     "desc": "Global number of columns in the operand and result matrices."
+    },
+    {
+     "name": "saveAt",
+     "type": ":obj:`bool`, optional",
+     "desc": "If ``True``, store both :math:`\\mathbf{A}` and its conjugate transpose :math:`\\mathbf{A}^H` to accelerate adjoint operations (uses twice the memory). Default is ``False``."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "MPI communicator to use. Defaults to ``MPI.COMM_WORLD``."
+    },
+    {
+     "name": "base_comm_nccl",
+     "type": ":obj:`cupy.cuda.nccl.NcclCommunicator`, optional",
+     "desc": "NCCL communicator to use when operating on ``cupy`` arrays."
+    },
+    {
+     "name": "kind",
+     "type": ":obj:`str`, optional",
+     "desc": "Algorithm used to perform matrix multiplication: ``'block'`` for # block-row-column decomposition, and ``'summa'`` for SUMMA algorithm, or . Default is ``'summa'``."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array. Defaults to ``numpy.float64``."
+    }
+   ],
+   "notes": "The forward operator computes:\n\n.. math::\n    \\mathbf{Y} = \\mathbf{A} \\cdot \\mathbf{X}\n\nwhere:\n\n- :math:`\\mathbf{A}` is the distributed operator matrix of shape :math:`[N \\times K]`\n- :math:`\\mathbf{X}` is the distributed operand matrix of shape :math:`[K \\times M]`\n- :math:`\\mathbf{Y}` is the resulting distributed matrix of shape :math:`[N \\times M]`\n\nThe adjoint (conjugate-transpose) operation computes:\n\n.. math::\n    \\mathbf{X}_{adj} = \\mathbf{A}^H \\cdot \\mathbf{Y}\n\nwhere :math:`\\mathbf{A}^H` is the complex-conjugate transpose of :math:`\\mathbf{A}`.\n\nBased on the choice of ``kind``, the distribution layouts of the operator and model and\ndata vectors differ as follows:\n\n:summa:\n\n2D block-grid distribution over a square process grid  :math:`[\\sqrt{P} \\times \\sqrt{P}]`:\n\n- :math:`\\mathbf{A}` and :math:`\\mathbf{X}` (and  :math:`\\mathbf{Y}`) are partitioned into\n  :math:`[N_{loc} \\times K_{loc}]` and :math:`[K_{loc} \\times M_{loc}]` tiles on each\n  rank, respectively.\n- Each SUMMA iteration broadcasts row- and column-blocks of :math:`\\mathbf{A}` and\n  :math:`\\mathbf{X}` (forward) or :math:`\\mathbf{Y}` (adjoint) and accumulates local\n  partial products.\n\n:block:\n\n1D block-row distribution over a :math:`[1 \\times P]` grid:\n\n- :math:`\\mathbf{A}` is partitioned into :math:`[N_{loc} \\times K]` blocks across ranks.\n- :math:`\\mathbf{X}` (and  :math:`\\mathbf{Y}`) are partitioned into :math:`[K \\times M_{loc}]` blocks.\n- Local multiplication is followed by row-wise gather (forward) or\n  allreduce (adjoint) across ranks.\n\n.. [1] Robert A. van de Geijn, R., and Watts, J. \"SUMMA: Scalable Universal\n   Matrix Multiplication Algorithm\", 1995.",
+   "examples": ""
+  },
+  "MPINonStationaryConvolve1D": {
+   "name": "MPINonStationaryConvolve1D",
+   "kind": "operator",
+   "module": "pylops_mpi.signalprocessing.NonStatConvolve1d",
+   "signature": "(dims: Union[int, collections.abc.Sequence[int], NDArray[numpy.integer]], hs: NDArray[numpy.number], ih: collections.abc.Sequence[int] | NDArray[numpy.integer], axis: int = -1, base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, dtype: DTypeLike = 'float64') -> pylops_mpi.LinearOperator.MPILinearOperator",
+   "summary": "1D non-stationary convolution operator.",
+   "parameters": [
+    {
+     "name": "dims",
+     "type": ":obj:`list` or :obj:`int`",
+     "desc": "Number of samples for each dimension of the input :obj:`pylops_mpi.DistributedArray`."
+    },
+    {
+     "name": "hs",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Bank of 1d compact filters of size :math:`n_\\text{filts} \\times n_h`. Filters must have odd number of samples and are assumed to be centered in the middle of the filter support."
+    },
+    {
+     "name": "ih",
+     "type": ":obj:`tuple`",
+     "desc": "Indices of the locations of the filters ``hs`` in the model (and data). Note that the filters must be regularly sampled, i.e. :math:`dh=\\text{diff}(ih)=\\text{const.}`"
+    },
+    {
+     "name": "axis",
+     "type": ":obj:`int`, optional",
+     "desc": "Axis along which convolution is applied"
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "MPI Base Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    }
+   ],
+   "notes": "The MPINonStationaryConvolve1D operator applies non-stationary\none-dimensional convolution between the input signal :math:`d(t)`\nand a bank of compact filter kernels :math:`h(t; t_i)`. Assume\nthe input signal is composed of :math:`N=16` samples, and distributed\nacross :math:`N=2` ranks (with each local signal composes of\n:math:`N=8` samples); similarly, consider :math:`N=4` filters\nat locations :math:`t_2` and :math:`t_6` in the first rank and\n:math:`t_10` and :math:`t_14` in the second rank. Each rank applies\nan halo of :math:`N=4` samples to include the following/preceding\nfilter, and applies locally a\n:class:pylops.signalprocessingNonStationaryConvolve1D` operator;\nfinally the halo is removed from each local convolved signal.",
+   "examples": ""
+  },
+  "MPIMDC": {
+   "name": "MPIMDC",
+   "kind": "operator",
+   "module": "pylops_mpi.waveeqprocessing.MDC",
+   "signature": "(G, nt, nv, nfreq, dt=1.0, dr=1.0, twosided=True, fftengine='numpy', saveGt=True, conj=False, usematmul=False, prescaled=False, base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>)",
+   "summary": "Multi-dimensional convolution.",
+   "parameters": [
+    {
+     "name": "G",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Multi-dimensional convolution kernel in frequency domain of size :math:`[n_{f,rank} \\times n_s \\times n_r]`"
+    },
+    {
+     "name": "nt",
+     "type": ":obj:`int`",
+     "desc": "Number of samples along time axis for model and data (note that this must be equal to ``2*n_t-1`` when working with ``twosided=True``."
+    },
+    {
+     "name": "nv",
+     "type": ":obj:`int`",
+     "desc": "Number of samples along virtual source axis"
+    },
+    {
+     "name": "dt",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling of time integration axis"
+    },
+    {
+     "name": "dr",
+     "type": ":obj:`float`, optional",
+     "desc": "Sampling of receiver integration axis"
+    },
+    {
+     "name": "twosided",
+     "type": ":obj:`bool`, optional",
+     "desc": "MDC operator has both negative and positive time (``True``) or only positive (``False``)"
+    },
+    {
+     "name": "fftengine",
+     "type": ":obj:`str`, optional",
+     "desc": "Engine used for fft computation (``numpy`` or ``fftw``)"
+    },
+    {
+     "name": "saveGt",
+     "type": ":obj:`bool`, optional",
+     "desc": "Save ``G`` and ``G^H`` to speed up the computation of adjoint of :class:`pylops.signalprocessing.Fredholm1` (``True``) or create ``G^H`` on-the-fly (``False``) Note that ``saveGt=True`` will be faster but double the amount of required memory"
+    },
+    {
+     "name": "conj",
+     "type": ":obj:`str`, optional",
+     "desc": "Perform Fredholm integral computation with complex conjugate of ``G``"
+    },
+    {
+     "name": "usematmul",
+     "type": ":obj:`bool`, optional",
+     "desc": "Use :func:`numpy.matmul` (``True``) or for-loop with :func:`numpy.dot` (``False``) in :py:class:`pylops.signalprocessing.Fredholm1` operator. Refer to Fredholm1 documentation for details."
+    },
+    {
+     "name": "prescaled",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply scaling to kernel (``False``) or not (``False``) when performing spatial and temporal summations. In case ``prescaled=True``, the kernel is assumed to have been pre-scaled when passed to the MDC routine."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "MPI Base Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    }
+   ],
+   "notes": "The so-called multi-dimensional convolution (MDC) is a chained\noperator [1]_. It is composed of a forward Fourier transform,\na multi-dimensional integration, and an inverse Fourier transform:\n\n.. math::\n    y(t, s, v) = \\mathscr{F}^{-1} \\Big( \\int_S G(f, s, r)\n    \\mathscr{F}(x(t, r, v)) dr \\Big)\n\nwhich is discretized as follows:\n\n.. math::\n    y(t, s, v) = \\mathscr{F}^{-1} \\Big( \\sum_{i_r=0}^{n_r}\n    (\\sqrt{n_t} * d_t * d_r) G(f, s, i_r) \\mathscr{F}(x(t, i_r, v)) \\Big)\n\nwhere :math:`(\\sqrt{n_t} * d_t * d_r)` is not applied if ``prescaled=True``.\n\nThis operation can be discretized and performed by means of a\nlinear operator\n\n.. math::\n    \\mathbf{D}= \\mathbf{F}^H  \\mathbf{G} \\mathbf{F}\n\nwhere :math:`\\mathbf{F}` is the Fourier transform applied along\nthe time axis and :math:`\\mathbf{G}` is the multi-dimensional\nconvolution kernel.\n\n.. [1] Wapenaar, K., van der Neut, J., Ruigrok, E., Draganov, D., Hunziker,\n   J., Slob, E., Thorbecke, J., and Snieder, R., \"Seismic interferometry\n   by crosscorrelation and by multi-dimensional deconvolution: a\n   systematic comparison\", Geophysical Journal International, vol. 185,\n   pp. 1335-1364. 2011.",
+   "examples": ""
+  }
+ },
+ "solvers": {
+  "cg": {
+   "name": "cg",
+   "kind": "solver",
+   "module": "pylops_mpi.optimization.basic",
+   "signature": "(Op: Union[pylops_mpi.LinearOperator.MPILinearOperator, pylops_mpi.StackedLinearOperator.MPIStackedLinearOperator], y: Union[pylops_mpi.DistributedArray.DistributedArray, pylops_mpi.DistributedArray.StackedDistributedArray], x0: Union[pylops_mpi.DistributedArray.DistributedArray, pylops_mpi.DistributedArray.StackedDistributedArray], niter: int = 10, tol: float = 0.0001, show: bool = False, itershow: Tuple[int, int, int] = (10, 10, 10), callback: Optional[Callable] = None) -> Tuple[Union[pylops_mpi.DistributedArray.DistributedArray, pylops_mpi.DistributedArray.StackedDistributedArray], int, NDArray[numpy.number]]",
+   "summary": "Conjugate gradient",
+   "parameters": [
+    {
+     "name": "Op",
+     "type": ":obj:`pylops_mpi.MPILinearOperator` or :obj:`pylops_mpi.MPIStackedLinearOperator`",
+     "desc": "Operator to invert of size :math:`[N \\times N]`"
+    },
+    {
+     "name": "y",
+     "type": ":obj:`pylops_mpi.DistributedArray` or :obj:`pylops_mpi.StackedDistributedArray`",
+     "desc": "DistributedArray of size (N,)"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`pylops_mpi.DistributedArray` or :obj:`pylops_mpi.StackedDistributedArray`",
+     "desc": "Initial guess"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": "Tolerance on residual norm"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    },
+    {
+     "name": "itershow",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Display set log for the first N1 steps, last N2 steps, and every N3 steps in between where N1, N2, N3 are the three element of the list."
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    }
+   ],
+   "notes": "See :class:`pylops_mpi.optimization.cls_basic.CG`",
+   "examples": ""
+  },
+  "cgls": {
+   "name": "cgls",
+   "kind": "solver",
+   "module": "pylops_mpi.optimization.basic",
+   "signature": "(Op: Union[pylops_mpi.LinearOperator.MPILinearOperator, pylops_mpi.StackedLinearOperator.MPIStackedLinearOperator], y: Union[pylops_mpi.DistributedArray.DistributedArray, pylops_mpi.DistributedArray.StackedDistributedArray], x0: Union[pylops_mpi.DistributedArray.DistributedArray, pylops_mpi.DistributedArray.StackedDistributedArray], niter: int = 10, damp: float = 0.0, tol: float = 0.0001, show: bool = False, itershow: Tuple[int, int, int] = (10, 10, 10), callback: Optional[Callable] = None) -> Tuple[pylops_mpi.DistributedArray.DistributedArray, int, int, float, float, NDArray[numpy.number]]",
+   "summary": "Conjugate gradient least squares",
+   "parameters": [
+    {
+     "name": "Op",
+     "type": ":obj:`pylops_mpi.MPILinearOperator` or :obj:`pylops_mpi.MPIStackedLinearOperator`",
+     "desc": "MPI Linear Operator to invert of size :math:`[N \\times M]`"
+    },
+    {
+     "name": "y",
+     "type": ":obj:`pylops_mpi.DistributedArray` or :obj:`pylops_mpi.StackedDistributedArray`",
+     "desc": "DistributedArray of size (N,)"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`pylops_mpi.DistributedArray` or :obj:`pylops_mpi.StackedDistributedArray`",
+     "desc": "Initial guess"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations"
+    },
+    {
+     "name": "damp",
+     "type": ":obj:`float`, optional",
+     "desc": "Damping coefficient"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": "Tolerance on residual norm"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    },
+    {
+     "name": "itershow",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Display set log for the first N1 steps, last N2 steps, and every N3 steps in between where N1, N2, N3 are the three element of the list."
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the DistributedArray."
+    }
+   ],
+   "notes": "See :class:`pylops_mpi.optimization.cls_basic.CGLS`",
+   "examples": ""
+  },
+  "power_iteration": {
+   "name": "power_iteration",
+   "kind": "solver",
+   "module": "pylops_mpi.optimization.eigs",
+   "signature": "(Op: Union[pylops_mpi.LinearOperator.MPILinearOperator, pylops_mpi.StackedLinearOperator.MPIStackedLinearOperator], b_k: Union[pylops_mpi.DistributedArray.DistributedArray, pylops_mpi.DistributedArray.StackedDistributedArray], niter: int = 10, tol: float = 1e-05, dtype: str = 'float64', backend: str = 'numpy') -> Tuple[float, pylops_mpi.DistributedArray.DistributedArray, int]",
+   "summary": "Power iteration algorithm.",
+   "parameters": [
+    {
+     "name": "Op",
+     "type": ":obj:`pylops_mpi.MPILinearOperator` or :obj:`pylops_mpi.MPIStackedLinearOperator`",
+     "desc": "Square operator"
+    },
+    {
+     "name": "b_k",
+     "type": ":obj:`pylops_mpi.DistributedArray` or :obj:`pylops_mpi.StackedDistributedArray`",
+     "desc": "Initial guess for the eigenvector. This vector is modified in-place during the iteration and, upon convergence, contains the estimated dominant eigenvector (normalized to unit norm). The initial values of ``b_k`` are ignored, as it is re-initialized with random values inside the function. The operator ``Op`` must support distributed matrix-vector multiplication with ``b_k`` (i.e., ``Op.matvec(b_k)``) consistent with the underlying partitioning."
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": "Update tolerance"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array."
+    },
+    {
+     "name": "backend",
+     "type": ":obj:`str`, optional",
+     "desc": "Backend to use (`numpy` or `cupy`)"
+    }
+   ],
+   "notes": "",
+   "examples": ""
+  },
+  "ista": {
+   "name": "ista",
+   "kind": "solver",
+   "module": "pylops_mpi.optimization.sparsity",
+   "signature": "(Op: pylops_mpi.LinearOperator.MPILinearOperator, y: pylops_mpi.DistributedArray.DistributedArray, x0: Optional[pylops_mpi.DistributedArray.DistributedArray], niter: int = 10, SOp: Optional[pylops_mpi.LinearOperator.MPILinearOperator] = None, eps: float = 0.1, alpha: Optional[float] = None, eigsdict: Optional[Dict[str, Any]] = None, tol: float = 1e-10, rtol: float = 0.0, rtol1: float = 0.0, threshkind: str = 'soft', decay: Optional[NDArray[numpy.number]] = None, monitorres: bool = False, show: bool = False, itershow: Tuple[int, int, int] = (10, 10, 10), callback: Optional[Callable] = None) -> Tuple[pylops_mpi.DistributedArray.DistributedArray, int, NDArray[numpy.number]]",
+   "summary": "Iterative Shrinkage-Thresholding Algorithm (ISTA).",
+   "parameters": [
+    {
+     "name": "Op",
+     "type": ":obj:`pylops.LinearOperator`",
+     "desc": "Operator to invert"
+    },
+    {
+     "name": "y",
+     "type": ":obj:`numpy.ndarray`",
+     "desc": "Data of size :math:`[N \\times 1]`"
+    },
+    {
+     "name": "x0: :obj:`numpy.ndarray`, optional",
+     "type": "",
+     "desc": "Initial guess"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`",
+     "desc": "Number of iterations"
+    },
+    {
+     "name": "SOp",
+     "type": ":obj:`pylops.LinearOperator`, optional",
+     "desc": "Regularization operator (use when solving the analysis problem)"
+    },
+    {
+     "name": "eps",
+     "type": ":obj:`float`, optional",
+     "desc": "Sparsity damping"
+    },
+    {
+     "name": "alpha",
+     "type": ":obj:`float`, optional",
+     "desc": "Step size. To guarantee convergence, ensure :math:`\\alpha \\le 1/\\lambda_\\text{max}`, where :math:`\\lambda_\\text{max}` is the largest eigenvalue of :math:`\\mathbf{Op}^H\\mathbf{Op}`. If ``None``, the maximum eigenvalue is estimated and the optimal step size is chosen as :math:`1/\\lambda_\\text{max}`. If provided, the convergence criterion will not be checked internally."
+    },
+    {
+     "name": "eigsdict",
+     "type": ":obj:`dict`, optional",
+     "desc": "Dictionary of parameters to be passed to power_iteration method when computing the maximum eigenvalue"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": "Absolute tolerance on model update. Stop iterations if difference between inverted model at subsequent iterations is smaller than ``tol``"
+    },
+    {
+     "name": "rtol",
+     "type": ":obj:`float`, optional",
+     "desc": "Relative tolerance on total cost function wrt initial total cost function. Stops the solver when the ratio of the current total cost function to the initial total cost function is below this value."
+    },
+    {
+     "name": "rtol1",
+     "type": ":obj:`float`, optional",
+     "desc": "Relative tolerance on total cost function wrt to data. Stops the solver when the ratio of the current total cost function to the data norm is below this value."
+    },
+    {
+     "name": "threshkind",
+     "type": ":obj:`str`, optional",
+     "desc": "Kind of thresholding ('hard', 'soft', 'half' - 'soft' used as default)"
+    },
+    {
+     "name": "decay",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Decay factor to be applied to thresholding during iterations"
+    },
+    {
+     "name": "monitorres",
+     "type": ":obj:`bool`, optional",
+     "desc": "Monitor that residual is decreasing"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display logs"
+    },
+    {
+     "name": "itershow",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Display set log for the first N1 steps, last N2 steps, and every N3 steps in between where N1, N2, N3 are the three element of the list."
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "preallocate",
+     "type": ":obj:`bool`, optional",
+     "desc": "Pre-allocate all variables used by the solver."
+    }
+   ],
+   "notes": "",
+   "examples": ""
+  },
+  "fista": {
+   "name": "fista",
+   "kind": "solver",
+   "module": "pylops_mpi.optimization.sparsity",
+   "signature": "(Op: pylops_mpi.LinearOperator.MPILinearOperator, y: pylops_mpi.DistributedArray.DistributedArray, x0: Optional[pylops_mpi.DistributedArray.DistributedArray], niter: int = 10, SOp: Optional[pylops_mpi.LinearOperator.MPILinearOperator] = None, eps: float = 0.1, alpha: Optional[float] = None, eigsdict: Optional[Dict[str, Any]] = None, tol: float = 1e-10, rtol: float = 0.0, rtol1: float = 0.0, threshkind: str = 'soft', decay: Optional[NDArray[numpy.number]] = None, monitorres: bool = False, show: bool = False, itershow: Tuple[int, int, int] = (10, 10, 10), callback: Optional[Callable] = None) -> Tuple[pylops_mpi.DistributedArray.DistributedArray, int, NDArray[numpy.number]]",
+   "summary": "Fast Iterative Shrinkage-Thresholding Algorithm (FISTA).",
+   "parameters": [
+    {
+     "name": "Op",
+     "type": ":obj:`pylops_mpi.MPILinearOperator`",
+     "desc": "Operator to invert"
+    },
+    {
+     "name": "y",
+     "type": ":obj:`pylops_mpi.DistributedArray`",
+     "desc": "Data"
+    },
+    {
+     "name": "x0: :obj:`pylops_mpi.DistributedArray`, optional",
+     "type": "",
+     "desc": "Initial guess"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations"
+    },
+    {
+     "name": "SOp",
+     "type": ":obj:`pylops_mpi.MPILinearOperator`, optional",
+     "desc": "Regularization operator (use when solving the analysis problem)"
+    },
+    {
+     "name": "eps",
+     "type": ":obj:`float`, optional",
+     "desc": "Sparsity damping"
+    },
+    {
+     "name": "alpha",
+     "type": ":obj:`float`, optional",
+     "desc": "Step size. To guarantee convergence, ensure :math:`\\alpha \\le 1/\\lambda_\\text{max}`, where :math:`\\lambda_\\text{max}` is the largest eigenvalue of :math:`\\mathbf{Op}^H\\mathbf{Op}`. If ``None``, the maximum eigenvalue is estimated and the optimal step size is chosen as :math:`1/\\lambda_\\text{max}`. If provided, the convergence criterion will not be checked internally."
+    },
+    {
+     "name": "eigsdict",
+     "type": ":obj:`dict`, optional",
+     "desc": "Dictionary of parameters to be passed to :func:`pylops.LinearOperator.eigs` method when computing the maximum eigenvalue"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": "Absolute tolerance on model update. Stop iterations if difference between inverted model at subsequent iterations is smaller than ``tol``"
+    },
+    {
+     "name": "rtol",
+     "type": ":obj:`float`, optional",
+     "desc": "Relative tolerance on total cost function wrt initial total cost function. Stops the solver when the ratio of the current total cost function to the initial total cost function is below this value."
+    },
+    {
+     "name": "rtol1",
+     "type": ":obj:`float`, optional",
+     "desc": "Relative tolerance on total cost function wrt to data. Stops the solver when the ratio of the current total cost function to the data norm is below this value."
+    },
+    {
+     "name": "threshkind",
+     "type": ":obj:`str`, optional",
+     "desc": "Kind of thresholding ('hard', 'soft', 'half' - 'soft' used as default)"
+    },
+    {
+     "name": "decay",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "Decay factor to be applied to thresholding during iterations"
+    },
+    {
+     "name": "monitorres",
+     "type": ":obj:`bool`, optional",
+     "desc": "Monitor that residual is decreasing"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    },
+    {
+     "name": "itershow",
+     "type": ":obj:`tuple`, optional",
+     "desc": "Display set log for the first N1 steps, last N2 steps, and every N3 steps in between where N1, N2, N3 are the three element of the list."
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "preallocate",
+     "type": ":obj:`bool`, optional",
+     "desc": "Pre-allocate all variables used by the solver."
+    },
+    {
+     "name": "Returns",
+     "type": "",
+     "desc": ""
+    },
+    {
+     "name": "-------",
+     "type": "",
+     "desc": ""
+    },
+    {
+     "name": "xinv",
+     "type": ":obj:`pylops_mpi.DistributedArray`",
+     "desc": "Inverted model"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`",
+     "desc": "Number of effective iterations"
+    },
+    {
+     "name": "cost",
+     "type": ":obj:`numpy.ndarray`, optional",
+     "desc": "History of cost (including regularization term)"
+    }
+   ],
+   "notes": "",
+   "examples": ""
+  }
+ },
+ "proxoperators": {
+  "MPIProxOperator": {
+   "name": "MPIProxOperator",
+   "kind": "operator",
+   "module": "pylops_mpi.proximal.ProxOperator",
+   "signature": "(prox: pyproximal.ProxOperator.ProxOperator) -> None",
+   "summary": "MPI-enabled PyProximal Proximal Operator",
+   "parameters": [
+    {
+     "name": "prox",
+     "type": ":obj:`pyproximal.ProxOperator`",
+     "desc": "PyProximal Proximal Operator to wrap."
+    }
+   ],
+   "notes": "",
+   "examples": ""
+  },
+  "MPIL2": {
+   "name": "MPIL2",
+   "kind": "operator",
+   "module": "pylops_mpi.proximal.proximal.L2",
+   "signature": "(Op: pylops_mpi.LinearOperator.MPILinearOperator = None, b: pylops_mpi.DistributedArray.DistributedArray | None = None, q: pylops_mpi.DistributedArray.DistributedArray | None = None, sigma: float = 1.0, alpha: float = 1.0, qgrad: bool = True, niter: Union[int, Callable[[int], int]] = 10, x0: pylops_mpi.DistributedArray.DistributedArray | None = None, warm: bool = True, solver: str | None = 'cgls', kwargs_solver: dict[str, typing.Any] | None = None) -> None",
+   "summary": "L2 Norm proximal operator.",
+   "parameters": [
+    {
+     "name": "Op",
+     "type": ":obj:`pylops_mpi.MPILinearOperator`, optional",
+     "desc": "MPI-enabled PyLops Linear Operator"
+    },
+    {
+     "name": "b",
+     "type": ":obj:`pylops_mpi.DistributedArray`, optional",
+     "desc": "Data vector"
+    },
+    {
+     "name": "q",
+     "type": ":obj:`pylops_mpi.DistributedArray`, optional",
+     "desc": "Dot vector"
+    },
+    {
+     "name": "sigma",
+     "type": ":obj:`int`, optional",
+     "desc": "Multiplicative coefficient of L2 norm"
+    },
+    {
+     "name": "alpha",
+     "type": ":obj:`float`, optional",
+     "desc": "Multiplicative coefficient of dot product"
+    },
+    {
+     "name": "qgrad",
+     "type": ":obj:`bool`, optional",
+     "desc": "Add q term to gradient (``True``) or not (``False``)"
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int` or :obj:`func`, optional",
+     "desc": "Number of iterations of iterative scheme used to compute the proximal. This can be a constant number or a function that is called passing a counter which keeps track of how many times the ``prox`` method has been invoked before and returns the ``niter`` to be used."
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`pylops_mpi.DistributedArray`, optional",
+     "desc": "Initial vector. If ``Op`` is not ``None``, this must be passed."
+    },
+    {
+     "name": "warm",
+     "type": ":obj:`bool`, optional",
+     "desc": "Warm start (``True``) or not (``False``). Uses estimate from previous call of ``prox`` method."
+    },
+    {
+     "name": "solver",
+     "type": ":obj:`str`, optional",
+     "desc": ".. versionadded:: 0.11.0  Name of solver to use with non-explicit operators:  - ``cg`` to use :py:func:`pylops_mpi.optimization.basic.cg` on the   normal equations; - ``cgls`` to use :py:func:`pylops.optimization.basic.cgls` on the   regularized system of equations;"
+    },
+    {
+     "name": "**kwargs_solver",
+     "type": ":obj:`dict`, optional",
+     "desc": "Dictionary containing extra arguments for the solver selected via the ``solver`` parameter."
+    }
+   ],
+   "notes": "",
+   "examples": ""
+  }
+ },
+ "proxsolvers": {
+  "ProximalGradient": {
+   "name": "ProximalGradient",
+   "kind": "solver",
+   "module": "pylops_mpi.proximal.optimization.primal",
+   "signature": "(proxf: pylops_mpi.proximal.ProxOperator.MPIProxOperator, proxg: pylops_mpi.proximal.ProxOperator.MPIProxOperator, x0: pylops_mpi.DistributedArray.DistributedArray, epsg: float | NDArray[numpy.number] = 1.0, tau: float | None = None, eta: float = 1.0, niter: int = 10, niterback: int = 100, acceleration: str | None = None, tol: float | None = None, callback: collections.abc.Callable[[pylops_mpi.DistributedArray.DistributedArray], None] | None = None, show: bool = False) -> pylops_mpi.DistributedArray.DistributedArray",
+   "summary": "Proximal gradient (optionally accelerated)",
+   "parameters": [
+    {
+     "name": "proxf",
+     "type": ":obj:`pylops_mpi.proximal.MPIProxOperator`",
+     "desc": "Proximal operator of f function (must have ``grad`` implemented)"
+    },
+    {
+     "name": "proxg",
+     "type": ":obj:`pylops_mpi.proximal.MPIProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`pylops_mpi.DistributedArray` or :obj:`pylops_mpi.StackedDistributedArray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "epsg",
+     "type": ":obj:`float` or :obj:`numpy.ndarray`, optional",
+     "desc": "Scaling factor of g function. Can be a scalar for iteration-independent scaling or a a 1d vector for iteration-dependent scaling"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float`, optional",
+     "desc": "Positive scalar weight, which should satisfy the following condition to guarantees convergence: :math:`\\tau  \\in (0, 1/L]` where ``L`` is the Lipschitz constant of :math:`\\nabla f`."
+    },
+    {
+     "name": "eta",
+     "type": ":obj:`float`, optional",
+     "desc": "Relaxation parameter (must be between 0 and 1, 0 excluded)."
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "niterback",
+     "type": ":obj:`int`, optional",
+     "desc": "Max number of iterations of backtracking"
+    },
+    {
+     "name": "acceleration",
+     "type": ":obj:`str`, optional",
+     "desc": "Acceleration (``None``, ``vandenberghe`` or ``fista``)"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": "Tolerance on change of objective function (used as stopping criterion). If ``tol=None``, run until ``niter`` is reached or the other tolerance criterion is met"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    }
+   ],
+   "notes": "See :class:`pyproximal.optimization.primal.ProximalGradient`",
+   "examples": ""
+  },
+  "ADMML2": {
+   "name": "ADMML2",
+   "kind": "solver",
+   "module": "pylops_mpi.proximal.optimization.primal",
+   "signature": "(proxg: pylops_mpi.proximal.ProxOperator.MPIProxOperator, Op: 'MPILinearOperator', b: pylops_mpi.DistributedArray.DistributedArray, A: 'MPILinearOperator', x0: pylops_mpi.DistributedArray.DistributedArray, tau: float, niter: int = 10, z0: pylops_mpi.DistributedArray.DistributedArray | None = None, gfirst: bool = False, callback: collections.abc.Callable[[pylops_mpi.DistributedArray.DistributedArray], None] | None = None, show: bool = False, kwargs_solver: dict[str, typing.Any] = {}) -> tuple[pylops_mpi.DistributedArray.DistributedArray, pylops_mpi.DistributedArray.DistributedArray]",
+   "summary": "Alternating Direction Method of Multipliers for L2 misfit term",
+   "parameters": [
+    {
+     "name": "proxg",
+     "type": ":obj:`pylops_mpi.proximal.MPIProxOperator`",
+     "desc": "Proximal operator of g function"
+    },
+    {
+     "name": "Op",
+     "type": ":obj:`pylops_mpi.MPILinearOperator` or :obj:`pylops_mpi.MPIStackedLinearOperator`",
+     "desc": "Linear operator of data misfit term"
+    },
+    {
+     "name": "b",
+     "type": ":obj:`pylops_mpi.DistributedArray` or :obj:`pylops_mpi.StackedDistributedArray`",
+     "desc": "Data"
+    },
+    {
+     "name": "A",
+     "type": ":obj:`pylops_mpi.MPILinearOperator` or :obj:`pylops_mpi.MPIStackedLinearOperator`",
+     "desc": "Linear operator of regularization term"
+    },
+    {
+     "name": "x0",
+     "type": ":obj:`pylops_mpi.DistributedArray` or :obj:`pylops_mpi.StackedDistributedArray`",
+     "desc": "Initial vector"
+    },
+    {
+     "name": "tau",
+     "type": ":obj:`float`",
+     "desc": "Positive scalar weight, which should satisfy the following condition to guarantees convergence: :math:`\\tau \\in (0, 1/\\lambda_{max}(\\mathbf{A}^H\\mathbf{A})]`."
+    },
+    {
+     "name": "niter",
+     "type": ":obj:`int`, optional",
+     "desc": "Number of iterations of iterative scheme"
+    },
+    {
+     "name": "z0",
+     "type": ":obj:`pylops_mpi.DistributedArray` or :obj:`pylops_mpi.StackedDistributedArray`",
+     "desc": "Initial auxiliary vector. If ``None``, initialized to ``A @ x0``."
+    },
+    {
+     "name": "gfirst",
+     "type": ":obj:`bool`, optional",
+     "desc": "Apply Proximal of operator ``g`` first (``True``) or Proximal of operator ``f`` first (``False``)"
+    },
+    {
+     "name": "tol",
+     "type": ":obj:`float`, optional",
+     "desc": "Tolerance on change of objective function (used as stopping criterion). If ``tol=None``, run until ``niter`` is reached"
+    },
+    {
+     "name": "callback",
+     "type": ":obj:`callable`, optional",
+     "desc": "Function with signature (``callback(x)``) to call after each iteration where ``x`` is the current model vector"
+    },
+    {
+     "name": "show",
+     "type": ":obj:`bool`, optional",
+     "desc": "Display iterations log"
+    },
+    {
+     "name": "**kwargs_solver",
+     "type": "",
+     "desc": "Arbitrary keyword arguments for :py:func:`pylops_mpi.optimization.basic.cgls` used to solve the x-update"
+    }
+   ],
+   "notes": "See :class:`pyproximal.optimization.primal.ADMML2`",
+   "examples": ""
+  }
+ },
+ "arrays": {
+  "DistributedArray": {
+   "name": "DistributedArray",
+   "kind": "array",
+   "module": "pylops_mpi.DistributedArray",
+   "signature": "(global_shape: Union[Tuple, numbers.Integral], base_comm: Optional[mpi4py.MPI.Comm] = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>, base_comm_nccl: Optional[pylops_mpi.DistributedArray.NcclCommunicator] = None, partition: pylops_mpi.DistributedArray.Partition = <Partition.SCATTER: 'Scatter'>, axis: int = 0, local_array: Optional[NDArray[numpy.number]] = None, local_shapes: Optional[List[Union[Tuple, numbers.Integral]]] = None, mask: Optional[List[numbers.Integral]] = None, engine: Optional[str] = 'numpy', dtype: Optional[DTypeLike] = <class 'numpy.float64'>)",
+   "summary": "Distributed Numpy Arrays",
+   "parameters": [
+    {
+     "name": "global_shape",
+     "type": ":obj:`tuple` or :obj:`int`",
+     "desc": "Shape of the global array."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "MPI Communicator over which array is distributed. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    },
+    {
+     "name": "base_comm_nccl",
+     "type": ":obj:`cupy.cuda.nccl.NcclCommunicator`, optional",
+     "desc": "NCCL Communicator over which array is distributed. Whenever NCCL Communicator is provided, the base_comm will be set to MPI.COMM_WORLD."
+    },
+    {
+     "name": "partition",
+     "type": ":obj:`Partition`, optional",
+     "desc": "Broadcast, UnsafeBroadcast, or Scatter the array. Defaults to ``Partition.SCATTER``."
+    },
+    {
+     "name": "axis",
+     "type": ":obj:`int`, optional",
+     "desc": "Axis along which distribution occurs. Defaults to ``0``."
+    },
+    {
+     "name": "local_array",
+     "type": ":obj:`numpy.ndarray` or :obj:`cupy.ndarray`, optional",
+     "desc": "Existing local array to use as the underlying storage instead of allocating a new one. Its shape must match the expected local shape for the current rank. When provided, the local array's dtype and engine (numpy or cupy) are used, and the ``dtype`` and ``engine`` arguments are ignored."
+    },
+    {
+     "name": "local_shapes",
+     "type": ":obj:`list`, optional",
+     "desc": "List of tuples or integers representing local shapes at each rank."
+    },
+    {
+     "name": "mask",
+     "type": ":obj:`list`, optional",
+     "desc": "Mask defining subsets of ranks to consider when performing 'global' operations on the distributed array such as dot product or norm."
+    },
+    {
+     "name": "engine",
+     "type": ":obj:`str`, optional",
+     "desc": "Engine used to store array (``numpy`` or ``cupy``)"
+    },
+    {
+     "name": "dtype",
+     "type": ":obj:`str`, optional",
+     "desc": "Type of elements in input array. Defaults to ``numpy.float64``."
+    }
+   ],
+   "notes": "",
+   "examples": ""
+  },
+  "StackedDistributedArray": {
+   "name": "StackedDistributedArray",
+   "kind": "array",
+   "module": "pylops_mpi.DistributedArray",
+   "signature": "(distarrays: List, base_comm: mpi4py.MPI.Comm = <mpi4py.MPI.Intracomm object at 0x113ed6fd0>)",
+   "summary": "Stacked DistributedArrays",
+   "parameters": [
+    {
+     "name": "distarrays",
+     "type": ":obj:`list`",
+     "desc": "List of :class:`pylops_mpi.DistributedArray` objects."
+    },
+    {
+     "name": "base_comm",
+     "type": ":obj:`mpi4py.MPI.Comm`, optional",
+     "desc": "Base MPI Communicator. Defaults to ``mpi4py.MPI.COMM_WORLD``."
+    }
+   ],
+   "notes": "",
+   "examples": ""
+  },
+  "Partition": {
+   "name": "Partition",
+   "kind": "array",
+   "module": "pylops_mpi.DistributedArray",
+   "signature": "(*values)",
+   "summary": "Enum class",
+   "parameters": [],
+   "notes": "",
+   "examples": ""
+  }
+ }
+}

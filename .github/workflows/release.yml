@@ -20,9 +20,9 @@ jobs:
           fetch-depth: 0  # hatch-vcs derives the version from the git tag
       - uses: astral-sh/setup-uv@v5
       - run: uv sync
-      - name: Check that every PyLops and PyProximal release has an index
+      - name: Check that every PyLops, PyProximal and PyLops-MPI release has an index
         run: |
-          for package in pylops pyproximal; do
+          for package in pylops pyproximal pylops_mpi; do
             missing="$(uv run python -m pylops_mcp.index --package $package --missing)"
             if [ -n "$missing" ]; then
               echo "::error::Missing $package indexes for: $(echo $missing). Run the 'Update indexes' workflow and merge its PR first."

@@ -6,7 +6,7 @@ on:
       package:
         description: Package to index
         type: choice
-        options: [pylops, pyproximal]
+        options: [pylops, pyproximal, pylops_mpi]
         default: pylops
       version:
         description: Version to index (e.g. 2.8.0); leave empty for all releases without an index

@@ -9,7 +9,14 @@ from pylops_mcp.index import PACKAGES, available_versions, load_index
 from pylops_mcp.introspect import Catalog
 
 mcp = MCPServer("pylops")
-POOL_KEYS = {"operator": "operators", "solver": "solvers", "workflow": "workflows"}
+POOL_KEYS = {
+    "operator": "operators",
+    "solver": "solvers",
+    "workflow": "workflows",
+    "proxoperator": "proxoperators",
+    "proxsolver": "proxsolvers",
+    "array": "arrays",
+}
 # search kinds -> (package, kind within that package's catalog)
 SEARCH_KINDS = {
     "operator": ("pylops", "operator"),
@@ -17,6 +24,11 @@ SEARCH_KINDS = {
     "workflow": ("pylops", "workflow"),
     "proxoperator": ("pyproximal", "operator"),
     "proxsolver": ("pyproximal", "solver"),
+    "mpioperator": ("pylops_mpi", "operator"),
+    "mpisolver": ("pylops_mpi", "solver"),
+    "mpiproxoperator": ("pylops_mpi", "proxoperator"),
+    "mpiproxsolver": ("pylops_mpi", "proxsolver"),
+    "mpiarray": ("pylops_mpi", "array"),
 }
 
 
@@ -78,7 +90,7 @@ def _list(
 
 @mcp.tool()
 def list_versions() -> dict[str, Any]:
-    """List the PyLops and PyProximal versions that have an index.
+    """List the PyLops, PyProximal and PyLops-MPI versions that have an index.
 
     For each package the latest version is the default.
     """
@@ -100,15 +112,21 @@ def search(
     kind: str = "all",
     pylops_version: str | None = None,
     pyproximal_version: str | None = None,
+    pylops_mpi_version: str | None = None,
 ) -> dict[str, Any]:
-    """Search PyLops and PyProximal by name or docstring summary.
+    """Search PyLops, PyProximal and PyLops-MPI by name or docstring summary.
 
-    kind is one of "all", "operator", "solver", "workflow" (PyLops) or
-    "proxoperator", "proxsolver" (PyProximal). pylops_version and
-    pyproximal_version select the versions (e.g. "2.6", "0.10"); default is
-    the latest.
+    kind is one of "all", "operator", "solver", "workflow" (PyLops),
+    "proxoperator", "proxsolver" (PyProximal) or "mpioperator", "mpisolver",
+    "mpiproxoperator", "mpiproxsolver", "mpiarray" (PyLops-MPI).
+    pylops_version, pyproximal_version and pylops_mpi_version select the
+    versions (e.g. "2.6", "0.10", "0.6"); default is the latest.
     """
-    versions = {"pylops": pylops_version, "pyproximal": pyproximal_version}
+    versions = {
+        "pylops": pylops_version,
+        "pyproximal": pyproximal_version,
+        "pylops_mpi": pylops_mpi_version,
+    }
     q = query.lower()
     kinds = list(SEARCH_KINDS) if kind == "all" else [kind]
     out: dict[str, Any] = {}
@@ -241,6 +259,120 @@ def get_proxsolver(name: str, pyproximal_version: str | None = None) -> dict[str
     return _lookup("pyproximal", "solver", name, pyproximal_version)
 
 
+@mcp.tool()
+def list_mpioperators(
+    module: str | None = None, pylops_mpi_version: str | None = None
+) -> dict[str, Any]:
+    """List PyLops-MPI operator names, optionally by module (e.g. "signalprocessing").
+
+    pylops_mpi_version selects the PyLops-MPI version (e.g. "0.6"); default is
+    the latest.
+    """
+    return _list("pylops_mpi", "operator", module, pylops_mpi_version)
+
+
+@mcp.tool()
+def get_mpioperator(name: str, pylops_mpi_version: str | None = None) -> dict[str, Any]:
+    """Get signature, parameters, notes and examples of a PyLops-MPI operator.
+
+    pylops_mpi_version selects the PyLops-MPI version (e.g. "0.6"); default is
+    the latest.
+    """
+    return _lookup("pylops_mpi", "operator", name, pylops_mpi_version)
+
+
+@mcp.tool()
+def list_mpisolvers(
+    module: str | None = None, pylops_mpi_version: str | None = None
+) -> dict[str, Any]:
+    """List PyLops-MPI solver names, optionally by module (e.g. "optimization").
+
+    pylops_mpi_version selects the PyLops-MPI version (e.g. "0.6"); default is
+    the latest.
+    """
+    return _list("pylops_mpi", "solver", module, pylops_mpi_version)
+
+
+@mcp.tool()
+def get_mpisolver(name: str, pylops_mpi_version: str | None = None) -> dict[str, Any]:
+    """Get signature, parameters, notes and examples of a PyLops-MPI solver.
+
+    pylops_mpi_version selects the PyLops-MPI version (e.g. "0.6"); default is
+    the latest.
+    """
+    return _lookup("pylops_mpi", "solver", name, pylops_mpi_version)
+
+
+@mcp.tool()
+def list_mpiproxoperators(
+    module: str | None = None, pylops_mpi_version: str | None = None
+) -> dict[str, Any]:
+    """List PyLops-MPI proximal operator names, optionally filtered by module.
+
+    pylops_mpi_version selects the PyLops-MPI version (e.g. "0.6"); default is
+    the latest.
+    """
+    return _list("pylops_mpi", "proxoperator", module, pylops_mpi_version)
+
+
+@mcp.tool()
+def get_mpiproxoperator(
+    name: str, pylops_mpi_version: str | None = None
+) -> dict[str, Any]:
+    """Get signature, parameters, notes and examples of a PyLops-MPI proximal operator.
+
+    pylops_mpi_version selects the PyLops-MPI version (e.g. "0.6"); default is
+    the latest.
+    """
+    return _lookup("pylops_mpi", "proxoperator", name, pylops_mpi_version)
+
+
+@mcp.tool()
+def list_mpiproxsolvers(
+    module: str | None = None, pylops_mpi_version: str | None = None
+) -> dict[str, Any]:
+    """List PyLops-MPI proximal solver names, optionally filtered by module.
+
+    pylops_mpi_version selects the PyLops-MPI version (e.g. "0.6"); default is
+    the latest.
+    """
+    return _list("pylops_mpi", "proxsolver", module, pylops_mpi_version)
+
+
+@mcp.tool()
+def get_mpiproxsolver(
+    name: str, pylops_mpi_version: str | None = None
+) -> dict[str, Any]:
+    """Get signature, parameters, notes and examples of a PyLops-MPI proximal solver.
+
+    pylops_mpi_version selects the PyLops-MPI version (e.g. "0.6"); default is
+    the latest.
+    """
+    return _lookup("pylops_mpi", "proxsolver", name, pylops_mpi_version)
+
+
+@mcp.tool()
+def list_mpiarrays(
+    module: str | None = None, pylops_mpi_version: str | None = None
+) -> dict[str, Any]:
+    """List PyLops-MPI array classes (DistributedArray, ...), optionally by module.
+
+    pylops_mpi_version selects the PyLops-MPI version (e.g. "0.6"); default is
+    the latest.
+    """
+    return _list("pylops_mpi", "array", module, pylops_mpi_version)
+
+
+@mcp.tool()
+def get_mpiarray(name: str, pylops_mpi_version: str | None = None) -> dict[str, Any]:
+    """Get signature, parameters, notes and examples of a PyLops-MPI array class.
+
+    pylops_mpi_version selects the PyLops-MPI version (e.g. "0.6"); default is
+    the latest.
+    """
+    return _lookup("pylops_mpi", "array", name, pylops_mpi_version)
+
+
 @mcp.resource("pylops://operators/{name}")
 def operator_resource(name: str) -> str:
     """Operator description (latest PyLops) as JSON."""
@@ -263,6 +395,18 @@ def proxoperator_resource(name: str) -> str:
 def versioned_proxoperator_resource(pyproximal_version: str, name: str) -> str:
     """Proximal operator description for a given PyProximal version as JSON."""
     return json.dumps(_lookup("pyproximal", "operator", name, pyproximal_version))
+
+
+@mcp.resource("pylops-mpi://operators/{name}")
+def mpioperator_resource(name: str) -> str:
+    """Operator description (latest PyLops-MPI) as JSON."""
+    return json.dumps(_lookup("pylops_mpi", "operator", name))
+
+
+@mcp.resource("pylops-mpi://{pylops_mpi_version}/operators/{name}")
+def versioned_mpioperator_resource(pylops_mpi_version: str, name: str) -> str:
+    """Operator description for a given PyLops-MPI version as JSON."""
+    return json.dumps(_lookup("pylops_mpi", "operator", name, pylops_mpi_version))
 
 
 def main() -> None:

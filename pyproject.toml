@@ -31,6 +31,11 @@ dependencies = [
     "packaging",
 ]
 
+[project.optional-dependencies]
+# Only needed to introspect PyLops-MPI live (requires an MPI library);
+# the server itself answers from the shipped indexes
+mpi = ["pylops-mpi>=0.5.0"]
+
 [dependency-groups]
 dev = ["pytest", "ruff", "mypy"]
 
@@ -69,5 +74,5 @@ warn_unused_ignores = true
 pylops-mcp = "pylops_mcp.server:main"
 
 [[tool.mypy.overrides]]
-module = ["pylops.*", "pyproximal.*", "numpydoc.*"]
+module = ["pylops.*", "pyproximal.*", "pylops_mpi.*", "mpi4py.*", "numpydoc.*"]
 ignore_missing_imports = true

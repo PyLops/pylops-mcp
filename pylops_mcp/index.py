@@ -10,6 +10,7 @@ from packaging.version import InvalidVersion, Version
 from pylops_mcp.introspect import (
     Catalog,
     build_pylops_catalog,
+    build_pylops_mpi_catalog,
     build_pyproximal_catalog,
 )
 
@@ -40,6 +41,7 @@ class Package:
 PACKAGES = {
     "pylops": Package("pylops", Version("2.4.0"), build_pylops_catalog),
     "pyproximal": Package("pyproximal", Version("0.9.0"), build_pyproximal_catalog),
+    "pylops_mpi": Package("pylops_mpi", Version("0.5.0"), build_pylops_mpi_catalog),
 }
 
 

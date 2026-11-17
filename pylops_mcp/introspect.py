@@ -18,6 +18,14 @@ PUBLIC_PACKAGES = (
     "pylops.avo",
     "pylops.medical",
 )
+# Packages whose ``__all__`` lists the PyLops-MPI operators (classes and factories)
+MPI_PUBLIC_PACKAGES = (
+    "pylops_mpi.basicoperators",
+    "pylops_mpi.signalprocessing",
+    "pylops_mpi.waveeqprocessing",
+)
+# Core PyLops-MPI classes needed to build the inputs of operators and solvers
+ARRAY_CLASSES = ("DistributedArray", "StackedDistributedArray", "Partition")
 # Public functions/classes that run an inversion or decomposition, not operators
 WORKFLOWS = {
     "MDD",
@@ -133,4 +141,87 @@ def build_pyproximal_catalog() -> Catalog:
         "pyproximal_version": pyproximal.__version__,
         "operators": operators,
         "solvers": solvers,
+    }
+
+
+def build_pylops_mpi_catalog() -> Catalog:
+    """Introspect the installed PyLops-MPI and return its catalog.
+
+    Pools: operators, solvers, proxoperators, proxsolvers (the last two are
+    empty in releases without ``pylops_mpi.proximal``) and arrays.
+    """
+    import pylops_mpi
+
+    bases = tuple(
+        b
+        for b in (
+            getattr(pylops_mpi, "MPILinearOperator", None),
+            getattr(pylops_mpi, "MPIStackedLinearOperator", None),
+        )
+        if b is not None
+    )
+    operators: dict[str, Entry] = {}
+    solvers: dict[str, Entry] = {}
+    for info in pkgutil.walk_packages(pylops_mpi.__path__, "pylops_mpi."):
+        if ".proximal" in info.name:  # indexed separately below
+            continue
+        try:
+            mod = importlib.import_module(info.name)
+        except Exception:  # optional dependencies may be missing
+            continue
+        for name, obj in vars(mod).items():
+            if name.startswith("_") or not hasattr(obj, "__module__"):
+                continue
+            if not str(obj.__module__).startswith("pylops_mpi"):
+                continue
+            if inspect.isclass(obj) and issubclass(obj, bases) and obj not in bases:
+                operators.setdefault(name, describe(obj, "operator"))
+            elif (
+                inspect.isfunction(obj)
+                and ".optimization." in obj.__module__
+                and not obj.__module__.endswith(".utils")
+                and name.islower()
+            ):
+                solvers.setdefault(name, describe(obj, "solver"))
+    for pkg_name in MPI_PUBLIC_PACKAGES:  # factory functions (e.g. MPIMDC)
+        try:
+            pkg = importlib.import_module(pkg_name)
+        except ImportError:
+            continue
+        for name in getattr(pkg, "__all__", []):
+            obj = getattr(pkg, name, None)
+            if inspect.isfunction(obj) or inspect.isclass(obj):
+                operators.setdefault(name, describe(obj, "operator"))
+
+    proxoperators: dict[str, Entry] = {}
+    proxsolvers: dict[str, Entry] = {}
+    try:
+        import pylops_mpi.proximal as mpiprox
+        import pylops_mpi.proximal.optimization as mpiproxopt
+        import pylops_mpi.proximal.proximal as mpiproxprox
+    except ImportError:  # proximal module absent in older releases
+        pass
+    else:
+        names = [*mpiprox.__all__, *mpiproxprox.__all__]
+        for name in names:
+            obj = getattr(mpiprox, name, None)
+            if inspect.isclass(obj) or inspect.isfunction(obj):
+                proxoperators[name] = describe(obj, "operator")
+        for name in mpiproxopt.__all__:
+            obj = getattr(mpiproxopt, name, None)
+            if inspect.isfunction(obj):
+                proxsolvers[name] = describe(obj, "solver")
+
+    arrays: dict[str, Entry] = {}
+    for name in ARRAY_CLASSES:
+        obj = getattr(pylops_mpi, name, None)
+        if inspect.isclass(obj):
+            arrays[name] = describe(obj, "array")
+    return {
+        "pylops_mpi_version": pylops_mpi.__version__,
+        "operators": operators,
+        "solvers": solvers,
+        "proxoperators": proxoperators,
+        "proxsolvers": proxsolvers,
+        "arrays": arrays,
     }
