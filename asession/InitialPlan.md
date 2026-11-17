@@ -8,6 +8,7 @@ optional hosted Streamable-HTTP endpoint (no OAuth, read-only, rate-limited). Ho
 or ~$5/mo VPS); users' own Claude plans cover token usage.
 
 ## Phase 1 — Core server (MVP, local stdio)
+Done (**PR-1**); `list_solvers` tool added in **PR-2**.
 1. `pyproject.toml`: add deps `mcp[cli]`, `pylops`, `numpydoc`; add `[project.scripts] pylops-mcp = "pylops_mcp.server:main"`; add `description` and README.
 2. `pylops_mcp/introspect.py`: `build_catalog()` walks `pylops.*`, collects `LinearOperator` subclasses (excluding the base) and functions in `pylops.optimization.*`; `describe(obj)` uses `numpydoc` `ClassDoc`/`FunctionDoc` to return name, module, signature, summary, parameters, notes, examples. Skip modules that fail to import (optional deps). Include `pylops_version`.
 3. `pylops_mcp/index.py`: dump the catalog to a versioned JSON (`pylops_mcp/data/index.json`), and load it at startup (fall back to live introspection if missing). Exclude from VCS if generated at release; include in wheel via hatch config.
@@ -15,14 +16,14 @@ or ~$5/mo VPS); users' own Claude plans cover token usage.
 5. Remove `basic.py` and `tests/test_basic.py`.
 
 ## Phase 2 — Quality improvements
-- Migrate to `mcp` 2.x (done: `mcp[cli]>=2,<3`, `MCPServer`; no other API changes were needed): drop the `mcp<2` pin, switch `FastMCP` (`mcp.server.fastmcp`) to `MCPServer` (`mcp.server.mcpserver`), and adapt other changed APIs (see https://py.sdk.modelcontextprotocol.io/v2/migration/).
-- Index operators built through factory functions (done: factories in the public `__all__` are indexed as operators; inversion/decomposition helpers go to a new `workflow` kind with `list_workflows`/`get_workflow`): they are functions returning `LinearOperator` objects, not `LinearOperator` subclasses, so Phase 1 introspection misses them.
+- Migrate to `mcp` 2.x (done, **PR-5**: `mcp[cli]>=2,<3`, `MCPServer`; no other API changes were needed): drop the `mcp<2` pin, switch `FastMCP` (`mcp.server.fastmcp`) to `MCPServer` (`mcp.server.mcpserver`), and adapt other changed APIs (see https://py.sdk.modelcontextprotocol.io/v2/migration/).
+- Index operators built through factory functions (done, **PR-6**: factories in the public `__all__` are indexed as operators; inversion/decomposition helpers go to a new `workflow` kind with `list_workflows`/`get_workflow`): they are functions returning `LinearOperator` objects, not `LinearOperator` subclasses, so Phase 1 introspection misses them.
+- One index per PyLops version (done, **PR-8**: `data/indexes/<version>.json` from 2.4.0, latest is the default, optional `pylops_version` on all tools, `list_versions`; built per version in isolated envs with `make index-all`/`index-missing`).
 - Index the PyLops `examples/` gallery by imported operators and return them from `get_operator`.
 - Structured fields: `explicit`, dtype, shape semantics, CuPy/JAX backend support, for filtering.
 - Better search: token/fuzzy scoring over name, summary, tags; embeddings only if substring search proves insufficient.
 - `recommend_solver(problem)` (rule-based problem → solver map) — dropped for now, revisit later.
 - Optional `run_snippet` sandbox (dottest) — deferred; needs a security review first.
-- One index per PyLops version (done: `data/indexes/<version>.json` from 2.4.0, latest is the default, optional `pylops_version` on all tools, `list_versions`; built per version in isolated envs with `make index-all`/`index-missing`).
 
 ## Phase 3 — Remote hosting
 - `MCPServer("pylops")`; `mcp.run(transport="streamable-http", json_response=True, stateless_http=True, host=..., port=...)` (in `mcp` 2.x these options moved from the constructor to `run()`) via a `--http` CLI flag.
@@ -30,9 +31,9 @@ or ~$5/mo VPS); users' own Claude plans cover token usage.
 
 ## Phase 4 — Release and discovery
 - GitHub Actions: on new PyLops release, rebuild the index, run tests, publish to PyPI (`uvx pylops-mcp`).
-  - Done (PR-3): CI + tag-triggered release workflow with Trusted Publishing, PyPI metadata, LGPL-3.0. Still open: automatic trigger on new PyLops releases.
+  - Done (**PR-3**): CI + tag-triggered release workflow with Trusted Publishing, PyPI metadata, LGPL-3.0. Index generation moved to a manual `Update indexes` workflow that opens a PR, and the release fails if indexes are missing (**PR-9**). Still open: automatic trigger on new PyLops releases.
 - Publish `server.json` to the Official MCP Registry; consider submitting to the Claude Connectors Directory; optional Claude Code plugin (MCP + skill).
-- README: install snippets for Claude Code (`claude mcp add pylops -- uvx pylops-mcp`, and `--transport http` for remote), Claude Desktop (config JSON/.mcpb), and claude.ai custom connector (paid plan; verify current rules).
+- README: install snippets (done: Claude Code and Claude Desktop in **PR-3**; Codex, OpenCode and PI in **PR-7**; still open: remote `--transport http` and claude.ai connector) for Claude Code (`claude mcp add pylops -- uvx pylops-mcp`, and `--transport http` for remote), Claude Desktop (config JSON/.mcpb), and claude.ai custom connector (paid plan; verify current rules).
 
 ## Critical files
 - `pyproject.toml`, `pylops_mcp/{introspect,index,server}.py`, `tests/`, `Makefile` (add an `index` target: `uv run python -m pylops_mcp.index`).
